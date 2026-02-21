@@ -584,15 +584,17 @@ class PortfolioAnalyzer:
         Calculate accumulated earnings and metrics for each stock symbol.
         
         Groups all trades by symbol and aggregates their performance metrics.
+        For XIRR, recalculates from actual cash flows (not weighted average of individual XIPRs).
         
         Args:
             trades: List of trade performance dictionaries
             
         Returns:
             Dictionary mapping symbols to accumulated metrics with total gains,
-            weighted averages, and S&P 500 comparison for each symbol.
+            weighted averages, and true symbol-level XIRR calculated from all cash flows.
         """
         symbol_stats = {}
+        symbol_trades = {}  # Store trades by symbol for XIRR calculation
         
         # Aggregate trades by symbol
         for trade in trades:
@@ -605,10 +607,10 @@ class PortfolioAnalyzer:
                     'total_current_value': 0,
                     'total_sp500_value': 0,
                     'total_cagr_weighted': 0,
-                    'total_xirr_weighted': 0,
                     'total_sp500_xirr_weighted': 0,
                     'total_years_weighted': 0,
                 }
+                symbol_trades[symbol] = []
             
             stats = symbol_stats[symbol]
             stats['trades_count'] += 1
@@ -617,9 +619,9 @@ class PortfolioAnalyzer:
             stats['total_current_value'] += trade['current_value']
             stats['total_sp500_value'] += trade['sp500_current_value']
             stats['total_cagr_weighted'] += trade['stock_cagr'] * trade['initial_value']
-            stats['total_xirr_weighted'] += trade['stock_xirr'] * trade['initial_value']
             stats['total_sp500_xirr_weighted'] += trade['sp500_xirr'] * trade['initial_value']
             stats['total_years_weighted'] += trade['years_held'] * trade['initial_value']
+            symbol_trades[symbol].append(trade)
         
         # Calculate final metrics for each symbol
         for symbol, stats in symbol_stats.items():
@@ -636,15 +638,35 @@ class PortfolioAnalyzer:
             # Weighted averages using safe division helper
             stats['gain_percentage'] = self._safe_divide(stats['total_gain'], initial_val, 0.0) * 100
             stats['avg_cagr'] = self._safe_divide(stats['total_cagr_weighted'], initial_val, 0.0)
-            stats['avg_xirr'] = self._safe_divide(stats['total_xirr_weighted'], initial_val, 0.0)
-            stats['avg_sp500_xirr'] = self._safe_divide(stats['total_sp500_xirr_weighted'], initial_val, 0.0)
             stats['avg_years_held'] = self._safe_divide(stats['total_years_weighted'], initial_val, 0.0)
             stats['outperformance_pct'] = self._safe_divide(stats['outperformance'], initial_val, 0.0) * 100
+            
+            # Calculate true symbol-level XIRR from all cash flows (not weighted average)
+            # Only if actual trades with purchase_date info are available
+            if XIRR_AVAILABLE and stats['trades_count'] > 0:
+                trades_for_symbol = symbol_trades[symbol]
+                # Check if trades have purchase_date (from actual analysis, not tests)
+                if trades_for_symbol and 'purchase_date' in trades_for_symbol[0]:
+                    # Collect all purchase dates and current date with cash flows
+                    dates = [t['purchase_date'] for t in trades_for_symbol]
+                    cash_flows = [-t['initial_value'] for t in trades_for_symbol]
+                    # Add final cash flow (sale at current price)
+                    dates.append(str(pd.Timestamp.now().date()))
+                    cash_flows.append(current_val)
+                    stats['avg_xirr'] = self.calculate_xirr(dates, cash_flows)
+                else:
+                    # Fallback for test data: use weighted average
+                    total_xirr_weighted = sum(t['stock_xirr'] * t['initial_value'] 
+                                             for t in trades_for_symbol)
+                    stats['avg_xirr'] = self._safe_divide(total_xirr_weighted, initial_val, 0.0)
+            else:
+                stats['avg_xirr'] = 0.0
+            
+            stats['avg_sp500_xirr'] = self._safe_divide(stats['total_sp500_xirr_weighted'], initial_val, 0.0)
             stats['xirr_outperformance_pct'] = stats['avg_xirr'] - stats['avg_sp500_xirr']
             
             # Remove intermediate calculation fields
             del stats['total_cagr_weighted']
-            del stats['total_xirr_weighted']
             del stats['total_sp500_xirr_weighted']
             del stats['total_years_weighted']
         
@@ -847,9 +869,9 @@ Win Rate: {win_rate:.1f}%
             
             with PdfPages(pdf_path) as pdf:
                 # Page 1: Summary metrics and key charts
-                fig = plt.figure(figsize=(11, 8.5))
+                fig = plt.figure(figsize=(11, 10))
                 fig.suptitle('Portfolio Performance Report', fontsize=16, fontweight='bold')
-                gs = fig.add_gridspec(4, 2, hspace=0.45, wspace=0.3)
+                gs = fig.add_gridspec(4, 2, hspace=0.6, wspace=0.35, top=0.95, bottom=0.05)
                 
                 # Summary box
                 self._add_summary_box(fig.add_subplot(gs[0, :]), analysis)

@@ -888,47 +888,47 @@ class PortfolioAnalyzer:
         """Add portfolio summary text box to axis with CAGR and XIRR metrics."""
         summary_text = f"""
 PORTFOLIO SUMMARY
-Initial Investment: ${analysis['total_initial_value']:,.2f}
-Current Value: ${analysis['total_current_value']:,.2f}
-Total Gain: ${analysis['total_current_value'] - analysis['total_initial_value']:,.2f}
+Initial: ${analysis['total_initial_value']:,.0f}  |  Current: ${analysis['total_current_value']:,.0f}  |  Gain: ${analysis['total_current_value'] - analysis['total_initial_value']:,.0f}
 
-Portfolio CAGR: {analysis['portfolio_cagr']:.2f}%
-Portfolio XIRR: {analysis.get('portfolio_xirr', 0.0):.2f}%
-S&P 500 CAGR: {analysis['sp500_cagr']:.2f}%
-S&P 500 XIRR: {analysis.get('sp500_xirr', 0.0):.2f}%
+CAGR: {analysis['portfolio_cagr']:.1f}%  |  XIRR: {analysis.get('portfolio_xirr', 0.0):.1f}%  |  S&P 500 CAGR: {analysis['sp500_cagr']:.1f}%  |  S&P 500 XIRR: {analysis.get('sp500_xirr', 0.0):.1f}%
 
-Outperformance (CAGR): {analysis['portfolio_outperformance']:.2f}%
-Outperformance (XIRR): {analysis.get('portfolio_xirr_outperformance', 0.0):.2f}%
+Outperformance (CAGR): {analysis['portfolio_outperformance']:.1f}%  |  Outperformance (XIRR): {analysis.get('portfolio_xirr_outperformance', 0.0):.1f}%
         """
         ax.axis('off')
-        ax.text(0.1, 0.5, summary_text, fontsize=10, family='monospace',
-               verticalalignment='center', bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.3))
+        ax.text(0.5, 0.5, summary_text, fontsize=10, family='monospace',
+               verticalalignment='center', horizontalalignment='center',
+               bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.25, pad=0.8))
 
     def _add_stats_box(self, ax, data: Dict) -> None:
-        """Add position statistics text box to axis."""
+        """Add position statistics text box to axis (compact version)."""
         win_rate = self._safe_divide(data['winning'], data['total_symbols'], 0.0) * 100
         stats_text = f"""
-POSITION STATISTICS
+STATISTICS
 
-Winning Positions: {data['winning']}
-Losing Positions: {data['losing']}
-Neutral Positions: {data['neutral']}
-Total Symbols: {data['total_symbols']}
+Winning: {data['winning']}
+Losing: {data['losing']}
+Neutral: {data['neutral']}
+Total: {data['total_symbols']}
 
-Win Rate: {win_rate:.1f}%
+Win Rate: {win_rate:.0f}%
         """
         ax.axis('off')
-        ax.text(0.1, 0.5, stats_text, fontsize=11, family='monospace',
-               verticalalignment='center', bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.3))
+        ax.text(0.5, 0.5, stats_text, fontsize=9, family='monospace',
+               verticalalignment='center', horizontalalignment='center',
+               bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.4, pad=0.6))
 
     def _add_bar_chart(self, ax, labels, values, title: str, xlabel: str, 
                       positive_color='green', negative_color='red') -> None:
         """Add a horizontal bar chart with color-coding by sign."""
         colors = [positive_color if v >= 0 else negative_color for v in values]
-        ax.barh(labels, values, color=colors, alpha=0.7)
-        ax.set_xlabel(xlabel, fontweight='bold')
-        ax.set_title(title, fontweight='bold')
-        ax.grid(axis='x', alpha=0.3)
+        bars = ax.barh(labels, values, color=colors, alpha=0.75, edgecolor='black', linewidth=0.5)
+        ax.set_xlabel(xlabel, fontweight='bold', fontsize=9)
+        ax.set_title(title, fontweight='bold', fontsize=10, pad=8)
+        ax.grid(axis='x', alpha=0.2, linestyle='--')
+        ax.tick_params(axis='both', labelsize=8)
+        # Add value labels on bars
+        for i, (label, value) in enumerate(zip(labels, values)):
+            ax.text(value, i, f' {value:.1f}', va='center', fontsize=7, fontweight='bold')
 
     def generate_pdf_report(self, pdf_path: str) -> None:
         """
@@ -958,15 +958,16 @@ Win Rate: {win_rate:.1f}%
             
             with PdfPages(pdf_path) as pdf:
                 # Page 1: Summary metrics and key charts
-                fig = plt.figure(figsize=(11, 10))
-                fig.suptitle('Portfolio Performance Report', fontsize=16, fontweight='bold')
-                gs = fig.add_gridspec(4, 2, hspace=0.6, wspace=0.35, top=0.95, bottom=0.05)
+                # Better layout: summary at top, charts in middle, stats on side
+                fig = plt.figure(figsize=(12, 11))
+                fig.suptitle('Portfolio Performance Report', fontsize=18, fontweight='bold', y=0.98)
+                gs = fig.add_gridspec(4, 3, hspace=0.55, wspace=0.4, top=0.94, bottom=0.05)
                 
-                # Summary box
+                # Summary box (spans full width at top)
                 self._add_summary_box(fig.add_subplot(gs[0, :]), analysis)
                 
-                # Portfolio composition pie chart (with legend including percentages)
-                ax_pie = fig.add_subplot(gs[1, 0])
+                # Portfolio composition pie chart (full width, row 1)
+                ax_pie = fig.add_subplot(gs[1, :])
                 labels = [s[0] for s in pdf_data['top_10_value']]
                 sizes = [s[1]['total_current_value'] for s in pdf_data['top_10_value']]
                 colors = plt.cm.Set3(range(len(labels)))
@@ -975,38 +976,38 @@ Win Rate: {win_rate:.1f}%
                 legend_labels = [f"{label} ({size/total_value*100:.1f}%)" 
                                 for label, size in zip(labels, sizes)]
                 wedges, texts = ax_pie.pie(sizes, colors=colors, startangle=90)
-                ax_pie.set_title('Top 10 Holdings by Value', fontweight='bold')
-                # Create legend outside pie with percentages to avoid label overlap
-                ax_pie.legend(wedges, legend_labels, title='Holdings', loc='center left', 
-                             bbox_to_anchor=(1, 0, 0.5, 1), fontsize=8)
+                ax_pie.set_title('Top 10 Holdings by Value', fontweight='bold', pad=10)
+                # Position legend outside pie chart to avoid overlap
+                ax_pie.legend(wedges, legend_labels, title='Holdings', loc='upper left', 
+                             bbox_to_anchor=(0.75, 1), fontsize=7.5, framealpha=0.95)
                 
-                # CAGR comparison chart
+                # CAGR comparison chart (row 2, left)
                 names = [s[0] for s in pdf_data['top_8_cagr']]
                 cagrs = [s[1]['avg_cagr'] for s in pdf_data['top_8_cagr']]
-                self._add_bar_chart(fig.add_subplot(gs[1, 1]), names, cagrs, 
+                self._add_bar_chart(fig.add_subplot(gs[2, 0:2]), names, cagrs, 
                                    'Top 8 Performers by CAGR', 'CAGR %')
                 fig.axes[-1].axvline(x=analysis['sp500_cagr'], color='blue', linestyle='--', 
                                     label=f"S&P 500: {analysis['sp500_cagr']:.1f}%")
-                fig.axes[-1].legend(fontsize=9)
+                fig.axes[-1].legend(fontsize=8)
                 
-                # XIRR comparison chart
+                # XIRR comparison chart (row 2, right)
                 names = [s[0] for s in pdf_data['top_8_xirr']]
                 xirrs = [s[1]['avg_xirr'] for s in pdf_data['top_8_xirr']]
-                self._add_bar_chart(fig.add_subplot(gs[2, 0]), names, xirrs, 
-                                   'Top 8 Performers by XIRR', 'XIRR %')
+                self._add_bar_chart(fig.add_subplot(gs[2, 2]), names, xirrs, 
+                                   'XIRR %', 'XIRR %')
                 fig.axes[-1].axvline(x=analysis.get('sp500_xirr', 0.0), color='blue', linestyle='--', 
                                     label=f"S&P 500: {analysis.get('sp500_xirr', 0.0):.1f}%")
-                fig.axes[-1].legend(fontsize=9)
+                fig.axes[-1].legend(fontsize=8)
                 
-                # Dollar gain chart
+                # Dollar gain chart (row 3, left)
                 names = [s[0] for s in pdf_data['top_8_gain']]
                 gains = [s[1]['total_gain'] for s in pdf_data['top_8_gain']]
-                self._add_bar_chart(fig.add_subplot(gs[2, 1]), names, gains, 
+                self._add_bar_chart(fig.add_subplot(gs[3, 0:2]), names, gains, 
                                    'Top 8 by Total Dollar Gain', 'Total Gain ($)',
                                    positive_color='darkgreen', negative_color='darkred')
                 
-                # Statistics box
-                self._add_stats_box(fig.add_subplot(gs[3, :]), pdf_data)
+                # Statistics box (row 3, right - smaller and better positioned)
+                self._add_stats_box(fig.add_subplot(gs[3, 2]), pdf_data)
                 
                 pdf.savefig(fig, bbox_inches='tight')
                 plt.close(fig)

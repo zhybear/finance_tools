@@ -357,6 +357,164 @@ class TestSP500BenchmarkCSV(unittest.TestCase):
             os.unlink(temp_file)
 
 
+class TestSymbolAccumulation(unittest.TestCase):
+    """Test symbol accumulation and aggregation logic"""
+    
+    def test_symbol_accumulation_single_symbol(self):
+        """Test accumulation for a single symbol"""
+        trades = [
+            {'symbol': 'AAPL', 'shares': 100, 'initial_value': 1000, 'current_value': 1500, 
+             'stock_cagr': 10.0, 'sp500_current_value': 1200, 'years_held': 5},
+            {'symbol': 'AAPL', 'shares': 50, 'initial_value': 500, 'current_value': 800, 
+             'stock_cagr': 12.5, 'sp500_current_value': 600, 'years_held': 5}
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        self.assertIn('AAPL', stats)
+        self.assertEqual(stats['AAPL']['trades_count'], 2)
+        self.assertEqual(stats['AAPL']['total_shares'], 150)
+        self.assertEqual(stats['AAPL']['total_initial_value'], 1500)
+        self.assertEqual(stats['AAPL']['total_current_value'], 2300)
+        self.assertEqual(stats['AAPL']['total_gain'], 800)
+        self.assertGreater(stats['AAPL']['gain_percentage'], 0)
+
+    def test_symbol_accumulation_multiple_symbols(self):
+        """Test accumulation for multiple symbols"""
+        trades = [
+            {'symbol': 'AAPL', 'shares': 100, 'initial_value': 1000, 'current_value': 1500,
+             'stock_cagr': 10.0, 'sp500_current_value': 1200, 'years_held': 5},
+            {'symbol': 'MSFT', 'shares': 50, 'initial_value': 2000, 'current_value': 3000,
+             'stock_cagr': 8.5, 'sp500_current_value': 2400, 'years_held': 5},
+            {'symbol': 'AAPL', 'shares': 50, 'initial_value': 500, 'current_value': 600,
+             'stock_cagr': 3.7, 'sp500_current_value': 600, 'years_held': 5}
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        self.assertEqual(len(stats), 2)
+        self.assertIn('AAPL', stats)
+        self.assertIn('MSFT', stats)
+        self.assertEqual(stats['AAPL']['trades_count'], 2)
+        self.assertEqual(stats['MSFT']['trades_count'], 1)
+
+    def test_symbol_accumulation_zero_gain(self):
+        """Test accumulation when there's no gain"""
+        trades = [
+            {'symbol': 'FLAT', 'shares': 100, 'initial_value': 1000, 'current_value': 1000,
+             'stock_cagr': 0.0, 'sp500_current_value': 1100, 'years_held': 5}
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        self.assertEqual(stats['FLAT']['total_gain'], 0)
+        self.assertEqual(stats['FLAT']['gain_percentage'], 0)
+
+
+class TestSafeDivide(unittest.TestCase):
+    """Test the _safe_divide helper method"""
+    
+    def setUp(self):
+        self.analyzer = PortfolioAnalyzer([])
+    
+    def test_safe_divide_normal(self):
+        """Test normal division"""
+        result = self.analyzer._safe_divide(10, 2, 0)
+        self.assertEqual(result, 5.0)
+    
+    def test_safe_divide_zero_denominator(self):
+        """Test division by zero returns default"""
+        result = self.analyzer._safe_divide(10, 0, 99)
+        self.assertEqual(result, 99)
+    
+    def test_safe_divide_zero_denominator_default_zero(self):
+        """Test division by zero with default=0"""
+        result = self.analyzer._safe_divide(10, 0, 0)
+        self.assertEqual(result, 0)
+    
+    def test_safe_divide_negative_denominator(self):
+        """Test negative denominator returns default"""
+        result = self.analyzer._safe_divide(10, -5, 0)
+        self.assertEqual(result, 0)
+
+
+class TestPDFDataPreparation(unittest.TestCase):
+    """Test PDF data preparation logic"""
+    
+    def test_prepare_pdf_data_counts(self):
+        """Test that _prepare_pdf_data correctly counts winning/losing positions"""
+        analyzer = PortfolioAnalyzer([])
+        symbol_stats = {
+            'AAPL': {'total_current_value': 1000, 'total_gain': 100, 'avg_cagr': 5},
+            'MSFT': {'total_current_value': 500, 'total_gain': -50, 'avg_cagr': -2},
+            'TSLA': {'total_current_value': 200, 'total_gain': 0, 'avg_cagr': 0},
+        }
+        analysis = {'portfolio_cagr': 5, 'sp500_cagr': 3}
+        
+        data = analyzer._prepare_pdf_data(analysis, symbol_stats)
+        
+        self.assertEqual(data['winning'], 1)
+        self.assertEqual(data['losing'], 1)
+        self.assertEqual(data['neutral'], 1)
+        self.assertEqual(data['total_symbols'], 3)
+
+    def test_prepare_pdf_data_top_lists(self):
+        """Test that top lists are correctly sorted"""
+        analyzer = PortfolioAnalyzer([])
+        symbol_stats = {
+            'A': {'total_current_value': 1000, 'total_gain': 100, 'avg_cagr': 5},
+            'B': {'total_current_value': 500, 'total_gain': 200, 'avg_cagr': 10},
+            'C': {'total_current_value': 300, 'total_gain': 50, 'avg_cagr': 2},
+        }
+        analysis = {'portfolio_cagr': 5, 'sp500_cagr': 3}
+        
+        data = analyzer._prepare_pdf_data(analysis, symbol_stats)
+        
+        # Top by value: A, B, C
+        self.assertEqual(data['top_10_value'][0][0], 'A')
+        # Top by CAGR: B, A, C
+        self.assertEqual(data['top_8_cagr'][0][0], 'B')
+        # Top by gain: B, A, C
+        self.assertEqual(data['top_8_gain'][0][0], 'B')
+
+
+class TestReportGeneration(unittest.TestCase):
+    """Test report generation functionality"""
+    
+    def test_print_report_to_file(self):
+        """Test that text report can be saved to file"""
+        trades = [
+            {"symbol": "AAPL", "shares": 10, "purchase_date": "2015-01-02", "price": 10.0},
+        ]
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            temp_file = f.name
+        
+        try:
+            analyzer = PortfolioAnalyzer(trades)
+            analyzer.print_report(output_file=temp_file)
+            
+            # Verify file was created and has content
+            self.assertTrue(os.path.exists(temp_file))
+            with open(temp_file, 'r') as f:
+                content = f.read()
+            self.assertIn('PORTFOLIO SUMMARY', content)
+            self.assertIn('AAPL', content)
+        finally:
+            if os.path.exists(temp_file):
+                os.unlink(temp_file)
+    
+    def test_print_report_empty_portfolio(self):
+        """Test print_report with empty portfolio"""
+        analyzer = PortfolioAnalyzer([])
+        # Should not raise exception
+        analyzer.print_report()
+
+
+
 def run_tests():
     """Run all tests with verbose output"""
     unittest.main(argv=[''], verbosity=2, exit=False)

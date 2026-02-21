@@ -102,7 +102,7 @@ class PortfolioAnalyzer:
             hist.index = hist.index.tz_localize(None)
         return hist
 
-    def _normalize_datetime(self, dt) -> pd.Timestamp:
+    def _normalize_datetime(self, dt: pd.Timestamp) -> pd.Timestamp:
         """
         Remove timezone information from datetime object.
         
@@ -115,6 +115,20 @@ class PortfolioAnalyzer:
         if getattr(dt, "tzinfo", None) is not None:
             return dt.tz_localize(None)
         return dt
+    
+    def _safe_divide(self, numerator: float, denominator: float, default: float = 0.0) -> float:
+        """
+        Safely divide two numbers, returning default if denominator is zero.
+        
+        Args:
+            numerator: Dividend
+            denominator: Divisor
+            default: Value to return if denominator is zero
+            
+        Returns:
+            Result of numerator / denominator, or default if denominator <= 0
+        """
+        return (numerator / denominator) if denominator > 0 else default
 
     def _extract_history(self, data: pd.DataFrame, symbol: str) -> pd.DataFrame:
         """
@@ -488,16 +502,13 @@ class PortfolioAnalyzer:
             stats['total_gain'] = current_val - initial_val
             sp500_gain = sp500_val - initial_val
             stats['sp500_gain'] = sp500_gain
-            
-            # Outperformance against S&P 500
             stats['outperformance'] = stats['total_gain'] - sp500_gain
             
-            # Weighted averages (avoid division by zero)
-            divisor = initial_val if initial_val > 0 else 1
-            stats['gain_percentage'] = (stats['total_gain'] / divisor * 100) if initial_val > 0 else 0
-            stats['avg_cagr'] = (stats['total_cagr_weighted'] / divisor) if initial_val > 0 else 0
-            stats['avg_years_held'] = (stats['total_years_weighted'] / divisor) if initial_val > 0 else 0
-            stats['outperformance_pct'] = (stats['outperformance'] / divisor * 100) if initial_val > 0 else 0
+            # Weighted averages using safe division helper
+            stats['gain_percentage'] = self._safe_divide(stats['total_gain'], initial_val, 0.0) * 100
+            stats['avg_cagr'] = self._safe_divide(stats['total_cagr_weighted'], initial_val, 0.0)
+            stats['avg_years_held'] = self._safe_divide(stats['total_years_weighted'], initial_val, 0.0)
+            stats['outperformance_pct'] = self._safe_divide(stats['outperformance'], initial_val, 0.0) * 100
             
             # Remove intermediate calculation fields
             del stats['total_cagr_weighted']
@@ -636,7 +647,7 @@ Actual Return vs Expected: {(analysis['total_current_value'] / analysis['total_s
 
     def _add_stats_box(self, ax, data: Dict) -> None:
         """Add position statistics text box to axis."""
-        win_rate = (data['winning'] / data['total_symbols'] * 100) if data['total_symbols'] > 0 else 0
+        win_rate = self._safe_divide(data['winning'], data['total_symbols'], 0.0) * 100
         stats_text = f"""
 POSITION STATISTICS
 

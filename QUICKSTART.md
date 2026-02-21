@@ -70,6 +70,7 @@ python3 stock.py --csv your_trades.csv --output your_report.txt --pdf your_repor
 
 Using the example file, you'll see:
 
+- ✅ **CAGR and XIRR metrics** (both calculated for complete analysis)
 - ✅ **Multi-year portfolio tracking** (2014-2019 trades)
 - ✅ **Technology sector dominance** (8/12 stocks in tech)
 - ✅ **Diversification** (semiconductors, e-commerce, finance, holding companies)
@@ -101,4 +102,4 @@ Using the example file, you'll see:
 
 For complete documentation, see [README.md](README.md)
 
-For questions about CSV format, CAGR calculation, or metrics, check the README's detailed explanations.
+For questions about CSV format, CAGR, XIRR calculation, or metrics, check the README's detailed explanations.

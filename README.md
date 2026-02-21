@@ -4,7 +4,7 @@ A Python tool for analyzing stock portfolio performance and comparing against S&
 
 ## Features
 
-- **Portfolio Analysis**: Calculate CAGR (Compound Annual Growth Rate) for individual trades and overall portfolio
+- **CAGR & XIRR Analysis**: Calculate both Compound Annual Growth Rate and Extended Internal Rate of Return
 - **S&P 500 Comparison**: Compare your portfolio performance against S&P 500 benchmark
 - **Symbol Aggregation**: View accumulated earnings and metrics per stock symbol
 - **Text Reports**: Generate detailed text reports with per-trade and per-symbol analysis
@@ -14,7 +14,7 @@ A Python tool for analyzing stock portfolio performance and comparing against S&
 ## Installation
 
 ```bash
-pip3 install yfinance pandas matplotlib seaborn
+pip3 install yfinance pandas numpy scipy matplotlib seaborn
 ```
 
 ## Usage
@@ -104,10 +104,24 @@ Portfolio Outperformance: 59.23%
 
 - **CAGR** (Compound Annual Growth Rate): Annual growth rate accounting for reinvestment
   - Formula: `((End Value / Start Value)^(1/Years) - 1) × 100`
-- **Initial Investment**: Total amount invested across all trades
-- **Current Value**: Today's market value of all positions
-- **Outperformance**: Portfolio CAGR minus S&P 500 CAGR
-- **Weighted CAGR**: Investment-weighted average CAGR (larger investments weighted more)
+  - Best for: Simple annual return comparison when investments are made at similar times
+  - Advantages: Intuitive, easy to understand, widely used
+
+- **XIRR** (Extended Internal Rate of Return): IRR accounting for irregular cash flow timing
+  - Uses Newton-Raphson optimization to solve: `NPV = Σ(CF / (1+r)^(Years)) = 0`
+  - Best for: Investments with multiple purchases at different dates
+  - Advantages: Accounts for exact timing of cash flows, more accurate for irregular investments
+
+- **When to Use**:
+  - Use CAGR for simple buy-and-hold investments over a fixed period
+  - Use XIRR when you have multiple purchases/sales at different times
+  - Both metrics provided for complete performance analysis
+
+- **Other Metrics**:
+  - **Initial Investment**: Total amount invested across all trades
+  - **Current Value**: Today's market value of all positions
+  - **Outperformance**: Performance metric minus S&P 500 performance
+  - **Weighted CAGR/XIRR**: Investment-weighted average (larger investments weighted more)
 
 ## Code Structure
 
@@ -125,21 +139,23 @@ Portfolio Outperformance: 59.23%
 ### Key Methods
 
 - `calculate_cagr()`: Calculate compound annual growth rate
+- `calculate_xirr()`: Calculate extended internal rate of return using scipy Newton method
 - `_validate_trade()`: Validate trade data
 - `_prepare_histories()`: Bulk download stock price histories
 - `_safe_divide()`: Safe division with zero-handling
-- `_calculate_symbol_accumulation()`: Aggregate trades by symbol
+- `_calculate_symbol_accumulation()`: Aggregate trades by symbol with both CAGR and XIRR
 
 ## Testing
 
-The project includes 28+ comprehensive unit tests covering:
+The project includes 36 comprehensive unit tests covering:
 - CAGR calculations (5 tests)
+- XIRR calculations (7 tests) - NEW
 - S&P 500 benchmark validation (3 tests)
 - CSV loading and validation (3 tests)
 - Trade validation (5 tests)
 - Portfolio analysis (2 tests)
 - Symbol accumulation (3 tests)
-- Safe division helper (3 tests)
+- Safe division helper (4 tests)
 - PDF data preparation (2 tests)
 - Report generation (2 tests)
 - S&P 500 self-consistency integration test (1 test)
@@ -176,6 +192,7 @@ Loaded 12 example trades:
 - S&P 500 symbol used: ^GSPC
 - Timezone handling is automatic (UTC normalization)
 - Division-by-zero operations are safely handled
+- XIRR uses scipy's Newton-Raphson optimization (requires scipy)
 
 ## Performance
 

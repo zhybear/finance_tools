@@ -695,16 +695,19 @@ Win Rate: {win_rate:.1f}%
                 # Summary box
                 self._add_summary_box(fig.add_subplot(gs[0, :]), analysis)
                 
-                # Portfolio composition pie chart (with legend to avoid label overlap)
+                # Portfolio composition pie chart (with legend including percentages)
                 ax_pie = fig.add_subplot(gs[1, 0])
                 labels = [s[0] for s in pdf_data['top_10_value']]
                 sizes = [s[1]['total_current_value'] for s in pdf_data['top_10_value']]
                 colors = plt.cm.Set3(range(len(labels)))
-                wedges, texts, autotexts = ax_pie.pie(sizes, autopct='%1.1f%%', 
-                                                       colors=colors, startangle=90)
+                total_value = sum(sizes)
+                # Create legend labels with percentages
+                legend_labels = [f"{label} ({size/total_value*100:.1f}%)" 
+                                for label, size in zip(labels, sizes)]
+                wedges, texts = ax_pie.pie(sizes, colors=colors, startangle=90)
                 ax_pie.set_title('Top 10 Holdings by Value', fontweight='bold')
-                # Create legend outside pie to avoid label overlap
-                ax_pie.legend(wedges, labels, title='Holdings', loc='center left', 
+                # Create legend outside pie with percentages to avoid label overlap
+                ax_pie.legend(wedges, legend_labels, title='Holdings', loc='center left', 
                              bbox_to_anchor=(1, 0, 0.5, 1), fontsize=8)
                 
                 # CAGR comparison chart

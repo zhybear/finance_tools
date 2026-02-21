@@ -454,9 +454,9 @@ class TestPDFDataPreparation(unittest.TestCase):
         """Test that _prepare_pdf_data correctly counts winning/losing positions"""
         analyzer = PortfolioAnalyzer([])
         symbol_stats = {
-            'AAPL': {'total_current_value': 1000, 'total_gain': 100, 'avg_cagr': 5},
-            'MSFT': {'total_current_value': 500, 'total_gain': -50, 'avg_cagr': -2},
-            'TSLA': {'total_current_value': 200, 'total_gain': 0, 'avg_cagr': 0},
+            'AAPL': {'total_current_value': 1000, 'total_gain': 100, 'avg_cagr': 5, 'avg_xirr': 4.9, 'avg_sp500_xirr': 2},
+            'MSFT': {'total_current_value': 500, 'total_gain': -50, 'avg_cagr': -2, 'avg_xirr': -2.1, 'avg_sp500_xirr': 2},
+            'TSLA': {'total_current_value': 200, 'total_gain': 0, 'avg_cagr': 0, 'avg_xirr': 0, 'avg_sp500_xirr': 2},
         }
         analysis = {'portfolio_cagr': 5, 'sp500_cagr': 3}
         
@@ -471,9 +471,9 @@ class TestPDFDataPreparation(unittest.TestCase):
         """Test that top lists are correctly sorted"""
         analyzer = PortfolioAnalyzer([])
         symbol_stats = {
-            'A': {'total_current_value': 1000, 'total_gain': 100, 'avg_cagr': 5},
-            'B': {'total_current_value': 500, 'total_gain': 200, 'avg_cagr': 10},
-            'C': {'total_current_value': 300, 'total_gain': 50, 'avg_cagr': 2},
+            'A': {'total_current_value': 1000, 'total_gain': 100, 'avg_cagr': 5, 'avg_xirr': 4.9, 'avg_sp500_xirr': 2},
+            'B': {'total_current_value': 500, 'total_gain': 200, 'avg_cagr': 10, 'avg_xirr': 9.8, 'avg_sp500_xirr': 2},
+            'C': {'total_current_value': 300, 'total_gain': 50, 'avg_cagr': 2, 'avg_xirr': 1.9, 'avg_sp500_xirr': 2},
         }
         analysis = {'portfolio_cagr': 5, 'sp500_cagr': 3}
         
@@ -483,6 +483,8 @@ class TestPDFDataPreparation(unittest.TestCase):
         self.assertEqual(data['top_10_value'][0][0], 'A')
         # Top by CAGR: B, A, C
         self.assertEqual(data['top_8_cagr'][0][0], 'B')
+        # Top by XIRR: B, A, C
+        self.assertEqual(data['top_8_xirr'][0][0], 'B')
         # Top by gain: B, A, C
         self.assertEqual(data['top_8_gain'][0][0], 'B')
 

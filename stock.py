@@ -749,18 +749,22 @@ class PortfolioAnalyzer:
         """
         Prepare data needed for PDF visualizations (sorted once for efficiency).
         
+        Sorts symbol statistics by multiple metrics to avoid repeated sorting in PDF generation.
+        
         Args:
             analysis: Portfolio analysis results
             symbol_stats: Symbol statistics dictionary
             
         Returns:
-            Dictionary with pre-sorted data for all charts
+            Dictionary with pre-sorted data for all charts including CAGR and XIRR performers
         """
         return {
             'top_10_value': sorted(symbol_stats.items(), 
                                   key=lambda x: x[1]['total_current_value'], reverse=True)[:10],
             'top_8_cagr': sorted(symbol_stats.items(), 
                                 key=lambda x: x[1]['avg_cagr'], reverse=True)[:8],
+            'top_8_xirr': sorted(symbol_stats.items(), 
+                                key=lambda x: x[1]['avg_xirr'], reverse=True)[:8],
             'top_8_gain': sorted(symbol_stats.items(), 
                                 key=lambda x: x[1]['total_gain'], reverse=True)[:8],
             'winning': sum(1 for s in symbol_stats.values() if s['total_gain'] > 0),
@@ -845,7 +849,7 @@ Win Rate: {win_rate:.1f}%
                 # Page 1: Summary metrics and key charts
                 fig = plt.figure(figsize=(11, 8.5))
                 fig.suptitle('Portfolio Performance Report', fontsize=16, fontweight='bold')
-                gs = fig.add_gridspec(3, 2, hspace=0.4, wspace=0.3)
+                gs = fig.add_gridspec(4, 2, hspace=0.45, wspace=0.3)
                 
                 # Summary box
                 self._add_summary_box(fig.add_subplot(gs[0, :]), analysis)
@@ -872,17 +876,26 @@ Win Rate: {win_rate:.1f}%
                                    'Top 8 Performers by CAGR', 'CAGR %')
                 fig.axes[-1].axvline(x=analysis['sp500_cagr'], color='blue', linestyle='--', 
                                     label=f"S&P 500: {analysis['sp500_cagr']:.1f}%")
-                fig.axes[-1].legend()
+                fig.axes[-1].legend(fontsize=9)
+                
+                # XIRR comparison chart
+                names = [s[0] for s in pdf_data['top_8_xirr']]
+                xirrs = [s[1]['avg_xirr'] for s in pdf_data['top_8_xirr']]
+                self._add_bar_chart(fig.add_subplot(gs[2, 0]), names, xirrs, 
+                                   'Top 8 Performers by XIRR', 'XIRR %')
+                fig.axes[-1].axvline(x=analysis.get('sp500_xirr', 0.0), color='blue', linestyle='--', 
+                                    label=f"S&P 500: {analysis.get('sp500_xirr', 0.0):.1f}%")
+                fig.axes[-1].legend(fontsize=9)
                 
                 # Dollar gain chart
                 names = [s[0] for s in pdf_data['top_8_gain']]
                 gains = [s[1]['total_gain'] for s in pdf_data['top_8_gain']]
-                self._add_bar_chart(fig.add_subplot(gs[2, 0]), names, gains, 
+                self._add_bar_chart(fig.add_subplot(gs[2, 1]), names, gains, 
                                    'Top 8 by Total Dollar Gain', 'Total Gain ($)',
                                    positive_color='darkgreen', negative_color='darkred')
                 
                 # Statistics box
-                self._add_stats_box(fig.add_subplot(gs[2, 1]), pdf_data)
+                self._add_stats_box(fig.add_subplot(gs[3, :]), pdf_data)
                 
                 pdf.savefig(fig, bbox_inches='tight')
                 plt.close(fig)

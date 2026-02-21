@@ -770,7 +770,7 @@ class PortfolioAnalyzer:
         }
 
     def _add_summary_box(self, ax, analysis: Dict) -> None:
-        """Add portfolio summary text box to axis."""
+        """Add portfolio summary text box to axis with CAGR and XIRR metrics."""
         summary_text = f"""
 PORTFOLIO SUMMARY
 Initial Investment: ${analysis['total_initial_value']:,.2f}
@@ -778,14 +778,15 @@ Current Value: ${analysis['total_current_value']:,.2f}
 Total Gain: ${analysis['total_current_value'] - analysis['total_initial_value']:,.2f}
 
 Portfolio CAGR: {analysis['portfolio_cagr']:.2f}%
+Portfolio XIRR: {analysis.get('portfolio_xirr', 0.0):.2f}%
 S&P 500 CAGR: {analysis['sp500_cagr']:.2f}%
-Outperformance: {analysis['portfolio_outperformance']:.2f}%
+S&P 500 XIRR: {analysis.get('sp500_xirr', 0.0):.2f}%
 
-Expected S&P 500 Value: ${analysis['total_sp500_current_value']:,.2f}
-Actual Return vs Expected: {(analysis['total_current_value'] / analysis['total_sp500_current_value'] * 100):.1f}%
+Outperformance (CAGR): {analysis['portfolio_outperformance']:.2f}%
+Outperformance (XIRR): {analysis.get('portfolio_xirr_outperformance', 0.0):.2f}%
         """
         ax.axis('off')
-        ax.text(0.1, 0.5, summary_text, fontsize=11, family='monospace',
+        ax.text(0.1, 0.5, summary_text, fontsize=10, family='monospace',
                verticalalignment='center', bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.3))
 
     def _add_stats_box(self, ax, data: Dict) -> None:
@@ -893,7 +894,7 @@ Win Rate: {win_rate:.1f}%
                 ax.axis('tight')
                 ax.axis('off')
                 
-                table_data = [['Symbol', 'Trades', 'Invested', 'Current', 'Gain', 'Gain%', 'CAGR%']]
+                table_data = [['Symbol', 'Trades', 'Invested', 'Current', 'Gain', 'Gain%', 'CAGR%', 'XIRR%']]
                 for symbol, stats in pdf_data['top_10_value']:
                     table_data.append([
                         symbol,
@@ -902,11 +903,12 @@ Win Rate: {win_rate:.1f}%
                         f"${stats['total_current_value']:.0f}",
                         f"${stats['total_gain']:.0f}",
                         f"{stats['gain_percentage']:.1f}%",
-                        f"{stats['avg_cagr']:.1f}%"
+                        f"{stats['avg_cagr']:.1f}%",
+                        f"{stats['avg_xirr']:.1f}%"
                     ])
                 
                 table = ax.table(cellText=table_data, cellLoc='center', loc='center',
-                               colWidths=[0.1, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15])
+                               colWidths=[0.1, 0.1, 0.13, 0.13, 0.13, 0.13, 0.13, 0.13])
                 table.auto_set_font_size(False)
                 table.set_fontsize(10)
                 table.scale(1, 2)

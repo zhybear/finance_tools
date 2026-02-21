@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Analytics Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --accent-color: #0066cc;
+            --positive: #10b981;
+            --negative: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        body.dark-mode {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #444444;
+            --accent-color: #3b82f6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #0052a3 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .navbar-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .toggle-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .toggle-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metric-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .metric-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+        
+        .metric-unit {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        
+        .metric-positive { color: var(--positive); }
+        .metric-negative { color: var(--negative); }
+        
+        .section {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-color);
+            color: var(--text-primary);
+        }
+        
+        .chart-container {
+            min-height: 400px;
+            margin-bottom: 1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        table thead {
+            background: var(--bg-secondary);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        table tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+        
+        .number {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-weight: 600;
+        }
+        
+        .positive-return { color: var(--positive); }
+        .negative-return { color: var(--negative); }
+        
+        .dataTables_wrapper {
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .navbar { padding: 1rem; flex-direction: column; gap: 1rem; }
+            .navbar h1 { font-size: 1.3rem; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .section { padding: 1rem; }
+        }
+        
+        @media print {
+            .navbar-controls { display: none; }
+            .dataTables_filter, .dataTables_length, .dataTables_info, .dataTables_paginate { display: none !important; }
+            .section { break-inside: avoid; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>📊 Portfolio Analytics</h1>
+        <div class="navbar-controls">
+            <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+            <button class="toggle-btn" onclick="window.print()">🖨️ Print</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Key Metrics Section -->
+        <div class="metrics-grid">
+
+            <div class="metric-card">
+                <div class="metric-label">Portfolio Value</div>
+                <div class="metric-value">$2,795,071</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total Gain</div>
+                <div class="metric-value metric-positive">$2,635,236</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Return %</div>
+                <div class="metric-value metric-positive">1648.7<span class="metric-unit">%</span></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">CAGR</div>
+                <div class="metric-value metric-positive">75.1<span class="metric-unit">%</span></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">XIRR (Time-Weighted)</div>
+                <div class="metric-value metric-positive">37.9<span class="metric-unit">%</span></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Invested Capital</div>
+                <div class="metric-value">$159,836</div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="section">
+            <h2 class="section-title">Position Allocation</h2>
+            <div class="chart-container" id="pieChart"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Performance Metrics</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+                <div class="chart-container" id="cagrChart"></div>
+                <div class="chart-container" id="xirrChart"></div>
+                <div class="chart-container" id="gainChart"></div>
+            </div>
+        </div>
+        
+        <!-- Top Positions Table -->
+        <div class="section">
+            <h2 class="section-title">Top 10 Holdings</h2>
+            <table id="topPositionsTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Trades</th>
+                        <th>Invested</th>
+                        <th>Current Value</th>
+                        <th>Dollar Gain</th>
+                        <th>Return %</th>
+                        <th>CAGR %</th>
+                        <th>XIRR %</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><strong>NVDA</strong></td>
+                        <td class="number">26</td>
+                        <td class="number">$26,599</td>
+                        <td class="number">$2,030,315</td>
+                        <td class="number positive-return">$2,003,716</td>
+                        <td class="number positive-return">7533.0%</td>
+                        <td class="number positive-return">28.3%</td>
+                        <td class="number positive-return">49.4%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>NFLX</strong></td>
+                        <td class="number">27</td>
+                        <td class="number">$36,475</td>
+                        <td class="number">$572,718</td>
+                        <td class="number positive-return">$536,242</td>
+                        <td class="number positive-return">1470.2%</td>
+                        <td class="number positive-return">15.5%</td>
+                        <td class="number positive-return">30.8%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>SHOP</strong></td>
+                        <td class="number">12</td>
+                        <td class="number">$12,793</td>
+                        <td class="number">$37,608</td>
+                        <td class="number positive-return">$24,814</td>
+                        <td class="number positive-return">194.0%</td>
+                        <td class="number positive-return">16.1%</td>
+                        <td class="number positive-return">27.3%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>AMD</strong></td>
+                        <td class="number">11</td>
+                        <td class="number">$10,663</td>
+                        <td class="number">$32,024</td>
+                        <td class="number positive-return">$21,361</td>
+                        <td class="number positive-return">200.3%</td>
+                        <td class="number positive-return">16.2%</td>
+                        <td class="number positive-return">30.6%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>CRWD</strong></td>
+                        <td class="number">11</td>
+                        <td class="number">$10,325</td>
+                        <td class="number">$24,870</td>
+                        <td class="number positive-return">$14,545</td>
+                        <td class="number positive-return">140.9%</td>
+                        <td class="number positive-return">16.7%</td>
+                        <td class="number positive-return">25.2%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ADBE</strong></td>
+                        <td class="number">9</td>
+                        <td class="number">$10,364</td>
+                        <td class="number">$21,723</td>
+                        <td class="number positive-return">$11,359</td>
+                        <td class="number positive-return">109.6%</td>
+                        <td class="number positive-return">4.6%</td>
+                        <td class="number positive-return">10.2%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ASML</strong></td>
+                        <td class="number">7</td>
+                        <td class="number">$6,158</td>
+                        <td class="number">$17,635</td>
+                        <td class="number positive-return">$11,477</td>
+                        <td class="number positive-return">186.4%</td>
+                        <td class="number positive-return">21.7%</td>
+                        <td class="number positive-return">32.8%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ZM</strong></td>
+                        <td class="number">13</td>
+                        <td class="number">$15,585</td>
+                        <td class="number">$10,383</td>
+                        <td class="number negative-return">$-5,202</td>
+                        <td class="number negative-return">-33.4%</td>
+                        <td class="number negative-return">-6.2%</td>
+                        <td class="number negative-return">-7.7%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ANET</strong></td>
+                        <td class="number">1</td>
+                        <td class="number">$1,082</td>
+                        <td class="number">$8,499</td>
+                        <td class="number positive-return">$7,417</td>
+                        <td class="number positive-return">685.7%</td>
+                        <td class="number positive-return">29.2%</td>
+                        <td class="number positive-return">29.2%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>IBKR</strong></td>
+                        <td class="number">1</td>
+                        <td class="number">$617</td>
+                        <td class="number">$8,333</td>
+                        <td class="number positive-return">$7,716</td>
+                        <td class="number positive-return">1250.3%</td>
+                        <td class="number positive-return">24.4%</td>
+                        <td class="number positive-return">24.4%</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- All Positions Table -->
+        <div class="section">
+            <h2 class="section-title">All Positions</h2>
+            <table id="allPositionsTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Trades</th>
+                        <th>Invested</th>
+                        <th>Current Value</th>
+                        <th>Dollar Gain</th>
+                        <th>Return %</th>
+                        <th>CAGR %</th>
+                        <th>XIRR %</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><strong>NVDA</strong></td>
+                        <td class="number">26</td>
+                        <td class="number">$26,599</td>
+                        <td class="number">$2,030,315</td>
+                        <td class="number positive-return">$2,003,716</td>
+                        <td class="number positive-return">7533.0%</td>
+                        <td class="number positive-return">28.3%</td>
+                        <td class="number positive-return">49.4%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>NFLX</strong></td>
+                        <td class="number">27</td>
+                        <td class="number">$36,475</td>
+                        <td class="number">$572,718</td>
+                        <td class="number positive-return">$536,242</td>
+                        <td class="number positive-return">1470.2%</td>
+                        <td class="number positive-return">15.5%</td>
+                        <td class="number positive-return">30.8%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>SHOP</strong></td>
+                        <td class="number">12</td>
+                        <td class="number">$12,793</td>
+                        <td class="number">$37,608</td>
+                        <td class="number positive-return">$24,814</td>
+                        <td class="number positive-return">194.0%</td>
+                        <td class="number positive-return">16.1%</td>
+                        <td class="number positive-return">27.3%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>AMD</strong></td>
+                        <td class="number">11</td>
+                        <td class="number">$10,663</td>
+                        <td class="number">$32,024</td>
+                        <td class="number positive-return">$21,361</td>
+                        <td class="number positive-return">200.3%</td>
+                        <td class="number positive-return">16.2%</td>
+                        <td class="number positive-return">30.6%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>CRWD</strong></td>
+                        <td class="number">11</td>
+                        <td class="number">$10,325</td>
+                        <td class="number">$24,870</td>
+                        <td class="number positive-return">$14,545</td>
+                        <td class="number positive-return">140.9%</td>
+                        <td class="number positive-return">16.7%</td>
+                        <td class="number positive-return">25.2%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ADBE</strong></td>
+                        <td class="number">9</td>
+                        <td class="number">$10,364</td>
+                        <td class="number">$21,723</td>
+                        <td class="number positive-return">$11,359</td>
+                        <td class="number positive-return">109.6%</td>
+                        <td class="number positive-return">4.6%</td>
+                        <td class="number positive-return">10.2%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ASML</strong></td>
+                        <td class="number">7</td>
+                        <td class="number">$6,158</td>
+                        <td class="number">$17,635</td>
+                        <td class="number positive-return">$11,477</td>
+                        <td class="number positive-return">186.4%</td>
+                        <td class="number positive-return">21.7%</td>
+                        <td class="number positive-return">32.8%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ZM</strong></td>
+                        <td class="number">13</td>
+                        <td class="number">$15,585</td>
+                        <td class="number">$10,383</td>
+                        <td class="number negative-return">$-5,202</td>
+                        <td class="number negative-return">-33.4%</td>
+                        <td class="number negative-return">-6.2%</td>
+                        <td class="number negative-return">-7.7%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ANET</strong></td>
+                        <td class="number">1</td>
+                        <td class="number">$1,082</td>
+                        <td class="number">$8,499</td>
+                        <td class="number positive-return">$7,417</td>
+                        <td class="number positive-return">685.7%</td>
+                        <td class="number positive-return">29.2%</td>
+                        <td class="number positive-return">29.2%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>IBKR</strong></td>
+                        <td class="number">1</td>
+                        <td class="number">$617</td>
+                        <td class="number">$8,333</td>
+                        <td class="number positive-return">$7,716</td>
+                        <td class="number positive-return">1250.3%</td>
+                        <td class="number positive-return">24.4%</td>
+                        <td class="number positive-return">24.4%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>WSO</strong></td>
+                        <td class="number">1</td>
+                        <td class="number">$1,200</td>
+                        <td class="number">$8,199</td>
+                        <td class="number positive-return">$6,998</td>
+                        <td class="number positive-return">583.1%</td>
+                        <td class="number positive-return">13.4%</td>
+                        <td class="number positive-return">13.4%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>MELI</strong></td>
+                        <td class="number">4</td>
+                        <td class="number">$6,131</td>
+                        <td class="number">$7,987</td>
+                        <td class="number positive-return">$1,856</td>
+                        <td class="number positive-return">30.3%</td>
+                        <td class="number positive-return">11.6%</td>
+                        <td class="number positive-return">17.7%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>CDNS</strong></td>
+                        <td class="number">3</td>
+                        <td class="number">$2,092</td>
+                        <td class="number">$7,407</td>
+                        <td class="number positive-return">$5,315</td>
+                        <td class="number positive-return">254.1%</td>
+                        <td class="number positive-return">23.7%</td>
+                        <td class="number positive-return">30.5%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>LULU</strong></td>
+                        <td class="number">7</td>
+                        <td class="number">$6,547</td>
+                        <td class="number">$3,559</td>
+                        <td class="number negative-return">$-2,988</td>
+                        <td class="number negative-return">-45.6%</td>
+                        <td class="number negative-return">-13.1%</td>
+                        <td class="number negative-return">-22.9%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>DDOG</strong></td>
+                        <td class="number">5</td>
+                        <td class="number">$3,030</td>
+                        <td class="number">$3,123</td>
+                        <td class="number positive-return">$93</td>
+                        <td class="number positive-return">3.1%</td>
+                        <td class="number positive-return">1.2%</td>
+                        <td class="number positive-return">2.1%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>FVRR</strong></td>
+                        <td class="number">9</td>
+                        <td class="number">$10,174</td>
+                        <td class="number">$689</td>
+                        <td class="number negative-return">$-9,485</td>
+                        <td class="number negative-return">-93.2%</td>
+                        <td class="number negative-return">-39.0%</td>
+                        <td class="number negative-return">-43.0%</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+        
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // Initialize DataTables
+        $(document).ready(function() {
+            $('#topPositionsTable').DataTable({
+                paging: false,
+                searching: true,
+                info: false,
+                columnDefs: [{
+                    targets: [1,2,3,4,5,6,7],
+                    className: 'dt-right'
+                }]
+            });
+            
+            $('#allPositionsTable').DataTable({
+                pageLength: 25,
+                columnDefs: [{
+                    targets: [1,2,3,4,5,6,7],
+                    className: 'dt-right'
+                }]
+            });
+            
+            // Create Pie Chart
+            createPieChart();
+            createCAGRChart();
+            createXIRRChart();
+            createGainChart();
+        });
+        
+        function createPieChart() {
+            const data = [{x: 'NVDA', value: 2030315},{x: 'NFLX', value: 572718},{x: 'SHOP', value: 37608},{x: 'AMD', value: 32024},{x: 'CRWD', value: 24870},{x: 'ADBE', value: 21723},{x: 'ASML', value: 17635},{x: 'ZM', value: 10383},{x: 'ANET', value: 8499},{x: 'IBKR', value: 8333},
+            ];
+            
+            const layout = {
+                title: 'Top 10 Holdings by Value',
+                height: 400,
+                font: { family: 'sans-serif' }
+            };
+            
+            const trace = {
+                labels: data.map(d => d.x),
+                values: data.map(d => d.value),
+                type: 'pie',
+                textposition: 'inside',
+                textinfo: 'label+percent'
+            };
+            
+            Plotly.newPlot('pieChart', [trace], layout, {responsive: true});
+        }
+        
+        function createCAGRChart() {
+            const topData = [{symbol: 'NVDA', cagr: 28.31},{symbol: 'NFLX', cagr: 15.51},{symbol: 'SHOP', cagr: 16.08},{symbol: 'AMD', cagr: 16.23},{symbol: 'CRWD', cagr: 16.69},{symbol: 'ADBE', cagr: 4.64},{symbol: 'ASML', cagr: 21.72},{symbol: 'ZM', cagr: -6.19},{symbol: 'ANET', cagr: 29.25},{symbol: 'IBKR', cagr: 24.35},
+            ];
+            
+            const trace = {
+                x: topData.map(d => d.symbol),
+                y: topData.map(d => d.cagr),
+                type: 'bar',
+                marker: {
+                    color: topData.map(d => d.cagr >= 0 ? '#10b981' : '#ef4444')
+                }
+            };
+            
+            const layout = {
+                title: 'CAGR by Symbol',
+                xaxis: { title: 'Symbol' },
+                yaxis: { title: 'CAGR %' },
+                height: 400,
+                margin: { b: 100 }
+            };
+            
+            Plotly.newPlot('cagrChart', [trace], layout, {responsive: true});
+        }
+        
+        function createXIRRChart() {
+            const topData = [{symbol: 'NVDA', xirr: 49.36},{symbol: 'NFLX', xirr: 30.82},{symbol: 'SHOP', xirr: 27.32},{symbol: 'AMD', xirr: 30.57},{symbol: 'CRWD', xirr: 25.23},{symbol: 'ADBE', xirr: 10.20},{symbol: 'ASML', xirr: 32.81},{symbol: 'ZM', xirr: -7.73},{symbol: 'ANET', xirr: 29.25},{symbol: 'IBKR', xirr: 24.35},
+            ];
+            
+            const trace = {
+                x: topData.map(d => d.symbol),
+                y: topData.map(d => d.xirr),
+                type: 'bar',
+                marker: {
+                    color: topData.map(d => d.xirr >= 0 ? '#10b981' : '#ef4444')
+                }
+            };
+            
+            const layout = {
+                title: 'XIRR by Symbol',
+                xaxis: { title: 'Symbol' },
+                yaxis: { title: 'XIRR %' },
+                height: 400,
+                margin: { b: 100 }
+            };
+            
+            Plotly.newPlot('xirrChart', [trace], layout, {responsive: true});
+        }
+        
+        function createGainChart() {
+            const topData = [{symbol: 'NVDA', gain: 2003716},{symbol: 'NFLX', gain: 536242},{symbol: 'SHOP', gain: 24814},{symbol: 'AMD', gain: 21361},{symbol: 'CRWD', gain: 14545},{symbol: 'ADBE', gain: 11359},{symbol: 'ASML', gain: 11477},{symbol: 'ZM', gain: -5202},{symbol: 'ANET', gain: 7417},{symbol: 'IBKR', gain: 7716},
+            ];
+            
+            const trace = {
+                x: topData.map(d => d.symbol),
+                y: topData.map(d => d.gain),
+                type: 'bar',
+                marker: {
+                    color: topData.map(d => d.gain >= 0 ? '#10b981' : '#ef4444')
+                }
+            };
+            
+            const layout = {
+                title: 'Dollar Gain by Symbol',
+                xaxis: { title: 'Symbol' },
+                yaxis: { title: 'Gain ($)' },
+                height: 400,
+                margin: { b: 100 }
+            };
+            
+            Plotly.newPlot('gainChart', [trace], layout, {responsive: true});
+        }
+    </script>
+</body>
+</html>

@@ -590,6 +590,54 @@ class TestXIRRCalculation(unittest.TestCase):
         # - sp500_xirr
         # - xirr_outperformance
         # This is verified through manual testing or integration tests
+    
+    def test_xirr_not_greater_than_cagr(self):
+        """Test that XIRR <= CAGR for two-cash-flow scenarios
+        
+        For a simple buy-hold scenario (only 2 cash flows: buy and sell),
+        XIRR and CAGR should be mathematically equal. This test ensures
+        the implementation doesn't produce XIRR > CAGR which would indicate
+        a calculation error.
+        """
+        analyzer = PortfolioAnalyzer([])
+        
+        # Test case 1: $100 invested, grows to $200 in 5 years
+        dates = ['2020-01-01', '2025-01-01']
+        cash_flows = [-100, 200]
+        xirr = analyzer.calculate_xirr(dates, cash_flows)
+        cagr = analyzer.calculate_cagr(100, 200, 5)
+        
+        # XIRR should equal CAGR for 2-CF case (within floating point tolerance)
+        # Allow 1% tolerance for numerical precision differences
+        self.assertLessEqual(xirr, cagr + 1.0,
+                            msg=f"XIRR ({xirr:.2f}%) cannot significantly exceed CAGR ({cagr:.2f}%)")
+    
+    def test_xirr_cagr_consistency_multiple_holding_periods(self):
+        """Test XIRR <= CAGR for various holding periods and returns"""
+        analyzer = PortfolioAnalyzer([])
+        
+        test_cases = [
+            # (initial, final, years, description)
+            (100, 50, 5, "loss scenario"),
+            (100, 100, 5, "zero return"),
+            (100, 150, 3, "30% gain in 3 years"),
+            (1000, 5000, 10, "5x return in 10 years"),
+            (500, 250, 2, "50% loss in 2 years"),
+        ]
+        
+        for initial, final, years, description in test_cases:
+            dates = [
+                '2020-01-01',
+                (pd.Timestamp('2020-01-01') + pd.Timedelta(days=int(years * 365.25))).strftime('%Y-%m-%d')
+            ]
+            cash_flows = [-initial, final]
+            
+            xirr = analyzer.calculate_xirr(dates, cash_flows)
+            cagr = analyzer.calculate_cagr(initial, final, years)
+            
+            # XIRR and CAGR should be very close for 2-CF case (within 1% tolerance)
+            self.assertLessEqual(xirr, cagr + 1.0,
+                                msg=f"XIRR ({xirr:.2f}%) significantly exceeds CAGR ({cagr:.2f}%) in {description}")
 
 
 def run_tests():

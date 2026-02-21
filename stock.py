@@ -398,6 +398,18 @@ class PortfolioAnalyzer:
             return 0.0
         
         try:
+            # For simple 2-cash-flow case, XIRR equals CAGR mathematically
+            if len(dates) == 2 and len(cash_flows) == 2:
+                initial = abs(cash_flows[0])
+                final = cash_flows[1]
+                if initial > 0 and final >= 0:
+                    years = (pd.to_datetime(dates[1]) - pd.to_datetime(dates[0])).days / DAYS_PER_YEAR
+                    if years > 0:
+                        ratio = final / initial
+                        if ratio > 0:
+                            xirr_decimal = (ratio ** (1.0 / years)) - 1.0
+                            return xirr_decimal * 100
+            
             # Convert date strings to datetime objects
             date_objects = [pd.to_datetime(d) for d in dates]
             
@@ -1528,7 +1540,7 @@ Win Rate: {win_rate:.0f}%
             };
             
             const layout = {
-                title: 'CAGR by Position',
+                title: 'CAGR by Symbol',
                 xaxis: { title: 'Symbol' },
                 yaxis: { title: 'CAGR %' },
                 height: 400,
@@ -1557,7 +1569,7 @@ Win Rate: {win_rate:.0f}%
             };
             
             const layout = {
-                title: 'XIRR by Position',
+                title: 'XIRR by Symbol',
                 xaxis: { title: 'Symbol' },
                 yaxis: { title: 'XIRR %' },
                 height: 400,
@@ -1586,7 +1598,7 @@ Win Rate: {win_rate:.0f}%
             };
             
             const layout = {
-                title: 'Dollar Gain by Position',
+                title: 'Dollar Gain by Symbol',
                 xaxis: { title: 'Symbol' },
                 yaxis: { title: 'Gain ($)' },
                 height: 400,

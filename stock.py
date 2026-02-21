@@ -1,7 +1,8 @@
 """Portfolio Performance Analyzer
 
 Compares stock portfolio performance against S&P 500 benchmark.
-Calculates CAGR (Compound Annual Growth Rate) for individual trades and overall portfolio.
+Calculates CAGR (Compound Annual Growth Rate) and XIRR (Extended Internal Rate of Return) 
+for individual trades and overall portfolio.
 """
 
 import yfinance as yf
@@ -10,6 +11,15 @@ from typing import List, Dict, Optional
 import pandas as pd
 import argparse
 import sys
+import numpy as np
+from scipy.optimize import newton
+
+# Try to import XIRR calculation library
+try:
+    import numpy_financial as npf
+    XIRR_AVAILABLE = True
+except ImportError:
+    XIRR_AVAILABLE = False
 
 # Try to import visualization libraries
 try:
@@ -295,6 +305,65 @@ class PortfolioAnalyzer:
             return 0.0
         return (pow(end_value / start_value, 1 / years) - 1) * 100
 
+    def calculate_xirr(self, dates: List[str], cash_flows: List[float]) -> float:
+        """
+        Calculate Extended Internal Rate of Return (XIRR).
+        
+        XIRR accounts for the timing of cash flows, providing a more accurate return
+        metric when investments are made at different times.
+        
+        Args:
+            dates: List of dates in YYYY-MM-DD format for each cash flow
+            cash_flows: List of cash flows (negative for investments, positive for returns)
+                       Must have at least 2 cash flows
+            
+        Returns:
+            XIRR as a percentage (e.g., 15.5 for 15.5%)
+            Returns 0.0 if XIRR cannot be calculated
+        """
+        if len(dates) != len(cash_flows) or len(dates) < 2:
+            return 0.0
+        
+        try:
+            # Convert date strings to datetime objects
+            date_objects = [pd.to_datetime(d) for d in dates]
+            
+            # Calculate days from first date for each cash flow
+            start_date = date_objects[0]
+            days_from_start = [(d - start_date).days for d in date_objects]
+            
+            # Define NPV function for root finding
+            def npv_func(rate):
+                """Calculate NPV for given rate (as decimal, not percentage)"""
+                npv = 0
+                for i, cf in enumerate(cash_flows):
+                    days = days_from_start[i]
+                    years = days / DAYS_PER_YEAR
+                    if rate <= -1:  # Avoid domain errors
+                        return float('inf')
+                    npv += cf / ((1 + rate) ** years)
+                return npv
+            
+            # Try multiple initial guesses to find convergence
+            for initial_guess in [0.1, 0.01, -0.1, 0.5, -0.5]:
+                try:
+                    xirr_decimal = newton(npv_func, initial_guess, maxiter=100)
+                    
+                    # Validate result
+                    if np.isnan(xirr_decimal) or np.isinf(xirr_decimal):
+                        continue
+                    
+                    # Verify NPV is close to 0
+                    npv_check = npv_func(xirr_decimal)
+                    if abs(npv_check) < 1e-6:  # Within tolerance
+                        return xirr_decimal * 100
+                except (RuntimeError, ValueError, OverflowError):
+                    continue
+            
+            return 0.0
+        except Exception:
+            return 0.0
+
     def get_stock_performance(
         self, 
         symbol: str, 
@@ -348,6 +417,14 @@ class PortfolioAnalyzer:
             current_value = current_price * shares
             stock_cagr = self.calculate_cagr(initial_value, current_value, years_held)
 
+            # Calculate XIRR for stock (if available)
+            stock_xirr = 0.0
+            if XIRR_AVAILABLE:
+                stock_xirr = self.calculate_xirr(
+                    [purchase_date, current_date.strftime('%Y-%m-%d')],
+                    [-initial_value, current_value]
+                )
+
             # Calculate S&P 500 benchmark for same investment amount and period
             if self._sp500_full_history is not None and not self._sp500_full_history.empty:
                 sp500_hist = self._sp500_full_history.loc[self._sp500_full_history.index >= purchase_dt]
@@ -366,6 +443,14 @@ class PortfolioAnalyzer:
             sp500_current_value = (sp500_current_price / sp500_purchase_price) * initial_value
             sp500_cagr = self.calculate_cagr(initial_value, sp500_current_value, years_held)
 
+            # Calculate XIRR for S&P 500 (if available)
+            sp500_xirr = 0.0
+            if XIRR_AVAILABLE:
+                sp500_xirr = self.calculate_xirr(
+                    [purchase_date, current_date.strftime('%Y-%m-%d')],
+                    [-initial_value, sp500_current_value]
+                )
+
             return {
                 'symbol': symbol,
                 'shares': shares,
@@ -376,8 +461,11 @@ class PortfolioAnalyzer:
                 'current_value': current_value,
                 'stock_cagr': stock_cagr,
                 'sp500_cagr': sp500_cagr,
+                'stock_xirr': stock_xirr,
+                'sp500_xirr': sp500_xirr,
                 'sp500_current_value': sp500_current_value,
                 'outperformance': stock_cagr - sp500_cagr,
+                'xirr_outperformance': stock_xirr - sp500_xirr,
                 'years_held': years_held
             }
         except Exception as e:
@@ -480,6 +568,8 @@ class PortfolioAnalyzer:
                     'total_current_value': 0,
                     'total_sp500_value': 0,
                     'total_cagr_weighted': 0,
+                    'total_xirr_weighted': 0,
+                    'total_sp500_xirr_weighted': 0,
                     'total_years_weighted': 0,
                 }
             
@@ -490,6 +580,8 @@ class PortfolioAnalyzer:
             stats['total_current_value'] += trade['current_value']
             stats['total_sp500_value'] += trade['sp500_current_value']
             stats['total_cagr_weighted'] += trade['stock_cagr'] * trade['initial_value']
+            stats['total_xirr_weighted'] += trade['stock_xirr'] * trade['initial_value']
+            stats['total_sp500_xirr_weighted'] += trade['sp500_xirr'] * trade['initial_value']
             stats['total_years_weighted'] += trade['years_held'] * trade['initial_value']
         
         # Calculate final metrics for each symbol
@@ -507,11 +599,16 @@ class PortfolioAnalyzer:
             # Weighted averages using safe division helper
             stats['gain_percentage'] = self._safe_divide(stats['total_gain'], initial_val, 0.0) * 100
             stats['avg_cagr'] = self._safe_divide(stats['total_cagr_weighted'], initial_val, 0.0)
+            stats['avg_xirr'] = self._safe_divide(stats['total_xirr_weighted'], initial_val, 0.0)
+            stats['avg_sp500_xirr'] = self._safe_divide(stats['total_sp500_xirr_weighted'], initial_val, 0.0)
             stats['avg_years_held'] = self._safe_divide(stats['total_years_weighted'], initial_val, 0.0)
             stats['outperformance_pct'] = self._safe_divide(stats['outperformance'], initial_val, 0.0) * 100
+            stats['xirr_outperformance_pct'] = stats['avg_xirr'] - stats['avg_sp500_xirr']
             
             # Remove intermediate calculation fields
             del stats['total_cagr_weighted']
+            del stats['total_xirr_weighted']
+            del stats['total_sp500_xirr_weighted']
             del stats['total_years_weighted']
         
         return symbol_stats

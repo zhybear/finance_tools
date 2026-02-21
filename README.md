@@ -71,22 +71,23 @@ NVDA,50,2018-06-10,55.25
 ### Text Report Format
 
 Each report includes:
-1. **Individual Stock Performance** - Per-trade details with CAGR and S&P 500 comparison
-2. **Accumulated Metrics** - Per-symbol aggregation with weighted averages
-3. **Portfolio Summary** - Total gains, overall CAGR, outperformance vs S&P 500
+1. **Individual Stock Performance** - Per-trade details with both CAGR and XIRR metrics
+2. **Accumulated Metrics** - Per-symbol aggregation with weighted averages for both metrics
+3. **Portfolio Summary** - Total gains, CAGR, XIRR, and outperformance vs S&P 500
 
-### PDF Report (2 Pages)
+### PDF Report (2+ Pages)
 
 **Page 1: Summary & Charts**
-- Portfolio summary metrics box
-- Top 10 holdings by value (pie chart with legend)
-- Top 8 performers by CAGR (bar chart with S&P 500 reference line)
+- Portfolio summary box with CAGR and XIRR metrics
+- Top 10 holdings by current value (pie chart with legend)
+- Top 8 performers by CAGR (bar chart with S&P 500 comparison line)
+- Top 8 performers by XIRR (bar chart with S&P 500 comparison line) - **NEW**
 - Top 8 by dollar gain (bar chart)
-- Position statistics (winning/losing positions)
+- Position statistics (winning/losing/neutral positions)
 
 **Page 2: Detailed Table**
-- Top 10 positions with detailed metrics
-- Columns: Symbol, Trades, Invested, Current, Gain, Gain%, CAGR%
+- Top 10 positions with all key metrics
+- Columns: Symbol, Trades, Invested, Current, Gain, Gain%, CAGR%, XIRR%
 
 ## Example Output
 
@@ -96,9 +97,13 @@ Initial Investment: $159,835.52
 Current Value: $2,795,071.13
 Total Gain: $2,635,235.61
 Portfolio CAGR: 75.06%
+Portfolio XIRR: 37.91%
 S&P 500 CAGR: 15.83%
-Portfolio Outperformance: 59.23%
+S&P 500 XIRR: 13.10%
+Portfolio Outperformance (CAGR): 59.23%
+Portfolio Outperformance (XIRR): 24.81%
 ```
+
 
 ## Key Metrics Explained
 

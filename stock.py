@@ -1,18 +1,36 @@
 """Portfolio Performance Analyzer
 
-Compares stock portfolio performance against S&P 500 benchmark.
-Calculates CAGR (Compound Annual Growth Rate) and XIRR (Extended Internal Rate of Return) 
-for individual trades and overall portfolio.
+A comprehensive tool for analyzing stock portfolio performance against the S&P 500 benchmark.
+Calculates both CAGR (Compound Annual Growth Rate) and XIRR (Extended Internal Rate of Return)
+for individual trades and overall portfolio performance.
+
+Features:
+- Load trades from CSV file
+- Calculate per-trade and per-symbol performance metrics
+- Generate PDF and text reports with visualizations
+- Compare against S&P 500 benchmark
+- Account for irregular investment timing with XIRR
+
+Usage:
+    python3 stock.py --csv trades.csv --output report.txt --pdf report.pdf
+
+Author: Portfolio Analytics
+Version: 1.0.0
 """
 
 import yfinance as yf
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 import pandas as pd
 import argparse
 import sys
 import numpy as np
 from scipy.optimize import newton
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
 
 # Try to import XIRR calculation library
 try:
@@ -40,6 +58,10 @@ def load_trades_from_csv(path: str) -> List[Dict]:
     """
     Load and validate trades from a CSV file.
     
+    CSV Format:
+        Symbol must be valid stock tickers, shares must be positive, 
+        purchase_date in YYYY-MM-DD format, price must be positive.
+    
     Args:
         path: Path to CSV file with columns: symbol, shares, purchase_date, price
     
@@ -47,36 +69,67 @@ def load_trades_from_csv(path: str) -> List[Dict]:
         List of trade dictionaries with validated and normalized data
     
     Raises:
-        ValueError: If CSV is missing required columns
+        FileNotFoundError: If CSV file doesn't exist
+        ValueError: If CSV is missing required columns or has invalid structure
     """
-    df = pd.read_csv(path)
-    required = {"symbol", "shares", "purchase_date", "price"}
-    missing = required - set(df.columns)
-    if missing:
-        raise ValueError(f"CSV is missing required columns: {missing}")
-
-    # Normalize types
-    df = df.copy()
-    df["symbol"] = df["symbol"].astype(str).str.strip()
-    df["shares"] = pd.to_numeric(df["shares"], errors="coerce")
-    df["price"] = pd.to_numeric(df["price"], errors="coerce")
-    parsed_dates = pd.to_datetime(df["purchase_date"], errors="coerce")
-    df["purchase_date"] = parsed_dates.dt.strftime("%Y-%m-%d")
-
-    # Drop rows with invalid types
-    df = df.dropna(subset=["symbol", "shares", "price", "purchase_date"])
-
-    ordered_cols = ["symbol", "shares", "purchase_date", "price"]
-    return df[ordered_cols].to_dict(orient="records")
+    try:
+        if not path or not path.endswith('.csv'):
+            raise ValueError(f"Expected CSV file, got: {path}")
+        
+        df = pd.read_csv(path)
+        required = {"symbol", "shares", "purchase_date", "price"}
+        missing = required - set(df.columns)
+        if missing:
+            raise ValueError(f"CSV missing required columns: {missing}. Expected: {required}")
+        
+        if len(df) == 0:
+            raise ValueError("CSV file is empty")
+        
+        # Normalize types
+        df = df.copy()
+        df["symbol"] = df["symbol"].astype(str).str.strip().str.upper()
+        df["shares"] = pd.to_numeric(df["shares"], errors="coerce")
+        df["price"] = pd.to_numeric(df["price"], errors="coerce")
+        parsed_dates = pd.to_datetime(df["purchase_date"], errors="coerce")
+        df["purchase_date"] = parsed_dates.dt.strftime("%Y-%m-%d")
+        
+        # Drop rows with invalid types
+        df = df.dropna(subset=["symbol", "shares", "price", "purchase_date"])
+        
+        if len(df) == 0:
+            raise ValueError("No valid trades found in CSV after validation")
+        
+        ordered_cols = ["symbol", "shares", "purchase_date", "price"]
+        trades = df[ordered_cols].to_dict(orient="records")
+        logger.info(f"Loaded {len(trades)} trades from {path}")
+        return trades
+    except FileNotFoundError:
+        logger.error(f"CSV file not found: {path}")
+        raise
+    except Exception as e:
+        logger.error(f"Failed to load CSV: {e}")
+        raise
 
 class PortfolioAnalyzer:
     """
     Analyzes stock portfolio performance against S&P 500 benchmark.
     
+    This class provides comprehensive analysis of stock trades including:
+    - Individual trade performance metrics (CAGR, XIRR)
+    - Symbol-level aggregated metrics
+    - Portfolio-wide performance summary
+    - Comparison against S&P 500 index
+    
     Attributes:
         trades: List of trade dictionaries
-        _stock_history_cache: Cache of downloaded stock price histories
+        _stock_history_cache: Cache of downloaded stock price histories (optimization)
         _sp500_full_history: Cache of S&P 500 price history
+    
+    Example:
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        analyzer.print_report()
+        analyzer.generate_pdf_report('report.pdf')
     """
     
     def __init__(self, trades: List[Dict]):
@@ -84,12 +137,26 @@ class PortfolioAnalyzer:
         Initialize portfolio analyzer.
         
         Args:
-            trades: List of dictionaries with keys: symbol, shares, purchase_date, price
-                   Example: {'symbol': 'AAPL', 'shares': 100, 'purchase_date': '2020-01-01', 'price': 75.5}
+            trades: List of dictionaries with keys:
+                   - symbol (str): Stock ticker symbol 
+                   - shares (float): Number of shares
+                   - purchase_date (str): Purchase date in YYYY-MM-DD format
+                   - price (float): Purchase price per share
+                   
+        Example:
+            trades = [
+                {'symbol': 'AAPL', 'shares': 100, 'purchase_date': '2020-01-01', 'price': 75.5},
+                {'symbol': 'MSFT', 'shares': 50, 'purchase_date': '2020-06-15', 'price': 200.0}
+            ]
+            analyzer = PortfolioAnalyzer(trades)
         """
+        if not isinstance(trades, list):
+            raise TypeError(f"trades must be a list, got {type(trades)}")
+        
         self.trades = trades
         self._stock_history_cache = {}
         self._sp500_full_history = None
+        self._analysis_cache = None
 
     # ============================================================================
     # Data Normalization and Extraction
@@ -309,19 +376,25 @@ class PortfolioAnalyzer:
         """
         Calculate Extended Internal Rate of Return (XIRR).
         
-        XIRR accounts for the timing of cash flows, providing a more accurate return
-        metric when investments are made at different times.
+        XIRR accounts for the precise timing of cash flows, providing more accurate returns
+        when investments are made at different times. Uses Newton-Raphson root finding to
+        solve: NPV = Σ(CF / (1+r)^(Years)) = 0
         
         Args:
             dates: List of dates in YYYY-MM-DD format for each cash flow
             cash_flows: List of cash flows (negative for investments, positive for returns)
-                       Must have at least 2 cash flows
+                       Must have at least 2 cash flows with different signs
             
         Returns:
             XIRR as a percentage (e.g., 15.5 for 15.5%)
-            Returns 0.0 if XIRR cannot be calculated
+            Returns 0.0 if XIRR cannot be calculated (singular matrix, no solution, etc.)
         """
         if len(dates) != len(cash_flows) or len(dates) < 2:
+            return 0.0
+        
+        # Check for at least one positive and one negative cash flow
+        if all(cf >= 0 for cf in cash_flows) or all(cf <= 0 for cf in cash_flows):
+            logger.debug(f"XIRR requires both positive and negative cash flows")
             return 0.0
         
         try:
@@ -360,8 +433,10 @@ class PortfolioAnalyzer:
                 except (RuntimeError, ValueError, OverflowError):
                     continue
             
+            logger.debug(f"XIRR convergence failed for {len(dates)} cash flows")
             return 0.0
-        except Exception:
+        except Exception as e:
+            logger.warning(f"XIRR calculation error: {e}")
             return 0.0
 
     def get_stock_performance(
@@ -606,7 +681,6 @@ class PortfolioAnalyzer:
                     'total_initial_value': 0,
                     'total_current_value': 0,
                     'total_sp500_value': 0,
-                    'total_cagr_weighted': 0,
                     'total_sp500_xirr_weighted': 0,
                     'total_years_weighted': 0,
                 }
@@ -618,7 +692,6 @@ class PortfolioAnalyzer:
             stats['total_initial_value'] += trade['initial_value']
             stats['total_current_value'] += trade['current_value']
             stats['total_sp500_value'] += trade['sp500_current_value']
-            stats['total_cagr_weighted'] += trade['stock_cagr'] * trade['initial_value']
             stats['total_sp500_xirr_weighted'] += trade['sp500_xirr'] * trade['initial_value']
             stats['total_years_weighted'] += trade['years_held'] * trade['initial_value']
             symbol_trades[symbol].append(trade)
@@ -635,10 +708,27 @@ class PortfolioAnalyzer:
             stats['sp500_gain'] = sp500_gain
             stats['outperformance'] = stats['total_gain'] - sp500_gain
             
-            # Weighted averages using safe division helper
-            stats['gain_percentage'] = self._safe_divide(stats['total_gain'], initial_val, 0.0) * 100
-            stats['avg_cagr'] = self._safe_divide(stats['total_cagr_weighted'], initial_val, 0.0)
+            # Calculate weighted average years held
             stats['avg_years_held'] = self._safe_divide(stats['total_years_weighted'], initial_val, 0.0)
+            
+            # Calculate true CAGR using actual time span from first purchase to now
+            # (not weighted average of individual holding periods)
+            if stats['trades_count'] > 0:
+                trades_for_symbol = symbol_trades[symbol]
+                trades_with_dates = [t for t in trades_for_symbol if 'purchase_date' in t]
+                if trades_with_dates:
+                    first_date = min(pd.to_datetime(t['purchase_date']) for t in trades_with_dates)
+                    last_date = pd.Timestamp.now()
+                    actual_years = (last_date - first_date).days / 365.25
+                    stats['avg_cagr'] = self.calculate_cagr(initial_val, current_val, actual_years if actual_years > 0 else 0.1)
+                else:
+                    # Fallback for test data: use weighted average years
+                    stats['avg_cagr'] = self.calculate_cagr(initial_val, current_val, stats['avg_years_held'])
+            else:
+                stats['avg_cagr'] = 0.0
+            
+            # Other metrics
+            stats['gain_percentage'] = self._safe_divide(stats['total_gain'], initial_val, 0.0) * 100
             stats['outperformance_pct'] = self._safe_divide(stats['outperformance'], initial_val, 0.0) * 100
             
             # Calculate true symbol-level XIRR from all cash flows (not weighted average)
@@ -666,7 +756,6 @@ class PortfolioAnalyzer:
             stats['xirr_outperformance_pct'] = stats['avg_xirr'] - stats['avg_sp500_xirr']
             
             # Remove intermediate calculation fields
-            del stats['total_cagr_weighted']
             del stats['total_sp500_xirr_weighted']
             del stats['total_years_weighted']
         

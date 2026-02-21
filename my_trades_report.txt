@@ -126,10 +126,10 @@ ADBE:
   Total Gain: $11359.39 (109.61%)
   Expected S&P 500 Value: $28847.90
   Outperformance vs S&P 500: $-7124.66 (-68.75%)
-  Weighted Avg CAGR: -13.33%
-  Weighted Avg XIRR: -13.33%
+  Weighted Avg CAGR: 4.64%
+  Weighted Avg XIRR: 10.20%
   Avg S&P 500 XIRR: 18.35%
-  XIRR Outperformance: -31.68%
+  XIRR Outperformance: -8.15%
   Weighted Avg Years Held: 5.94 years
 
 AMD:
@@ -283,10 +283,10 @@ AMD:
   Total Gain: $21360.84 (200.32%)
   Expected S&P 500 Value: $18009.77
   Outperformance vs S&P 500: $14014.22 (131.43%)
-  Weighted Avg CAGR: 21.63%
-  Weighted Avg XIRR: 21.63%
+  Weighted Avg CAGR: 16.23%
+  Weighted Avg XIRR: 30.57%
   Avg S&P 500 XIRR: 16.25%
-  XIRR Outperformance: 5.38%
+  XIRR Outperformance: 14.32%
   Weighted Avg Years Held: 3.38 years
 
 ANET:
@@ -310,10 +310,10 @@ ANET:
   Total Gain: $7416.96 (685.74%)
   Expected S&P 500 Value: $2895.52
   Outperformance vs S&P 500: $5603.04 (518.03%)
-  Weighted Avg CAGR: 29.26%
-  Weighted Avg XIRR: 29.26%
+  Weighted Avg CAGR: 29.25%
+  Weighted Avg XIRR: 29.25%
   Avg S&P 500 XIRR: 13.04%
-  XIRR Outperformance: 16.21%
+  XIRR Outperformance: 16.20%
   Weighted Avg Years Held: 8.03 years
 
 ASML:
@@ -415,10 +415,10 @@ ASML:
   Total Gain: $11477.24 (186.38%)
   Expected S&P 500 Value: $10163.36
   Outperformance vs S&P 500: $7471.72 (121.34%)
-  Weighted Avg CAGR: 58.15%
-  Weighted Avg XIRR: 58.15%
+  Weighted Avg CAGR: 21.72%
+  Weighted Avg XIRR: 32.81%
   Avg S&P 500 XIRR: 19.22%
-  XIRR Outperformance: 38.93%
+  XIRR Outperformance: 13.59%
   Weighted Avg Years Held: 3.31 years
 
 CDNS:
@@ -468,10 +468,10 @@ CDNS:
   Total Gain: $5315.39 (254.13%)
   Expected S&P 500 Value: $4756.51
   Outperformance vs S&P 500: $2650.49 (126.72%)
-  Weighted Avg CAGR: 20.20%
-  Weighted Avg XIRR: 20.20%
+  Weighted Avg CAGR: 23.74%
+  Weighted Avg XIRR: 30.46%
   Avg S&P 500 XIRR: 19.14%
-  XIRR Outperformance: 1.06%
+  XIRR Outperformance: 11.32%
   Weighted Avg Years Held: 4.27 years
 
 CRWD:
@@ -625,10 +625,10 @@ CRWD:
   Total Gain: $14545.17 (140.87%)
   Expected S&P 500 Value: $17625.92
   Outperformance vs S&P 500: $7244.48 (70.16%)
-  Weighted Avg CAGR: 19.59%
-  Weighted Avg XIRR: 19.59%
+  Weighted Avg CAGR: 16.69%
+  Weighted Avg XIRR: 25.23%
   Avg S&P 500 XIRR: 15.26%
-  XIRR Outperformance: 4.33%
+  XIRR Outperformance: 9.97%
   Weighted Avg Years Held: 3.66 years
 
 DDOG:
@@ -704,10 +704,10 @@ DDOG:
   Total Gain: $92.92 (3.07%)
   Expected S&P 500 Value: $3973.38
   Outperformance vs S&P 500: $-850.56 (-28.07%)
-  Weighted Avg CAGR: -34.78%
-  Weighted Avg XIRR: 0.96%
+  Weighted Avg CAGR: 1.21%
+  Weighted Avg XIRR: 2.07%
   Avg S&P 500 XIRR: 423.14%
-  XIRR Outperformance: -422.17%
+  XIRR Outperformance: -421.07%
   Weighted Avg Years Held: 1.46 years
 
 FVRR:
@@ -835,10 +835,10 @@ FVRR:
   Total Gain: $-9484.78 (-93.23%)
   Expected S&P 500 Value: $17801.41
   Outperformance vs S&P 500: $-17112.29 (-168.20%)
-  Weighted Avg CAGR: -43.28%
-  Weighted Avg XIRR: -43.28%
+  Weighted Avg CAGR: -39.00%
+  Weighted Avg XIRR: -43.00%
   Avg S&P 500 XIRR: 11.96%
-  XIRR Outperformance: -55.24%
+  XIRR Outperformance: -54.95%
   Weighted Avg Years Held: 4.84 years
 
 IBKR:
@@ -862,10 +862,10 @@ IBKR:
   Total Gain: $7715.68 (1250.27%)
   Expected S&P 500 Value: $2315.97
   Outperformance vs S&P 500: $6016.83 (974.99%)
-  Weighted Avg CAGR: 24.36%
-  Weighted Avg XIRR: 24.36%
+  Weighted Avg CAGR: 24.35%
+  Weighted Avg XIRR: 24.35%
   Avg S&P 500 XIRR: 11.71%
-  XIRR Outperformance: 12.65%
+  XIRR Outperformance: 12.64%
   Weighted Avg Years Held: 11.94 years
 
 LULU:
@@ -967,10 +967,10 @@ LULU:
   Total Gain: $-2988.50 (-45.65%)
   Expected S&P 500 Value: $8788.20
   Outperformance vs S&P 500: $-5229.50 (-79.87%)
-  Weighted Avg CAGR: -24.84%
-  Weighted Avg XIRR: -24.84%
+  Weighted Avg CAGR: -13.10%
+  Weighted Avg XIRR: -22.87%
   Avg S&P 500 XIRR: 13.26%
-  XIRR Outperformance: -38.09%
+  XIRR Outperformance: -36.13%
   Weighted Avg Years Held: 2.58 years
 
 MELI:
@@ -1033,10 +1033,10 @@ MELI:
   Total Gain: $1856.19 (30.27%)
   Expected S&P 500 Value: $8399.28
   Outperformance vs S&P 500: $-411.80 (-6.72%)
-  Weighted Avg CAGR: 5.91%
-  Weighted Avg XIRR: 5.91%
+  Weighted Avg CAGR: 11.56%
+  Weighted Avg XIRR: 17.72%
   Avg S&P 500 XIRR: 17.28%
-  XIRR Outperformance: -11.37%
+  XIRR Outperformance: 0.44%
   Weighted Avg Years Held: 1.53 years
 
 NFLX:
@@ -1398,10 +1398,10 @@ NFLX:
   Total Gain: $536242.39 (1470.16%)
   Expected S&P 500 Value: $95647.08
   Outperformance vs S&P 500: $477070.51 (1307.93%)
-  Weighted Avg CAGR: 19.47%
-  Weighted Avg XIRR: 19.47%
+  Weighted Avg CAGR: 15.51%
+  Weighted Avg XIRR: 30.82%
   Avg S&P 500 XIRR: 14.00%
-  XIRR Outperformance: 5.47%
+  XIRR Outperformance: 16.83%
   Weighted Avg Years Held: 7.28 years
 
 NVDA:
@@ -1750,10 +1750,10 @@ NVDA:
   Total Gain: $2003715.72 (7533.03%)
   Expected S&P 500 Value: $59642.84
   Outperformance vs S&P 500: $1970671.95 (7408.80%)
-  Weighted Avg CAGR: 73.93%
-  Weighted Avg XIRR: 73.93%
+  Weighted Avg CAGR: 28.31%
+  Weighted Avg XIRR: 49.36%
   Avg S&P 500 XIRR: 16.62%
-  XIRR Outperformance: 57.31%
+  XIRR Outperformance: 32.74%
   Weighted Avg Years Held: 5.28 years
 
 SHOP:
@@ -1920,10 +1920,10 @@ SHOP:
   Total Gain: $24814.29 (193.96%)
   Expected S&P 500 Value: $24373.19
   Outperformance vs S&P 500: $13234.41 (103.45%)
-  Weighted Avg CAGR: 28.13%
-  Weighted Avg XIRR: 28.13%
+  Weighted Avg CAGR: 16.08%
+  Weighted Avg XIRR: 27.32%
   Avg S&P 500 XIRR: 16.31%
-  XIRR Outperformance: 11.82%
+  XIRR Outperformance: 11.01%
   Weighted Avg Years Held: 4.12 years
 
 WSO:
@@ -2130,10 +2130,10 @@ ZM:
   Total Gain: $-5201.68 (-33.38%)
   Expected S&P 500 Value: $28486.03
   Outperformance vs S&P 500: $-18102.68 (-116.15%)
-  Weighted Avg CAGR: -12.34%
-  Weighted Avg XIRR: -12.34%
+  Weighted Avg CAGR: -6.19%
+  Weighted Avg XIRR: -7.73%
   Avg S&P 500 XIRR: 12.23%
-  XIRR Outperformance: -24.57%
+  XIRR Outperformance: -19.96%
   Weighted Avg Years Held: 5.07 years
 
 === PORTFOLIO SUMMARY ===

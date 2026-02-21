@@ -478,10 +478,11 @@ class PortfolioAnalyzer:
     
     def analyze_portfolio(self) -> Dict:
         """
-        Analyze entire portfolio performance with investment-weighted CAGR.
+        Analyze entire portfolio performance with investment-weighted CAGR and XIRR.
         
         Uses investment-weighted average holding period to calculate portfolio CAGR,
         ensuring larger investments have proportionally more influence on the result.
+        Calculates portfolio XIRR from aggregate cash flows.
         
         Returns:
             Dictionary containing:
@@ -491,13 +492,21 @@ class PortfolioAnalyzer:
                 - total_sp500_current_value: Expected value if invested in S&P 500
                 - portfolio_cagr: Portfolio CAGR percentage
                 - sp500_cagr: Benchmark S&P 500 CAGR percentage
+                - portfolio_xirr: Portfolio XIRR percentage (accounts for timing)
+                - sp500_xirr: S&P 500 XIRR percentage
                 - portfolio_outperformance: Portfolio CAGR - S&P 500 CAGR
+                - portfolio_xirr_outperformance: Portfolio XIRR - S&P 500 XIRR
         """
         results = []
         total_initial_value = 0
         total_current_value = 0
         total_sp500_current_value = 0
         weighted_years_sum = 0
+        
+        # For XIRR calculation
+        cash_flow_dates = []
+        cash_flows_stocks = []
+        cash_flows_sp500 = []
 
         valid_trades = [trade for trade in self.trades if self._validate_trade(trade)]
         self._prepare_histories(valid_trades)
@@ -516,13 +525,38 @@ class PortfolioAnalyzer:
                 total_current_value += perf['current_value']
                 total_sp500_current_value += perf['sp500_current_value']
                 weighted_years_sum += perf['initial_value'] * perf['years_held']
+                
+                # Collect cash flows for XIRR (negative for outflow/purchase)
+                cash_flow_dates.append(perf['purchase_date'])
+                cash_flows_stocks.append(-perf['initial_value'])
+                cash_flows_sp500.append(-perf['initial_value'])
+
+        # Add final value as cash inflow (positive for return)
+        if results:
+            final_date = results[-1]['purchase_date']
+            # Use today's date as final date
+            from datetime import datetime
+            today = datetime.now().strftime('%Y-%m-%d')
+            
+            # Only add final values if we have initial investments
+            if cash_flows_stocks:
+                cash_flow_dates.append(today)
+                cash_flows_stocks.append(total_current_value)
+                cash_flows_sp500.append(total_sp500_current_value)
 
         # Calculate investment-weighted average holding period
         # This ensures each dollar invested has equal weight in the time calculation
+        portfolio_xirr = 0.0
+        sp500_xirr = 0.0
+        
         if total_initial_value > 0:
             weighted_years = weighted_years_sum / total_initial_value
             portfolio_cagr = self.calculate_cagr(total_initial_value, total_current_value, weighted_years)
             sp500_cagr = self.calculate_cagr(total_initial_value, total_sp500_current_value, weighted_years)
+            
+            # Calculate portfolio XIRR
+            portfolio_xirr = self.calculate_xirr(cash_flow_dates, cash_flows_stocks)
+            sp500_xirr = self.calculate_xirr(cash_flow_dates, cash_flows_sp500)
         else:
             weighted_years = 0
             portfolio_cagr = 0
@@ -535,7 +569,10 @@ class PortfolioAnalyzer:
             'total_sp500_current_value': total_sp500_current_value,
             'portfolio_cagr': portfolio_cagr,
             'sp500_cagr': sp500_cagr,
-            'portfolio_outperformance': portfolio_cagr - sp500_cagr
+            'portfolio_xirr': portfolio_xirr,
+            'sp500_xirr': sp500_xirr,
+            'portfolio_outperformance': portfolio_cagr - sp500_cagr,
+            'portfolio_xirr_outperformance': portfolio_xirr - sp500_xirr
         }
 
     # ============================================================================
@@ -662,8 +699,11 @@ class PortfolioAnalyzer:
                 report_lines.append(f"  Current Value: ${trade['current_value']:.2f}")
                 report_lines.append(f"  Gain: ${trade['current_value'] - trade['initial_value']:.2f}")
                 report_lines.append(f"  Stock CAGR: {trade['stock_cagr']:.2f}%")
+                report_lines.append(f"  Stock XIRR: {trade['stock_xirr']:.2f}%")
                 report_lines.append(f"  S&P 500 CAGR: {trade['sp500_cagr']:.2f}%")
-                report_lines.append(f"  Outperformance: {trade['outperformance']:.2f}%")
+                report_lines.append(f"  S&P 500 XIRR: {trade['sp500_xirr']:.2f}%")
+                report_lines.append(f"  Outperformance (CAGR): {trade['outperformance']:.2f}%")
+                report_lines.append(f"  Outperformance (XIRR): {trade['xirr_outperformance']:.2f}%")
             
             # Print accumulated stats for this symbol
             report_lines.append(f"\n--- {symbol} ACCUMULATED ---")
@@ -675,6 +715,9 @@ class PortfolioAnalyzer:
             report_lines.append(f"  Expected S&P 500 Value: ${symbol_data['total_sp500_value']:.2f}")
             report_lines.append(f"  Outperformance vs S&P 500: ${symbol_data['outperformance']:.2f} ({symbol_data['outperformance_pct']:.2f}%)")
             report_lines.append(f"  Weighted Avg CAGR: {symbol_data['avg_cagr']:.2f}%")
+            report_lines.append(f"  Weighted Avg XIRR: {symbol_data['avg_xirr']:.2f}%")
+            report_lines.append(f"  Avg S&P 500 XIRR: {symbol_data['avg_sp500_xirr']:.2f}%")
+            report_lines.append(f"  XIRR Outperformance: {symbol_data['xirr_outperformance_pct']:.2f}%")
             report_lines.append(f"  Weighted Avg Years Held: {symbol_data['avg_years_held']:.2f} years")
 
         report_lines.append("\n=== PORTFOLIO SUMMARY ===")
@@ -682,9 +725,12 @@ class PortfolioAnalyzer:
         report_lines.append(f"Current Value: ${analysis['total_current_value']:.2f}")
         report_lines.append(f"Total Gain: ${analysis['total_current_value'] - analysis['total_initial_value']:.2f}")
         report_lines.append(f"Expected Value if Invested in S&P 500: ${analysis['total_sp500_current_value']:.2f}")
-        report_lines.append(f"Portfolio CAGR: {analysis['portfolio_cagr']:.2f}%")
+        report_lines.append(f"\nPortfolio CAGR: {analysis['portfolio_cagr']:.2f}%")
+        report_lines.append(f"Portfolio XIRR: {analysis.get('portfolio_xirr', 0.0):.2f}%")
         report_lines.append(f"S&P 500 CAGR: {analysis['sp500_cagr']:.2f}%")
-        report_lines.append(f"Portfolio Outperformance: {analysis['portfolio_outperformance']:.2f}%")
+        report_lines.append(f"S&P 500 XIRR: {analysis.get('sp500_xirr', 0.0):.2f}%")
+        report_lines.append(f"\nPortfolio Outperformance (CAGR): {analysis['portfolio_outperformance']:.2f}%")
+        report_lines.append(f"Portfolio Outperformance (XIRR): {analysis.get('portfolio_xirr_outperformance', 0.0):.2f}%")
         
         # Print to console
         for line in report_lines:

@@ -1,0 +1,2151 @@
+
+=== INDIVIDUAL STOCK PERFORMANCE ===
+
+ADBE:
+  Shares: 61 @ $32.88
+  Current Price: $258.61
+  Initial Value: $2005.68
+  Current Value: $15775.21
+  Gain: $13769.53
+  Stock CAGR: 13.49%
+  Stock XIRR: 13.49%
+  S&P 500 CAGR: 12.30%
+  S&P 500 XIRR: 12.30%
+  Outperformance (CAGR): 1.19%
+  Outperformance (XIRR): 1.19%
+
+ADBE:
+  Shares: 4 @ $291.74
+  Current Price: $258.61
+  Initial Value: $1166.96
+  Current Value: $1034.44
+  Gain: $-132.52
+  Stock CAGR: -2.01%
+  Stock XIRR: -2.01%
+  S&P 500 CAGR: 18.81%
+  S&P 500 XIRR: 18.81%
+  Outperformance (CAGR): -20.82%
+  Outperformance (XIRR): -20.82%
+
+ADBE:
+  Shares: 4 @ $296.36
+  Current Price: $258.61
+  Initial Value: $1185.44
+  Current Value: $1034.44
+  Gain: $-151.00
+  Stock CAGR: -2.27%
+  Stock XIRR: -2.27%
+  S&P 500 CAGR: 19.63%
+  S&P 500 XIRR: 19.63%
+  Outperformance (CAGR): -21.90%
+  Outperformance (XIRR): -21.90%
+
+ADBE:
+  Shares: 2 @ $445.56
+  Current Price: $258.61
+  Initial Value: $891.12
+  Current Value: $517.22
+  Gain: $-373.90
+  Stock CAGR: -9.74%
+  Stock XIRR: -9.74%
+  S&P 500 CAGR: 15.13%
+  S&P 500 XIRR: 15.13%
+  Outperformance (CAGR): -24.87%
+  Outperformance (XIRR): -24.87%
+
+ADBE:
+  Shares: 3 @ $425.10
+  Current Price: $258.61
+  Initial Value: $1275.30
+  Current Value: $775.83
+  Gain: $-499.47
+  Stock CAGR: -11.93%
+  Stock XIRR: -11.93%
+  S&P 500 CAGR: 11.46%
+  S&P 500 XIRR: 11.46%
+  Outperformance (CAGR): -23.39%
+  Outperformance (XIRR): -23.39%
+
+ADBE:
+  Shares: 2 @ $424.50
+  Current Price: $258.61
+  Initial Value: $849.00
+  Current Value: $517.22
+  Gain: $-331.78
+  Stock CAGR: -13.04%
+  Stock XIRR: -13.04%
+  S&P 500 CAGR: 15.44%
+  S&P 500 XIRR: 15.44%
+  Outperformance (CAGR): -28.47%
+  Outperformance (XIRR): -28.47%
+
+ADBE:
+  Shares: 2 @ $438.53
+  Current Price: $258.61
+  Initial Value: $877.06
+  Current Value: $517.22
+  Gain: $-359.84
+  Stock CAGR: -42.74%
+  Stock XIRR: -42.74%
+  S&P 500 CAGR: 25.50%
+  S&P 500 XIRR: 25.50%
+  Outperformance (CAGR): -68.23%
+  Outperformance (XIRR): -68.23%
+
+ADBE:
+  Shares: 3 @ $351.42
+  Current Price: $258.61
+  Initial Value: $1054.26
+  Current Value: $775.83
+  Gain: $-278.43
+  Stock CAGR: -29.38%
+  Stock XIRR: -29.38%
+  S&P 500 CAGR: 41.94%
+  S&P 500 XIRR: 41.94%
+  Outperformance (CAGR): -71.32%
+  Outperformance (XIRR): -71.32%
+
+ADBE:
+  Shares: 3 @ $353.01
+  Current Price: $258.61
+  Initial Value: $1059.03
+  Current Value: $775.83
+  Gain: $-283.20
+  Stock CAGR: -53.60%
+  Stock XIRR: -53.60%
+  S&P 500 CAGR: 11.78%
+  S&P 500 XIRR: 11.78%
+  Outperformance (CAGR): -65.38%
+  Outperformance (XIRR): -65.38%
+
+--- ADBE ACCUMULATED ---
+  Total Trades: 9
+  Total Shares: 84
+  Total Initial Investment: $10363.85
+  Total Current Value: $21723.24
+  Total Gain: $11359.39 (109.61%)
+  Expected S&P 500 Value: $28847.90
+  Outperformance vs S&P 500: $-7124.66 (-68.75%)
+  Weighted Avg CAGR: -13.33%
+  Weighted Avg XIRR: -13.33%
+  Avg S&P 500 XIRR: 18.35%
+  XIRR Outperformance: -31.68%
+  Weighted Avg Years Held: 5.94 years
+
+AMD:
+  Shares: 60 @ $18.17
+  Current Price: $200.15
+  Initial Value: $1090.20
+  Current Value: $12009.00
+  Gain: $10918.80
+  Stock CAGR: 38.87%
+  Stock XIRR: 38.87%
+  S&P 500 CAGR: 13.65%
+  S&P 500 XIRR: 13.65%
+  Outperformance (CAGR): 25.21%
+  Outperformance (XIRR): 25.21%
+
+AMD:
+  Shares: 25 @ $44.27
+  Current Price: $200.15
+  Initial Value: $1106.75
+  Current Value: $5003.75
+  Gain: $3897.00
+  Stock CAGR: 28.70%
+  Stock XIRR: 28.70%
+  S&P 500 CAGR: 15.27%
+  S&P 500 XIRR: 15.27%
+  Outperformance (CAGR): 13.43%
+  Outperformance (XIRR): 13.43%
+
+AMD:
+  Shares: 8 @ $57.04
+  Current Price: $200.15
+  Initial Value: $456.32
+  Current Value: $1601.20
+  Gain: $1144.88
+  Stock CAGR: 26.42%
+  Stock XIRR: 26.42%
+  S&P 500 CAGR: 13.47%
+  S&P 500 XIRR: 13.47%
+  Outperformance (CAGR): 12.95%
+  Outperformance (XIRR): 12.95%
+
+AMD:
+  Shares: 14 @ $74.96
+  Current Price: $200.15
+  Initial Value: $1049.44
+  Current Value: $2802.10
+  Gain: $1752.66
+  Stock CAGR: 20.32%
+  Stock XIRR: 20.32%
+  S&P 500 CAGR: 15.13%
+  S&P 500 XIRR: 15.13%
+  Outperformance (CAGR): 5.19%
+  Outperformance (XIRR): 5.19%
+
+AMD:
+  Shares: 13 @ $77.61
+  Current Price: $200.15
+  Initial Value: $1008.93
+  Current Value: $2601.95
+  Gain: $1593.02
+  Stock CAGR: 21.02%
+  Stock XIRR: 21.02%
+  S&P 500 CAGR: 12.98%
+  S&P 500 XIRR: 12.98%
+  Outperformance (CAGR): 8.03%
+  Outperformance (XIRR): 8.03%
+
+AMD:
+  Shares: 6 @ $161.09
+  Current Price: $200.15
+  Initial Value: $966.54
+  Current Value: $1200.90
+  Gain: $234.36
+  Stock CAGR: 10.94%
+  Stock XIRR: 10.94%
+  S&P 500 CAGR: 19.25%
+  S&P 500 XIRR: 19.25%
+  Outperformance (CAGR): -8.31%
+  Outperformance (XIRR): -8.31%
+
+AMD:
+  Shares: 6 @ $175.17
+  Current Price: $200.15
+  Initial Value: $1051.02
+  Current Value: $1200.90
+  Gain: $149.88
+  Stock CAGR: 6.74%
+  Stock XIRR: 6.74%
+  S&P 500 CAGR: 17.82%
+  S&P 500 XIRR: 17.82%
+  Outperformance (CAGR): -11.08%
+  Outperformance (XIRR): -11.08%
+
+AMD:
+  Shares: 6 @ $163.91
+  Current Price: $200.15
+  Initial Value: $983.46
+  Current Value: $1200.90
+  Gain: $217.44
+  Stock CAGR: 10.50%
+  Stock XIRR: 10.50%
+  S&P 500 CAGR: 17.83%
+  S&P 500 XIRR: 17.83%
+  Outperformance (CAGR): -7.33%
+  Outperformance (XIRR): -7.33%
+
+AMD:
+  Shares: 7 @ $133.20
+  Current Price: $200.15
+  Initial Value: $932.40
+  Current Value: $1401.05
+  Gain: $468.65
+  Stock CAGR: 32.26%
+  Stock XIRR: 32.26%
+  S&P 500 CAGR: 18.31%
+  S&P 500 XIRR: 18.31%
+  Outperformance (CAGR): 13.94%
+  Outperformance (XIRR): 13.94%
+
+AMD:
+  Shares: 10 @ $97.11
+  Current Price: $200.15
+  Initial Value: $971.10
+  Current Value: $2001.50
+  Gain: $1030.40
+  Stock CAGR: 114.57%
+  Stock XIRR: 114.57%
+  S&P 500 CAGR: 25.50%
+  S&P 500 XIRR: 25.50%
+  Outperformance (CAGR): 89.07%
+  Outperformance (XIRR): 89.07%
+
+AMD:
+  Shares: 5 @ $209.40
+  Current Price: $200.15
+  Initial Value: $1047.00
+  Current Value: $1000.75
+  Gain: $-46.25
+  Stock CAGR: -64.35%
+  Stock XIRR: -64.35%
+  S&P 500 CAGR: 9.27%
+  S&P 500 XIRR: 9.27%
+  Outperformance (CAGR): -73.62%
+  Outperformance (XIRR): -73.62%
+
+--- AMD ACCUMULATED ---
+  Total Trades: 11
+  Total Shares: 160
+  Total Initial Investment: $10663.16
+  Total Current Value: $32024.00
+  Total Gain: $21360.84 (200.32%)
+  Expected S&P 500 Value: $18009.77
+  Outperformance vs S&P 500: $14014.22 (131.43%)
+  Weighted Avg CAGR: 21.63%
+  Weighted Avg XIRR: 21.63%
+  Avg S&P 500 XIRR: 16.25%
+  XIRR Outperformance: 5.38%
+  Weighted Avg Years Held: 3.38 years
+
+ANET:
+  Shares: 64 @ $16.90
+  Current Price: $132.79
+  Initial Value: $1081.60
+  Current Value: $8498.56
+  Gain: $7416.96
+  Stock CAGR: 29.26%
+  Stock XIRR: 29.26%
+  S&P 500 CAGR: 13.04%
+  S&P 500 XIRR: 13.04%
+  Outperformance (CAGR): 16.21%
+  Outperformance (XIRR): 16.21%
+
+--- ANET ACCUMULATED ---
+  Total Trades: 1
+  Total Shares: 64
+  Total Initial Investment: $1081.60
+  Total Current Value: $8498.56
+  Total Gain: $7416.96 (685.74%)
+  Expected S&P 500 Value: $2895.52
+  Outperformance vs S&P 500: $5603.04 (518.03%)
+  Weighted Avg CAGR: 29.26%
+  Weighted Avg XIRR: 29.26%
+  Avg S&P 500 XIRR: 13.04%
+  XIRR Outperformance: 16.21%
+  Weighted Avg Years Held: 8.03 years
+
+ASML:
+  Shares: 3 @ $385.46
+  Current Price: $1469.59
+  Initial Value: $1156.38
+  Current Value: $4408.77
+  Gain: $3252.39
+  Stock CAGR: 28.42%
+  Stock XIRR: 28.42%
+  S&P 500 CAGR: 13.66%
+  S&P 500 XIRR: 13.66%
+  Outperformance (CAGR): 14.76%
+  Outperformance (XIRR): 14.76%
+
+ASML:
+  Shares: 2 @ $580.07
+  Current Price: $1469.59
+  Initial Value: $1160.14
+  Current Value: $2939.18
+  Gain: $1779.04
+  Stock CAGR: 20.85%
+  Stock XIRR: 20.85%
+  S&P 500 CAGR: 12.30%
+  S&P 500 XIRR: 12.30%
+  Outperformance (CAGR): 8.55%
+  Outperformance (XIRR): 8.55%
+
+ASML:
+  Shares: 1 @ $578.27
+  Current Price: $1469.59
+  Initial Value: $578.27
+  Current Value: $1469.59
+  Gain: $891.32
+  Stock CAGR: 26.57%
+  Stock XIRR: 26.57%
+  S&P 500 CAGR: 13.39%
+  S&P 500 XIRR: 13.39%
+  Outperformance (CAGR): 13.17%
+  Outperformance (XIRR): 13.17%
+
+ASML:
+  Shares: 3 @ $382.68
+  Current Price: $1469.59
+  Initial Value: $1148.04
+  Current Value: $4408.77
+  Gain: $3260.73
+  Stock CAGR: 49.31%
+  Stock XIRR: 49.31%
+  S&P 500 CAGR: 20.74%
+  S&P 500 XIRR: 20.74%
+  Outperformance (CAGR): 28.57%
+  Outperformance (XIRR): 28.57%
+
+ASML:
+  Shares: 1 @ $814.49
+  Current Price: $1469.59
+  Initial Value: $814.49
+  Current Value: $1469.59
+  Gain: $655.10
+  Stock CAGR: 49.73%
+  Stock XIRR: 49.73%
+  S&P 500 CAGR: 16.60%
+  S&P 500 XIRR: 16.60%
+  Outperformance (CAGR): 33.13%
+  Outperformance (XIRR): 33.13%
+
+ASML:
+  Shares: 1 @ $688.57
+  Current Price: $1469.59
+  Initial Value: $688.57
+  Current Value: $1469.59
+  Gain: $781.02
+  Stock CAGR: 122.62%
+  Stock XIRR: 122.62%
+  S&P 500 CAGR: 25.50%
+  S&P 500 XIRR: 25.50%
+  Outperformance (CAGR): 97.13%
+  Outperformance (XIRR): 97.13%
+
+ASML:
+  Shares: 1 @ $611.95
+  Current Price: $1469.59
+  Initial Value: $611.95
+  Current Value: $1469.59
+  Gain: $857.64
+  Stock CAGR: 170.14%
+  Stock XIRR: 170.14%
+  S&P 500 CAGR: 41.94%
+  S&P 500 XIRR: 41.94%
+  Outperformance (CAGR): 128.20%
+  Outperformance (XIRR): 128.20%
+
+--- ASML ACCUMULATED ---
+  Total Trades: 7
+  Total Shares: 12
+  Total Initial Investment: $6157.84
+  Total Current Value: $17635.08
+  Total Gain: $11477.24 (186.38%)
+  Expected S&P 500 Value: $10163.36
+  Outperformance vs S&P 500: $7471.72 (121.34%)
+  Weighted Avg CAGR: 58.15%
+  Weighted Avg XIRR: 58.15%
+  Avg S&P 500 XIRR: 19.22%
+  XIRR Outperformance: 38.93%
+  Weighted Avg Years Held: 3.31 years
+
+CDNS:
+  Shares: 15 @ $56.59
+  Current Price: $296.28
+  Initial Value: $848.85
+  Current Value: $4444.20
+  Gain: $3595.35
+  Stock CAGR: 32.18%
+  Stock XIRR: 32.18%
+  S&P 500 CAGR: 19.63%
+  S&P 500 XIRR: 19.63%
+  Outperformance (CAGR): 12.56%
+  Outperformance (XIRR): 12.56%
+
+CDNS:
+  Shares: 7 @ $56.38
+  Current Price: $296.28
+  Initial Value: $394.66
+  Current Value: $2073.96
+  Gain: $1679.30
+  Stock CAGR: 32.27%
+  Stock XIRR: 32.27%
+  S&P 500 CAGR: 19.63%
+  S&P 500 XIRR: 19.63%
+  Outperformance (CAGR): 12.64%
+  Outperformance (XIRR): 12.64%
+
+CDNS:
+  Shares: 3 @ $282.70
+  Current Price: $296.28
+  Initial Value: $848.10
+  Current Value: $888.84
+  Gain: $40.74
+  Stock CAGR: 2.60%
+  Stock XIRR: 2.60%
+  S&P 500 CAGR: 18.44%
+  S&P 500 XIRR: 18.44%
+  Outperformance (CAGR): -15.84%
+  Outperformance (XIRR): -15.84%
+
+--- CDNS ACCUMULATED ---
+  Total Trades: 3
+  Total Shares: 25
+  Total Initial Investment: $2091.61
+  Total Current Value: $7407.00
+  Total Gain: $5315.39 (254.13%)
+  Expected S&P 500 Value: $4756.51
+  Outperformance vs S&P 500: $2650.49 (126.72%)
+  Weighted Avg CAGR: 20.20%
+  Weighted Avg XIRR: 20.20%
+  Avg S&P 500 XIRR: 19.14%
+  XIRR Outperformance: 1.06%
+  Weighted Avg Years Held: 4.27 years
+
+CRWD:
+  Shares: 11 @ $91.53
+  Current Price: $388.60
+  Initial Value: $1006.83
+  Current Value: $4274.60
+  Gain: $3267.77
+  Stock CAGR: 28.92%
+  Stock XIRR: 28.92%
+  S&P 500 CAGR: 15.51%
+  S&P 500 XIRR: 15.51%
+  Outperformance (CAGR): 13.41%
+  Outperformance (XIRR): 13.41%
+
+CRWD:
+  Shares: 4 @ $238.49
+  Current Price: $388.60
+  Initial Value: $953.96
+  Current Value: $1554.40
+  Gain: $600.44
+  Stock CAGR: 10.25%
+  Stock XIRR: 10.25%
+  S&P 500 CAGR: 12.07%
+  S&P 500 XIRR: 12.07%
+  Outperformance (CAGR): -1.82%
+  Outperformance (XIRR): -1.82%
+
+CRWD:
+  Shares: 5 @ $192.20
+  Current Price: $388.60
+  Initial Value: $961.00
+  Current Value: $1943.00
+  Gain: $982.00
+  Stock CAGR: 15.23%
+  Stock XIRR: 15.23%
+  S&P 500 CAGR: 12.98%
+  S&P 500 XIRR: 12.98%
+  Outperformance (CAGR): 2.25%
+  Outperformance (XIRR): 2.25%
+
+CRWD:
+  Shares: 6 @ $183.22
+  Current Price: $388.60
+  Initial Value: $1099.32
+  Current Value: $2331.60
+  Gain: $1232.28
+  Stock CAGR: 17.05%
+  Stock XIRR: 17.05%
+  S&P 500 CAGR: 11.48%
+  S&P 500 XIRR: 11.48%
+  Outperformance (CAGR): 5.57%
+  Outperformance (XIRR): 5.57%
+
+CRWD:
+  Shares: 5 @ $190.26
+  Current Price: $388.60
+  Initial Value: $951.30
+  Current Value: $1943.00
+  Gain: $991.70
+  Stock CAGR: 18.46%
+  Stock XIRR: 18.46%
+  S&P 500 CAGR: 10.48%
+  S&P 500 XIRR: 10.48%
+  Outperformance (CAGR): 7.97%
+  Outperformance (XIRR): 7.97%
+
+CRWD:
+  Shares: 7 @ $160.22
+  Current Price: $388.60
+  Initial Value: $1121.54
+  Current Value: $2720.20
+  Gain: $1598.66
+  Stock CAGR: 29.74%
+  Stock XIRR: 29.74%
+  S&P 500 CAGR: 20.58%
+  S&P 500 XIRR: 20.58%
+  Outperformance (CAGR): 9.16%
+  Outperformance (XIRR): 9.16%
+
+CRWD:
+  Shares: 7 @ $153.70
+  Current Price: $388.60
+  Initial Value: $1075.90
+  Current Value: $2720.20
+  Gain: $1644.30
+  Stock CAGR: 31.83%
+  Stock XIRR: 31.83%
+  S&P 500 CAGR: 20.74%
+  S&P 500 XIRR: 20.74%
+  Outperformance (CAGR): 11.08%
+  Outperformance (XIRR): 11.08%
+
+CRWD:
+  Shares: 10 @ $103.89
+  Current Price: $388.60
+  Initial Value: $1038.90
+  Current Value: $3886.00
+  Gain: $2847.10
+  Stock CAGR: 53.18%
+  Stock XIRR: 53.18%
+  S&P 500 CAGR: 19.41%
+  S&P 500 XIRR: 19.41%
+  Outperformance (CAGR): 33.76%
+  Outperformance (XIRR): 33.76%
+
+CRWD:
+  Shares: 4 @ $125.93
+  Current Price: $388.60
+  Initial Value: $503.72
+  Current Value: $1554.40
+  Gain: $1050.68
+  Stock CAGR: 48.16%
+  Stock XIRR: 48.16%
+  S&P 500 CAGR: 19.88%
+  S&P 500 XIRR: 19.88%
+  Outperformance (CAGR): 28.28%
+  Outperformance (XIRR): 28.28%
+
+CRWD:
+  Shares: 3 @ $264.06
+  Current Price: $388.60
+  Initial Value: $792.18
+  Current Value: $1165.80
+  Gain: $373.62
+  Stock CAGR: 29.80%
+  Stock XIRR: 29.80%
+  S&P 500 CAGR: 15.35%
+  S&P 500 XIRR: 15.35%
+  Outperformance (CAGR): 14.45%
+  Outperformance (XIRR): 14.45%
+
+CRWD:
+  Shares: 2 @ $410.29
+  Current Price: $388.60
+  Initial Value: $820.58
+  Current Value: $777.20
+  Gain: $-43.38
+  Stock CAGR: -71.06%
+  Stock XIRR: -71.06%
+  S&P 500 CAGR: 9.27%
+  S&P 500 XIRR: 9.27%
+  Outperformance (CAGR): -80.33%
+  Outperformance (XIRR): -80.33%
+
+--- CRWD ACCUMULATED ---
+  Total Trades: 11
+  Total Shares: 64
+  Total Initial Investment: $10325.23
+  Total Current Value: $24870.40
+  Total Gain: $14545.17 (140.87%)
+  Expected S&P 500 Value: $17625.92
+  Outperformance vs S&P 500: $7244.48 (70.16%)
+  Weighted Avg CAGR: 19.59%
+  Weighted Avg XIRR: 19.59%
+  Avg S&P 500 XIRR: 15.26%
+  XIRR Outperformance: 4.33%
+  Weighted Avg Years Held: 3.66 years
+
+DDOG:
+  Shares: 11 @ $90.50
+  Current Price: $115.66
+  Initial Value: $995.50
+  Current Value: $1272.26
+  Gain: $276.76
+  Stock CAGR: 10.25%
+  Stock XIRR: 10.25%
+  S&P 500 CAGR: 19.99%
+  S&P 500 XIRR: 19.99%
+  Outperformance (CAGR): -9.74%
+  Outperformance (XIRR): -9.74%
+
+DDOG:
+  Shares: 7 @ $135.90
+  Current Price: $115.66
+  Initial Value: $951.30
+  Current Value: $809.62
+  Gain: $-141.68
+  Stock CAGR: -7.66%
+  Stock XIRR: -7.66%
+  S&P 500 CAGR: 17.08%
+  S&P 500 XIRR: 17.08%
+  Outperformance (CAGR): -24.74%
+  Outperformance (XIRR): -24.74%
+
+DDOG:
+  Shares: 7 @ $120.37
+  Current Price: $115.66
+  Initial Value: $842.59
+  Current Value: $809.62
+  Gain: $-32.97
+  Stock CAGR: -100.00%
+  Stock XIRR: 0.00%
+  S&P 500 CAGR: 1150.31%
+  S&P 500 XIRR: 1150.31%
+  Outperformance (CAGR): -1250.31%
+  Outperformance (XIRR): -1150.31%
+
+DDOG:
+  Shares: 1 @ $120.39
+  Current Price: $115.66
+  Initial Value: $120.39
+  Current Value: $115.66
+  Gain: $-4.73
+  Stock CAGR: -100.00%
+  Stock XIRR: 0.00%
+  S&P 500 CAGR: 1150.31%
+  S&P 500 XIRR: 1150.31%
+  Outperformance (CAGR): -1250.31%
+  Outperformance (XIRR): -1150.31%
+
+DDOG:
+  Shares: 1 @ $120.12
+  Current Price: $115.66
+  Initial Value: $120.12
+  Current Value: $115.66
+  Gain: $-4.46
+  Stock CAGR: -100.00%
+  Stock XIRR: 0.00%
+  S&P 500 CAGR: 1150.31%
+  S&P 500 XIRR: 1150.31%
+  Outperformance (CAGR): -1250.31%
+  Outperformance (XIRR): -1150.31%
+
+--- DDOG ACCUMULATED ---
+  Total Trades: 5
+  Total Shares: 27
+  Total Initial Investment: $3029.90
+  Total Current Value: $3122.82
+  Total Gain: $92.92 (3.07%)
+  Expected S&P 500 Value: $3973.38
+  Outperformance vs S&P 500: $-850.56 (-28.07%)
+  Weighted Avg CAGR: -34.78%
+  Weighted Avg XIRR: 0.96%
+  Avg S&P 500 XIRR: 423.14%
+  XIRR Outperformance: -422.17%
+  Weighted Avg Years Held: 1.46 years
+
+FVRR:
+  Shares: 12 @ $124.53
+  Current Price: $11.68
+  Initial Value: $1494.36
+  Current Value: $140.16
+  Gain: $-1354.20
+  Stock CAGR: -35.26%
+  Stock XIRR: -35.26%
+  S&P 500 CAGR: 14.28%
+  S&P 500 XIRR: 14.28%
+  Outperformance (CAGR): -49.54%
+  Outperformance (XIRR): -49.54%
+
+FVRR:
+  Shares: 6 @ $170.19
+  Current Price: $11.68
+  Initial Value: $1021.14
+  Current Value: $70.08
+  Gain: $-951.06
+  Stock CAGR: -39.39%
+  Stock XIRR: -39.39%
+  S&P 500 CAGR: 13.66%
+  S&P 500 XIRR: 13.66%
+  Outperformance (CAGR): -53.05%
+  Outperformance (XIRR): -53.05%
+
+FVRR:
+  Shares: 4 @ $312.71
+  Current Price: $11.68
+  Initial Value: $1250.84
+  Current Value: $46.72
+  Gain: $-1204.12
+  Stock CAGR: -48.17%
+  Stock XIRR: -48.17%
+  S&P 500 CAGR: 12.07%
+  S&P 500 XIRR: 12.07%
+  Outperformance (CAGR): -60.24%
+  Outperformance (XIRR): -60.24%
+
+FVRR:
+  Shares: 4 @ $276.90
+  Current Price: $11.68
+  Initial Value: $1107.60
+  Current Value: $46.72
+  Gain: $-1060.88
+  Stock CAGR: -46.97%
+  Stock XIRR: -46.97%
+  S&P 500 CAGR: 12.25%
+  S&P 500 XIRR: 12.25%
+  Outperformance (CAGR): -59.22%
+  Outperformance (XIRR): -59.22%
+
+FVRR:
+  Shares: 5 @ $226.04
+  Current Price: $11.68
+  Initial Value: $1130.20
+  Current Value: $58.40
+  Gain: $-1071.80
+  Stock CAGR: -44.93%
+  Stock XIRR: -44.93%
+  S&P 500 CAGR: 12.98%
+  S&P 500 XIRR: 12.98%
+  Outperformance (CAGR): -57.91%
+  Outperformance (XIRR): -57.91%
+
+FVRR:
+  Shares: 7 @ $157.50
+  Current Price: $11.68
+  Initial Value: $1102.50
+  Current Value: $81.76
+  Gain: $-1020.74
+  Stock CAGR: -42.01%
+  Stock XIRR: -42.01%
+  S&P 500 CAGR: 11.48%
+  S&P 500 XIRR: 11.48%
+  Outperformance (CAGR): -53.49%
+  Outperformance (XIRR): -53.49%
+
+FVRR:
+  Shares: 5 @ $184.26
+  Current Price: $11.68
+  Initial Value: $921.30
+  Current Value: $58.40
+  Gain: $-862.90
+  Stock CAGR: -47.62%
+  Stock XIRR: -47.62%
+  S&P 500 CAGR: 9.55%
+  S&P 500 XIRR: 9.55%
+  Outperformance (CAGR): -57.17%
+  Outperformance (XIRR): -57.17%
+
+FVRR:
+  Shares: 7 @ $151.02
+  Current Price: $11.68
+  Initial Value: $1057.14
+  Current Value: $81.76
+  Gain: $-975.38
+  Stock CAGR: -45.27%
+  Stock XIRR: -45.27%
+  S&P 500 CAGR: 9.59%
+  S&P 500 XIRR: 9.59%
+  Outperformance (CAGR): -54.86%
+  Outperformance (XIRR): -54.86%
+
+FVRR:
+  Shares: 9 @ $120.98
+  Current Price: $11.68
+  Initial Value: $1088.82
+  Current Value: $105.12
+  Gain: $-983.70
+  Stock CAGR: -42.56%
+  Stock XIRR: -42.56%
+  S&P 500 CAGR: 10.48%
+  S&P 500 XIRR: 10.48%
+  Outperformance (CAGR): -53.04%
+  Outperformance (XIRR): -53.04%
+
+--- FVRR ACCUMULATED ---
+  Total Trades: 9
+  Total Shares: 59
+  Total Initial Investment: $10173.90
+  Total Current Value: $689.12
+  Total Gain: $-9484.78 (-93.23%)
+  Expected S&P 500 Value: $17801.41
+  Outperformance vs S&P 500: $-17112.29 (-168.20%)
+  Weighted Avg CAGR: -43.28%
+  Weighted Avg XIRR: -43.28%
+  Avg S&P 500 XIRR: 11.96%
+  XIRR Outperformance: -55.24%
+  Weighted Avg Years Held: 4.84 years
+
+IBKR:
+  Shares: 112 @ $5.51
+  Current Price: $74.40
+  Initial Value: $617.12
+  Current Value: $8332.80
+  Gain: $7715.68
+  Stock CAGR: 24.36%
+  Stock XIRR: 24.36%
+  S&P 500 CAGR: 11.71%
+  S&P 500 XIRR: 11.71%
+  Outperformance (CAGR): 12.65%
+  Outperformance (XIRR): 12.65%
+
+--- IBKR ACCUMULATED ---
+  Total Trades: 1
+  Total Shares: 112
+  Total Initial Investment: $617.12
+  Total Current Value: $8332.80
+  Total Gain: $7715.68 (1250.27%)
+  Expected S&P 500 Value: $2315.97
+  Outperformance vs S&P 500: $6016.83 (974.99%)
+  Weighted Avg CAGR: 24.36%
+  Weighted Avg XIRR: 24.36%
+  Avg S&P 500 XIRR: 11.71%
+  XIRR Outperformance: 12.65%
+  Weighted Avg Years Held: 11.94 years
+
+LULU:
+  Shares: 2 @ $419.25
+  Current Price: $187.30
+  Initial Value: $838.50
+  Current Value: $374.60
+  Gain: $-463.90
+  Stock CAGR: -16.95%
+  Stock XIRR: -16.95%
+  S&P 500 CAGR: 10.28%
+  S&P 500 XIRR: 10.28%
+  Outperformance (CAGR): -27.22%
+  Outperformance (XIRR): -27.22%
+
+LULU:
+  Shares: 2 @ $461.76
+  Current Price: $187.30
+  Initial Value: $923.52
+  Current Value: $374.60
+  Gain: $-548.92
+  Stock CAGR: -19.07%
+  Stock XIRR: -19.07%
+  S&P 500 CAGR: 9.55%
+  S&P 500 XIRR: 9.55%
+  Outperformance (CAGR): -28.61%
+  Outperformance (XIRR): -28.61%
+
+LULU:
+  Shares: 2 @ $406.06
+  Current Price: $187.30
+  Initial Value: $812.12
+  Current Value: $374.60
+  Gain: $-437.52
+  Stock CAGR: -16.87%
+  Stock XIRR: -16.87%
+  S&P 500 CAGR: 9.81%
+  S&P 500 XIRR: 9.81%
+  Outperformance (CAGR): -26.68%
+  Outperformance (XIRR): -26.68%
+
+LULU:
+  Shares: 3 @ $355.20
+  Current Price: $187.30
+  Initial Value: $1065.60
+  Current Value: $561.90
+  Gain: $-503.70
+  Stock CAGR: -29.90%
+  Stock XIRR: -29.90%
+  S&P 500 CAGR: 18.00%
+  S&P 500 XIRR: 18.00%
+  Outperformance (CAGR): -47.90%
+  Outperformance (XIRR): -47.90%
+
+LULU:
+  Shares: 4 @ $260.47
+  Current Price: $187.30
+  Initial Value: $1041.88
+  Current Value: $749.20
+  Gain: $-292.68
+  Stock CAGR: -19.67%
+  Stock XIRR: -19.67%
+  S&P 500 CAGR: 14.86%
+  S&P 500 XIRR: 14.86%
+  Outperformance (CAGR): -34.53%
+  Outperformance (XIRR): -34.53%
+
+LULU:
+  Shares: 4 @ $259.22
+  Current Price: $187.30
+  Initial Value: $1036.88
+  Current Value: $749.20
+  Gain: $-287.68
+  Stock CAGR: -19.70%
+  Stock XIRR: -19.70%
+  S&P 500 CAGR: 15.35%
+  S&P 500 XIRR: 15.35%
+  Outperformance (CAGR): -35.05%
+  Outperformance (XIRR): -35.05%
+
+LULU:
+  Shares: 2 @ $414.35
+  Current Price: $187.30
+  Initial Value: $828.70
+  Current Value: $374.60
+  Gain: $-454.10
+  Stock CAGR: -53.48%
+  Stock XIRR: -53.48%
+  S&P 500 CAGR: 13.05%
+  S&P 500 XIRR: 13.05%
+  Outperformance (CAGR): -66.53%
+  Outperformance (XIRR): -66.53%
+
+--- LULU ACCUMULATED ---
+  Total Trades: 7
+  Total Shares: 19
+  Total Initial Investment: $6547.20
+  Total Current Value: $3558.70
+  Total Gain: $-2988.50 (-45.65%)
+  Expected S&P 500 Value: $8788.20
+  Outperformance vs S&P 500: $-5229.50 (-79.87%)
+  Weighted Avg CAGR: -24.84%
+  Weighted Avg XIRR: -24.84%
+  Avg S&P 500 XIRR: 13.26%
+  XIRR Outperformance: -38.09%
+  Weighted Avg Years Held: 2.58 years
+
+MELI:
+  Shares: 1 @ $1279.41
+  Current Price: $1996.87
+  Initial Value: $1279.41
+  Current Value: $1996.87
+  Gain: $717.46
+  Stock CAGR: 20.24%
+  Stock XIRR: 20.24%
+  S&P 500 CAGR: 21.47%
+  S&P 500 XIRR: 21.47%
+  Outperformance (CAGR): -1.22%
+  Outperformance (XIRR): -1.22%
+
+MELI:
+  Shares: 1 @ $1188.36
+  Current Price: $1996.87
+  Initial Value: $1188.36
+  Current Value: $1996.87
+  Gain: $808.51
+  Stock CAGR: 24.95%
+  Stock XIRR: 24.95%
+  S&P 500 CAGR: 23.61%
+  S&P 500 XIRR: 23.61%
+  Outperformance (CAGR): 1.35%
+  Outperformance (XIRR): 1.35%
+
+MELI:
+  Shares: 1 @ $1649.83
+  Current Price: $1996.87
+  Initial Value: $1649.83
+  Current Value: $1996.87
+  Gain: $347.04
+  Stock CAGR: 9.56%
+  Stock XIRR: 9.56%
+  S&P 500 CAGR: 19.25%
+  S&P 500 XIRR: 19.25%
+  Outperformance (CAGR): -9.69%
+  Outperformance (XIRR): -9.69%
+
+MELI:
+  Shares: 1 @ $2013.69
+  Current Price: $1996.87
+  Initial Value: $2013.69
+  Current Value: $1996.87
+  Gain: $-16.82
+  Stock CAGR: -17.43%
+  Stock XIRR: -17.43%
+  S&P 500 CAGR: 9.27%
+  S&P 500 XIRR: 9.27%
+  Outperformance (CAGR): -26.70%
+  Outperformance (XIRR): -26.70%
+
+--- MELI ACCUMULATED ---
+  Total Trades: 4
+  Total Shares: 4
+  Total Initial Investment: $6131.29
+  Total Current Value: $7987.48
+  Total Gain: $1856.19 (30.27%)
+  Expected S&P 500 Value: $8399.28
+  Outperformance vs S&P 500: $-411.80 (-6.72%)
+  Weighted Avg CAGR: 5.91%
+  Weighted Avg XIRR: 5.91%
+  Avg S&P 500 XIRR: 17.28%
+  XIRR Outperformance: -11.37%
+  Weighted Avg Years Held: 1.53 years
+
+NFLX:
+  Shares: 10 @ $17.40
+  Current Price: $78.67
+  Initial Value: $174.00
+  Current Value: $786.70
+  Gain: $612.70
+  Stock CAGR: 48.95%
+  Stock XIRR: 48.95%
+  S&P 500 CAGR: 15.60%
+  S&P 500 XIRR: 15.60%
+  Outperformance (CAGR): 33.36%
+  Outperformance (XIRR): 33.36%
+
+NFLX:
+  Shares: 50 @ $18.84
+  Current Price: $78.67
+  Initial Value: $942.00
+  Current Value: $3933.50
+  Gain: $2991.50
+  Stock CAGR: 45.70%
+  Stock XIRR: 45.70%
+  S&P 500 CAGR: 14.39%
+  S&P 500 XIRR: 14.39%
+  Outperformance (CAGR): 31.31%
+  Outperformance (XIRR): 31.31%
+
+NFLX:
+  Shares: 50 @ $19.61
+  Current Price: $78.67
+  Initial Value: $980.50
+  Current Value: $3933.50
+  Gain: $2953.00
+  Stock CAGR: 44.06%
+  Stock XIRR: 44.06%
+  S&P 500 CAGR: 14.30%
+  S&P 500 XIRR: 14.30%
+  Outperformance (CAGR): 29.76%
+  Outperformance (XIRR): 29.76%
+
+NFLX:
+  Shares: 20 @ $35.33
+  Current Price: $78.67
+  Initial Value: $706.60
+  Current Value: $1573.40
+  Gain: $866.80
+  Stock CAGR: 21.71%
+  Stock XIRR: 21.71%
+  S&P 500 CAGR: 11.65%
+  S&P 500 XIRR: 11.65%
+  Outperformance (CAGR): 10.06%
+  Outperformance (XIRR): 10.06%
+
+NFLX:
+  Shares: 20 @ $48.46
+  Current Price: $78.67
+  Initial Value: $969.20
+  Current Value: $1573.40
+  Gain: $604.20
+  Stock CAGR: 10.67%
+  Stock XIRR: 10.67%
+  S&P 500 CAGR: 11.75%
+  S&P 500 XIRR: 11.75%
+  Outperformance (CAGR): -1.08%
+  Outperformance (XIRR): -1.08%
+
+NFLX:
+  Shares: 30 @ $47.77
+  Current Price: $78.67
+  Initial Value: $1433.10
+  Current Value: $2360.10
+  Gain: $927.00
+  Stock CAGR: 9.85%
+  Stock XIRR: 9.85%
+  S&P 500 CAGR: 15.13%
+  S&P 500 XIRR: 15.13%
+  Outperformance (CAGR): -5.28%
+  Outperformance (XIRR): -5.28%
+
+NFLX:
+  Shares: 30 @ $46.33
+  Current Price: $78.67
+  Initial Value: $1389.90
+  Current Value: $2360.10
+  Gain: $970.20
+  Stock CAGR: 10.25%
+  Stock XIRR: 10.25%
+  S&P 500 CAGR: 14.47%
+  S&P 500 XIRR: 14.47%
+  Outperformance (CAGR): -4.22%
+  Outperformance (XIRR): -4.22%
+
+NFLX:
+  Shares: 30 @ $31.19
+  Current Price: $78.67
+  Initial Value: $935.70
+  Current Value: $2360.10
+  Gain: $1424.40
+  Stock CAGR: 16.88%
+  Stock XIRR: 16.88%
+  S&P 500 CAGR: 19.63%
+  S&P 500 XIRR: 19.63%
+  Outperformance (CAGR): -2.75%
+  Outperformance (XIRR): -2.75%
+
+NFLX:
+  Shares: 100 @ $31.77
+  Current Price: $78.67
+  Initial Value: $3177.00
+  Current Value: $7867.00
+  Gain: $4690.00
+  Stock CAGR: 16.48%
+  Stock XIRR: 16.48%
+  S&P 500 CAGR: 18.81%
+  S&P 500 XIRR: 18.81%
+  Outperformance (CAGR): -2.33%
+  Outperformance (XIRR): -2.33%
+
+NFLX:
+  Shares: 60 @ $33.68
+  Current Price: $78.67
+  Initial Value: $2020.80
+  Current Value: $4720.20
+  Gain: $2699.40
+  Stock CAGR: 11.87%
+  Stock XIRR: 11.87%
+  S&P 500 CAGR: 12.67%
+  S&P 500 XIRR: 12.67%
+  Outperformance (CAGR): -0.80%
+  Outperformance (XIRR): -0.80%
+
+NFLX:
+  Shares: 120 @ $8.59
+  Current Price: $78.67
+  Initial Value: $1030.80
+  Current Value: $9440.40
+  Gain: $8409.60
+  Stock CAGR: 25.98%
+  Stock XIRR: 25.98%
+  S&P 500 CAGR: 12.87%
+  S&P 500 XIRR: 12.87%
+  Outperformance (CAGR): 13.11%
+  Outperformance (XIRR): 13.11%
+
+NFLX:
+  Shares: 110 @ $9.74
+  Current Price: $78.67
+  Initial Value: $1071.40
+  Current Value: $8653.70
+  Gain: $7582.30
+  Stock CAGR: 22.03%
+  Stock XIRR: 22.03%
+  S&P 500 CAGR: 13.13%
+  S&P 500 XIRR: 13.13%
+  Outperformance (CAGR): 8.90%
+  Outperformance (XIRR): 8.90%
+
+NFLX:
+  Shares: 210 @ $4.92
+  Current Price: $78.67
+  Initial Value: $1033.20
+  Current Value: $16520.70
+  Gain: $15487.50
+  Stock CAGR: 28.24%
+  Stock XIRR: 28.24%
+  S&P 500 CAGR: 11.32%
+  S&P 500 XIRR: 11.32%
+  Outperformance (CAGR): 16.91%
+  Outperformance (XIRR): 16.91%
+
+NFLX:
+  Shares: 210 @ $4.59
+  Current Price: $78.67
+  Initial Value: $963.90
+  Current Value: $16520.70
+  Gain: $15556.80
+  Stock CAGR: 27.19%
+  Stock XIRR: 27.19%
+  S&P 500 CAGR: 11.66%
+  S&P 500 XIRR: 11.66%
+  Outperformance (CAGR): 15.53%
+  Outperformance (XIRR): 15.53%
+
+NFLX:
+  Shares: 420 @ $2.59
+  Current Price: $78.67
+  Initial Value: $1087.80
+  Current Value: $33041.40
+  Gain: $31953.60
+  Stock CAGR: 26.68%
+  Stock XIRR: 26.68%
+  S&P 500 CAGR: 12.84%
+  S&P 500 XIRR: 12.84%
+  Outperformance (CAGR): 13.85%
+  Outperformance (XIRR): 13.85%
+
+NFLX:
+  Shares: 5280 @ $0.33
+  Current Price: $78.67
+  Initial Value: $1742.40
+  Current Value: $415377.59
+  Gain: $413635.19
+  Stock CAGR: 33.20%
+  Stock XIRR: 33.20%
+  S&P 500 CAGR: 8.59%
+  S&P 500 XIRR: 8.59%
+  Outperformance (CAGR): 24.60%
+  Outperformance (XIRR): 24.60%
+
+NFLX:
+  Shares: 30 @ $34.80
+  Current Price: $78.67
+  Initial Value: $1044.00
+  Current Value: $2360.10
+  Gain: $1316.10
+  Stock CAGR: 22.90%
+  Stock XIRR: 22.90%
+  S&P 500 CAGR: 13.61%
+  S&P 500 XIRR: 13.61%
+  Outperformance (CAGR): 9.29%
+  Outperformance (XIRR): 9.29%
+
+NFLX:
+  Shares: 30 @ $37.23
+  Current Price: $78.67
+  Initial Value: $1116.90
+  Current Value: $2360.10
+  Gain: $1243.20
+  Stock CAGR: 20.61%
+  Stock XIRR: 20.61%
+  S&P 500 CAGR: 13.11%
+  S&P 500 XIRR: 13.11%
+  Outperformance (CAGR): 7.50%
+  Outperformance (XIRR): 7.50%
+
+NFLX:
+  Shares: 50 @ $39.49
+  Current Price: $78.67
+  Initial Value: $1974.50
+  Current Value: $3933.50
+  Gain: $1959.00
+  Stock CAGR: 18.76%
+  Stock XIRR: 18.76%
+  S&P 500 CAGR: 12.04%
+  S&P 500 XIRR: 12.04%
+  Outperformance (CAGR): 6.72%
+  Outperformance (XIRR): 6.72%
+
+NFLX:
+  Shares: 50 @ $35.03
+  Current Price: $78.67
+  Initial Value: $1751.50
+  Current Value: $3933.50
+  Gain: $2182.00
+  Stock CAGR: 14.56%
+  Stock XIRR: 14.56%
+  S&P 500 CAGR: 16.77%
+  S&P 500 XIRR: 16.77%
+  Outperformance (CAGR): -2.21%
+  Outperformance (XIRR): -2.21%
+
+NFLX:
+  Shares: 30 @ $36.13
+  Current Price: $78.67
+  Initial Value: $1083.90
+  Current Value: $2360.10
+  Gain: $1276.20
+  Stock CAGR: 13.88%
+  Stock XIRR: 13.88%
+  S&P 500 CAGR: 14.15%
+  S&P 500 XIRR: 14.15%
+  Outperformance (CAGR): -0.27%
+  Outperformance (XIRR): -0.27%
+
+NFLX:
+  Shares: 60 @ $27.55
+  Current Price: $78.67
+  Initial Value: $1653.00
+  Current Value: $4720.20
+  Gain: $3067.20
+  Stock CAGR: 17.99%
+  Stock XIRR: 17.99%
+  S&P 500 CAGR: 14.14%
+  S&P 500 XIRR: 14.14%
+  Outperformance (CAGR): 3.85%
+  Outperformance (XIRR): 3.85%
+
+NFLX:
+  Shares: 70 @ $30.75
+  Current Price: $78.67
+  Initial Value: $2152.50
+  Current Value: $5506.90
+  Gain: $3354.40
+  Stock CAGR: 15.43%
+  Stock XIRR: 15.43%
+  S&P 500 CAGR: 14.52%
+  S&P 500 XIRR: 14.52%
+  Outperformance (CAGR): 0.91%
+  Outperformance (XIRR): 0.91%
+
+NFLX:
+  Shares: 60 @ $26.08
+  Current Price: $78.67
+  Initial Value: $1564.80
+  Current Value: $4720.20
+  Gain: $3155.40
+  Stock CAGR: 16.48%
+  Stock XIRR: 16.48%
+  S&P 500 CAGR: 14.02%
+  S&P 500 XIRR: 14.02%
+  Outperformance (CAGR): 2.46%
+  Outperformance (XIRR): 2.46%
+
+NFLX:
+  Shares: 60 @ $27.70
+  Current Price: $78.67
+  Initial Value: $1662.00
+  Current Value: $4720.20
+  Gain: $3058.20
+  Stock CAGR: 15.34%
+  Stock XIRR: 15.34%
+  S&P 500 CAGR: 14.05%
+  S&P 500 XIRR: 14.05%
+  Outperformance (CAGR): 1.29%
+  Outperformance (XIRR): 1.29%
+
+NFLX:
+  Shares: 40 @ $30.12
+  Current Price: $78.67
+  Initial Value: $1204.80
+  Current Value: $3146.80
+  Gain: $1942.00
+  Stock CAGR: 14.03%
+  Stock XIRR: 14.03%
+  S&P 500 CAGR: 14.05%
+  S&P 500 XIRR: 14.05%
+  Outperformance (CAGR): -0.02%
+  Outperformance (XIRR): -0.02%
+
+NFLX:
+  Shares: 50 @ $32.18
+  Current Price: $78.67
+  Initial Value: $1609.00
+  Current Value: $3933.50
+  Gain: $2324.50
+  Stock CAGR: 12.91%
+  Stock XIRR: 12.91%
+  S&P 500 CAGR: 13.45%
+  S&P 500 XIRR: 13.45%
+  Outperformance (CAGR): -0.54%
+  Outperformance (XIRR): -0.54%
+
+--- NFLX ACCUMULATED ---
+  Total Trades: 27
+  Total Shares: 7280
+  Total Initial Investment: $36475.20
+  Total Current Value: $572717.59
+  Total Gain: $536242.39 (1470.16%)
+  Expected S&P 500 Value: $95647.08
+  Outperformance vs S&P 500: $477070.51 (1307.93%)
+  Weighted Avg CAGR: 19.47%
+  Weighted Avg XIRR: 19.47%
+  Avg S&P 500 XIRR: 14.00%
+  XIRR Outperformance: 5.47%
+  Weighted Avg Years Held: 7.28 years
+
+NVDA:
+  Shares: 10 @ $94.44
+  Current Price: $189.82
+  Initial Value: $944.40
+  Current Value: $1898.20
+  Gain: $953.80
+  Stock CAGR: 120.75%
+  Stock XIRR: 120.75%
+  S&P 500 CAGR: 41.94%
+  S&P 500 XIRR: 41.94%
+  Outperformance (CAGR): 78.82%
+  Outperformance (XIRR): 78.82%
+
+NVDA:
+  Shares: 9 @ $109.55
+  Current Price: $189.82
+  Initial Value: $985.95
+  Current Value: $1708.38
+  Gain: $722.43
+  Stock CAGR: 78.65%
+  Stock XIRR: 78.65%
+  S&P 500 CAGR: 25.50%
+  S&P 500 XIRR: 25.50%
+  Outperformance (CAGR): 53.16%
+  Outperformance (XIRR): 53.16%
+
+NVDA:
+  Shares: 9 @ $111.81
+  Current Price: $189.82
+  Initial Value: $1006.29
+  Current Value: $1708.38
+  Gain: $702.09
+  Stock CAGR: 72.92%
+  Stock XIRR: 72.92%
+  S&P 500 CAGR: 20.32%
+  S&P 500 XIRR: 20.32%
+  Outperformance (CAGR): 52.59%
+  Outperformance (XIRR): 52.59%
+
+NVDA:
+  Shares: 8 @ $118.08
+  Current Price: $189.82
+  Initial Value: $944.64
+  Current Value: $1518.56
+  Gain: $573.92
+  Stock CAGR: 56.16%
+  Stock XIRR: 56.16%
+  S&P 500 CAGR: 13.95%
+  S&P 500 XIRR: 13.95%
+  Outperformance (CAGR): 42.21%
+  Outperformance (XIRR): 42.21%
+
+NVDA:
+  Shares: 10 @ $108.03
+  Current Price: $189.82
+  Initial Value: $1080.30
+  Current Value: $1898.20
+  Gain: $817.90
+  Stock CAGR: 47.04%
+  Stock XIRR: 47.04%
+  S&P 500 CAGR: 16.60%
+  S&P 500 XIRR: 16.60%
+  Outperformance (CAGR): 30.44%
+  Outperformance (XIRR): 30.44%
+
+NVDA:
+  Shares: 10 @ $100.75
+  Current Price: $189.82
+  Initial Value: $1007.50
+  Current Value: $1898.20
+  Gain: $890.70
+  Stock CAGR: 50.71%
+  Stock XIRR: 50.71%
+  S&P 500 CAGR: 20.42%
+  S&P 500 XIRR: 20.42%
+  Outperformance (CAGR): 30.30%
+  Outperformance (XIRR): 30.30%
+
+NVDA:
+  Shares: 90 @ $11.25
+  Current Price: $189.82
+  Initial Value: $1012.50
+  Current Value: $17083.80
+  Gain: $16071.30
+  Stock CAGR: 132.06%
+  Stock XIRR: 132.06%
+  S&P 500 CAGR: 20.74%
+  S&P 500 XIRR: 20.74%
+  Outperformance (CAGR): 111.32%
+  Outperformance (XIRR): 111.32%
+
+NVDA:
+  Shares: 50 @ $15.89
+  Current Price: $189.82
+  Initial Value: $794.50
+  Current Value: $9491.00
+  Gain: $8696.50
+  Stock CAGR: 95.83%
+  Stock XIRR: 95.83%
+  S&P 500 CAGR: 18.01%
+  S&P 500 XIRR: 18.01%
+  Outperformance (CAGR): 77.82%
+  Outperformance (XIRR): 77.82%
+
+NVDA:
+  Shares: 50 @ $18.66
+  Current Price: $189.82
+  Initial Value: $933.00
+  Current Value: $9491.00
+  Gain: $8558.00
+  Stock CAGR: 84.20%
+  Stock XIRR: 84.20%
+  S&P 500 CAGR: 14.39%
+  S&P 500 XIRR: 14.39%
+  Outperformance (CAGR): 69.81%
+  Outperformance (XIRR): 69.81%
+
+NVDA:
+  Shares: 50 @ $18.98
+  Current Price: $189.82
+  Initial Value: $949.00
+  Current Value: $9491.00
+  Gain: $8542.00
+  Stock CAGR: 83.14%
+  Stock XIRR: 83.14%
+  S&P 500 CAGR: 14.30%
+  S&P 500 XIRR: 14.30%
+  Outperformance (CAGR): 68.84%
+  Outperformance (XIRR): 68.84%
+
+NVDA:
+  Shares: 30 @ $21.65
+  Current Price: $189.82
+  Initial Value: $649.50
+  Current Value: $5694.60
+  Gain: $5045.10
+  Stock CAGR: 70.39%
+  Stock XIRR: 70.39%
+  S&P 500 CAGR: 11.65%
+  S&P 500 XIRR: 11.65%
+  Outperformance (CAGR): 58.74%
+  Outperformance (XIRR): 58.74%
+
+NVDA:
+  Shares: 80 @ $12.32
+  Current Price: $189.82
+  Initial Value: $985.60
+  Current Value: $15185.60
+  Gain: $14200.00
+  Stock CAGR: 73.44%
+  Stock XIRR: 73.44%
+  S&P 500 CAGR: 12.98%
+  S&P 500 XIRR: 12.98%
+  Outperformance (CAGR): 60.46%
+  Outperformance (XIRR): 60.46%
+
+NVDA:
+  Shares: 200 @ $4.79
+  Current Price: $189.82
+  Initial Value: $958.00
+  Current Value: $37964.00
+  Gain: $37006.00
+  Stock CAGR: 86.03%
+  Stock XIRR: 86.03%
+  S&P 500 CAGR: 19.55%
+  S&P 500 XIRR: 19.55%
+  Outperformance (CAGR): 66.49%
+  Outperformance (XIRR): 66.49%
+
+NVDA:
+  Shares: 400 @ $5.54
+  Current Price: $189.82
+  Initial Value: $2216.00
+  Current Value: $75928.00
+  Gain: $73712.00
+  Stock CAGR: 81.23%
+  Stock XIRR: 81.23%
+  S&P 500 CAGR: 18.81%
+  S&P 500 XIRR: 18.81%
+  Outperformance (CAGR): 62.42%
+  Outperformance (XIRR): 62.42%
+
+NVDA:
+  Shares: 160 @ $6.02
+  Current Price: $189.82
+  Initial Value: $963.20
+  Current Value: $30371.20
+  Gain: $29408.00
+  Stock CAGR: 76.93%
+  Stock XIRR: 76.93%
+  S&P 500 CAGR: 13.29%
+  S&P 500 XIRR: 13.29%
+  Outperformance (CAGR): 63.65%
+  Outperformance (XIRR): 63.65%
+
+NVDA:
+  Shares: 250 @ $3.45
+  Current Price: $189.82
+  Initial Value: $862.50
+  Current Value: $47455.00
+  Gain: $46592.50
+  Stock CAGR: 76.36%
+  Stock XIRR: 76.36%
+  S&P 500 CAGR: 14.57%
+  S&P 500 XIRR: 14.57%
+  Outperformance (CAGR): 61.79%
+  Outperformance (XIRR): 61.79%
+
+NVDA:
+  Shares: 8100 @ $0.21
+  Current Price: $189.82
+  Initial Value: $1701.00
+  Current Value: $1537542.06
+  Gain: $1535841.06
+  Stock CAGR: 47.92%
+  Stock XIRR: 47.92%
+  S&P 500 CAGR: 11.07%
+  S&P 500 XIRR: 11.07%
+  Outperformance (CAGR): 36.86%
+  Outperformance (XIRR): 36.86%
+
+NVDA:
+  Shares: 10 @ $17.02
+  Current Price: $189.82
+  Initial Value: $170.20
+  Current Value: $1898.20
+  Gain: $1728.00
+  Stock CAGR: 89.07%
+  Stock XIRR: 89.07%
+  S&P 500 CAGR: 15.60%
+  S&P 500 XIRR: 15.60%
+  Outperformance (CAGR): 73.47%
+  Outperformance (XIRR): 73.47%
+
+NVDA:
+  Shares: 40 @ $21.48
+  Current Price: $189.82
+  Initial Value: $859.20
+  Current Value: $7592.80
+  Gain: $6733.60
+  Stock CAGR: 73.39%
+  Stock XIRR: 73.39%
+  S&P 500 CAGR: 13.39%
+  S&P 500 XIRR: 13.39%
+  Outperformance (CAGR): 60.00%
+  Outperformance (XIRR): 60.00%
+
+NVDA:
+  Shares: 50 @ $24.70
+  Current Price: $189.82
+  Initial Value: $1235.00
+  Current Value: $9491.00
+  Gain: $8256.00
+  Stock CAGR: 66.33%
+  Stock XIRR: 66.33%
+  S&P 500 CAGR: 12.04%
+  S&P 500 XIRR: 12.04%
+  Outperformance (CAGR): 54.28%
+  Outperformance (XIRR): 54.28%
+
+NVDA:
+  Shares: 80 @ $12.42
+  Current Price: $189.82
+  Initial Value: $993.60
+  Current Value: $15185.60
+  Gain: $14192.00
+  Stock CAGR: 67.14%
+  Stock XIRR: 67.14%
+  S&P 500 CAGR: 15.13%
+  S&P 500 XIRR: 15.13%
+  Outperformance (CAGR): 52.00%
+  Outperformance (XIRR): 52.00%
+
+NVDA:
+  Shares: 80 @ $6.25
+  Current Price: $189.82
+  Initial Value: $500.00
+  Current Value: $15185.60
+  Gain: $14685.60
+  Stock CAGR: 77.45%
+  Stock XIRR: 77.45%
+  S&P 500 CAGR: 16.77%
+  S&P 500 XIRR: 16.77%
+  Outperformance (CAGR): 60.68%
+  Outperformance (XIRR): 60.68%
+
+NVDA:
+  Shares: 80 @ $6.25
+  Current Price: $189.82
+  Initial Value: $500.00
+  Current Value: $15185.60
+  Gain: $14685.60
+  Stock CAGR: 77.45%
+  Stock XIRR: 77.45%
+  S&P 500 CAGR: 16.77%
+  S&P 500 XIRR: 16.77%
+  Outperformance (CAGR): 60.68%
+  Outperformance (XIRR): 60.68%
+
+NVDA:
+  Shares: 400 @ $4.11
+  Current Price: $189.82
+  Initial Value: $1644.00
+  Current Value: $75928.00
+  Gain: $74284.00
+  Stock CAGR: 69.50%
+  Stock XIRR: 69.50%
+  S&P 500 CAGR: 13.60%
+  S&P 500 XIRR: 13.60%
+  Outperformance (CAGR): 55.89%
+  Outperformance (XIRR): 55.89%
+
+NVDA:
+  Shares: 200 @ $5.26
+  Current Price: $189.82
+  Initial Value: $1052.00
+  Current Value: $37964.00
+  Gain: $36912.00
+  Stock CAGR: 63.35%
+  Stock XIRR: 63.35%
+  S&P 500 CAGR: 13.65%
+  S&P 500 XIRR: 13.65%
+  Outperformance (CAGR): 49.70%
+  Outperformance (XIRR): 49.70%
+
+NVDA:
+  Shares: 240 @ $6.88
+  Current Price: $189.82
+  Initial Value: $1651.20
+  Current Value: $45556.80
+  Gain: $43905.60
+  Stock CAGR: 55.79%
+  Stock XIRR: 55.79%
+  S&P 500 CAGR: 12.32%
+  S&P 500 XIRR: 12.32%
+  Outperformance (CAGR): 43.48%
+  Outperformance (XIRR): 43.48%
+
+--- NVDA ACCUMULATED ---
+  Total Trades: 26
+  Total Shares: 10696
+  Total Initial Investment: $26599.08
+  Total Current Value: $2030314.80
+  Total Gain: $2003715.72 (7533.03%)
+  Expected S&P 500 Value: $59642.84
+  Outperformance vs S&P 500: $1970671.95 (7408.80%)
+  Weighted Avg CAGR: 73.93%
+  Weighted Avg XIRR: 73.93%
+  Avg S&P 500 XIRR: 16.62%
+  XIRR Outperformance: 57.31%
+  Weighted Avg Years Held: 5.28 years
+
+SHOP:
+  Shares: 70 @ $15.06
+  Current Price: $126.20
+  Initial Value: $1054.20
+  Current Value: $8834.00
+  Gain: $7779.80
+  Stock CAGR: 34.19%
+  Stock XIRR: 34.19%
+  S&P 500 CAGR: 13.66%
+  S&P 500 XIRR: 13.66%
+  Outperformance (CAGR): 20.53%
+  Outperformance (XIRR): 20.53%
+
+SHOP:
+  Shares: 40 @ $32.92
+  Current Price: $126.20
+  Initial Value: $1316.80
+  Current Value: $5048.00
+  Gain: $3731.20
+  Stock CAGR: 25.42%
+  Stock XIRR: 25.42%
+  S&P 500 CAGR: 19.63%
+  S&P 500 XIRR: 19.63%
+  Outperformance (CAGR): 5.79%
+  Outperformance (XIRR): 5.79%
+
+SHOP:
+  Shares: 30 @ $35.03
+  Current Price: $126.20
+  Initial Value: $1050.90
+  Current Value: $3786.00
+  Gain: $2735.10
+  Stock CAGR: 24.34%
+  Stock XIRR: 24.34%
+  S&P 500 CAGR: 18.95%
+  S&P 500 XIRR: 18.95%
+  Outperformance (CAGR): 5.39%
+  Outperformance (XIRR): 5.39%
+
+SHOP:
+  Shares: 10 @ $115.16
+  Current Price: $126.20
+  Initial Value: $1151.60
+  Current Value: $1262.00
+  Gain: $110.40
+  Stock CAGR: 1.86%
+  Stock XIRR: 1.86%
+  S&P 500 CAGR: 12.98%
+  S&P 500 XIRR: 12.98%
+  Outperformance (CAGR): -11.12%
+  Outperformance (XIRR): -11.12%
+
+SHOP:
+  Shares: 10 @ $104.89
+  Current Price: $126.20
+  Initial Value: $1048.90
+  Current Value: $1262.00
+  Gain: $213.10
+  Stock CAGR: 3.95%
+  Stock XIRR: 3.95%
+  S&P 500 CAGR: 11.48%
+  S&P 500 XIRR: 11.48%
+  Outperformance (CAGR): -7.53%
+  Outperformance (XIRR): -7.53%
+
+SHOP:
+  Shares: 20 @ $71.67
+  Current Price: $126.20
+  Initial Value: $1433.40
+  Current Value: $2524.00
+  Gain: $1090.60
+  Stock CAGR: 15.16%
+  Stock XIRR: 15.16%
+  S&P 500 CAGR: 12.04%
+  S&P 500 XIRR: 12.04%
+  Outperformance (CAGR): 3.12%
+  Outperformance (XIRR): 3.12%
+
+SHOP:
+  Shares: 25 @ $40.40
+  Current Price: $126.20
+  Initial Value: $1010.00
+  Current Value: $3155.00
+  Gain: $2145.00
+  Stock CAGR: 38.13%
+  Stock XIRR: 38.13%
+  S&P 500 CAGR: 14.55%
+  S&P 500 XIRR: 14.55%
+  Outperformance (CAGR): 23.58%
+  Outperformance (XIRR): 23.58%
+
+SHOP:
+  Shares: 36 @ $28.25
+  Current Price: $126.20
+  Initial Value: $1017.00
+  Current Value: $4543.20
+  Gain: $3526.20
+  Stock CAGR: 55.24%
+  Stock XIRR: 55.24%
+  S&P 500 CAGR: 20.58%
+  S&P 500 XIRR: 20.58%
+  Outperformance (CAGR): 34.67%
+  Outperformance (XIRR): 34.67%
+
+SHOP:
+  Shares: 18 @ $51.28
+  Current Price: $126.20
+  Initial Value: $923.04
+  Current Value: $2271.60
+  Gain: $1348.56
+  Stock CAGR: 47.19%
+  Stock XIRR: 47.19%
+  S&P 500 CAGR: 23.61%
+  S&P 500 XIRR: 23.61%
+  Outperformance (CAGR): 23.58%
+  Outperformance (XIRR): 23.58%
+
+SHOP:
+  Shares: 13 @ $76.81
+  Current Price: $126.20
+  Initial Value: $998.53
+  Current Value: $1640.60
+  Gain: $642.07
+  Stock CAGR: 25.62%
+  Stock XIRR: 25.62%
+  S&P 500 CAGR: 18.90%
+  S&P 500 XIRR: 18.90%
+  Outperformance (CAGR): 6.73%
+  Outperformance (XIRR): 6.73%
+
+SHOP:
+  Shares: 10 @ $75.55
+  Current Price: $126.20
+  Initial Value: $755.50
+  Current Value: $1262.00
+  Gain: $506.50
+  Stock CAGR: 29.97%
+  Stock XIRR: 29.97%
+  S&P 500 CAGR: 16.11%
+  S&P 500 XIRR: 16.11%
+  Outperformance (CAGR): 13.85%
+  Outperformance (XIRR): 13.85%
+
+SHOP:
+  Shares: 16 @ $64.59
+  Current Price: $126.20
+  Initial Value: $1033.44
+  Current Value: $2019.20
+  Gain: $985.76
+  Stock CAGR: 48.66%
+  Stock XIRR: 48.66%
+  S&P 500 CAGR: 15.28%
+  S&P 500 XIRR: 15.28%
+  Outperformance (CAGR): 33.38%
+  Outperformance (XIRR): 33.38%
+
+--- SHOP ACCUMULATED ---
+  Total Trades: 12
+  Total Shares: 298
+  Total Initial Investment: $12793.31
+  Total Current Value: $37607.60
+  Total Gain: $24814.29 (193.96%)
+  Expected S&P 500 Value: $24373.19
+  Outperformance vs S&P 500: $13234.41 (103.45%)
+  Weighted Avg CAGR: 28.13%
+  Weighted Avg XIRR: 28.13%
+  Avg S&P 500 XIRR: 16.31%
+  XIRR Outperformance: 11.82%
+  Weighted Avg Years Held: 4.12 years
+
+WSO:
+  Shares: 20 @ $60.01
+  Current Price: $409.93
+  Initial Value: $1200.20
+  Current Value: $8198.60
+  Gain: $6998.40
+  Stock CAGR: 13.42%
+  Stock XIRR: 13.42%
+  S&P 500 CAGR: 12.16%
+  S&P 500 XIRR: 12.16%
+  Outperformance (CAGR): 1.26%
+  Outperformance (XIRR): 1.26%
+
+--- WSO ACCUMULATED ---
+  Total Trades: 1
+  Total Shares: 20
+  Total Initial Investment: $1200.20
+  Total Current Value: $8198.60
+  Total Gain: $6998.40 (583.10%)
+  Expected S&P 500 Value: $6912.22
+  Outperformance vs S&P 500: $1286.38 (107.18%)
+  Weighted Avg CAGR: 13.42%
+  Weighted Avg XIRR: 13.42%
+  Avg S&P 500 XIRR: 12.16%
+  XIRR Outperformance: 1.26%
+  Weighted Avg Years Held: 15.26 years
+
+ZM:
+  Shares: 20 @ $70.72
+  Current Price: $90.29
+  Initial Value: $1414.40
+  Current Value: $1805.80
+  Gain: $391.40
+  Stock CAGR: 3.92%
+  Stock XIRR: 3.92%
+  S&P 500 CAGR: 14.23%
+  S&P 500 XIRR: 14.23%
+  Outperformance (CAGR): -10.31%
+  Outperformance (XIRR): -10.31%
+
+ZM:
+  Shares: 25 @ $63.27
+  Current Price: $90.29
+  Initial Value: $1581.75
+  Current Value: $2257.25
+  Gain: $675.50
+  Stock CAGR: 5.89%
+  Stock XIRR: 5.89%
+  S&P 500 CAGR: 13.51%
+  S&P 500 XIRR: 13.51%
+  Outperformance (CAGR): -7.61%
+  Outperformance (XIRR): -7.61%
+
+ZM:
+  Shares: 22 @ $70.17
+  Current Price: $90.29
+  Initial Value: $1543.74
+  Current Value: $1986.38
+  Gain: $442.64
+  Stock CAGR: 4.20%
+  Stock XIRR: 4.20%
+  S&P 500 CAGR: 13.13%
+  S&P 500 XIRR: 13.13%
+  Outperformance (CAGR): -8.92%
+  Outperformance (XIRR): -8.92%
+
+ZM:
+  Shares: 3 @ $360.60
+  Current Price: $90.29
+  Initial Value: $1081.80
+  Current Value: $270.87
+  Gain: $-810.93
+  Stock CAGR: -22.39%
+  Stock XIRR: -22.39%
+  S&P 500 CAGR: 13.70%
+  S&P 500 XIRR: 13.70%
+  Outperformance (CAGR): -36.09%
+  Outperformance (XIRR): -36.09%
+
+ZM:
+  Shares: 3 @ $417.07
+  Current Price: $90.29
+  Initial Value: $1251.21
+  Current Value: $270.87
+  Gain: $-980.34
+  Stock CAGR: -26.36%
+  Stock XIRR: -26.36%
+  S&P 500 CAGR: 12.07%
+  S&P 500 XIRR: 12.07%
+  Outperformance (CAGR): -38.43%
+  Outperformance (XIRR): -38.43%
+
+ZM:
+  Shares: 3 @ $342.55
+  Current Price: $90.29
+  Initial Value: $1027.65
+  Current Value: $270.87
+  Gain: $-756.78
+  Stock CAGR: -23.53%
+  Stock XIRR: -23.53%
+  S&P 500 CAGR: 12.67%
+  S&P 500 XIRR: 12.67%
+  Outperformance (CAGR): -36.20%
+  Outperformance (XIRR): -36.20%
+
+ZM:
+  Shares: 4 @ $321.80
+  Current Price: $90.29
+  Initial Value: $1287.20
+  Current Value: $361.16
+  Gain: $-926.04
+  Stock CAGR: -23.11%
+  Stock XIRR: -23.11%
+  S&P 500 CAGR: 10.99%
+  S&P 500 XIRR: 10.99%
+  Outperformance (CAGR): -34.10%
+  Outperformance (XIRR): -34.10%
+
+ZM:
+  Shares: 3 @ $301.72
+  Current Price: $90.29
+  Initial Value: $905.16
+  Current Value: $270.87
+  Gain: $-634.29
+  Stock CAGR: -22.23%
+  Stock XIRR: -22.23%
+  S&P 500 CAGR: 11.12%
+  S&P 500 XIRR: 11.12%
+  Outperformance (CAGR): -33.35%
+  Outperformance (XIRR): -33.35%
+
+ZM:
+  Shares: 5 @ $294.80
+  Current Price: $90.29
+  Initial Value: $1474.00
+  Current Value: $451.45
+  Gain: $-1022.55
+  Stock CAGR: -23.40%
+  Stock XIRR: -23.40%
+  S&P 500 CAGR: 10.32%
+  S&P 500 XIRR: 10.32%
+  Outperformance (CAGR): -33.72%
+  Outperformance (XIRR): -33.72%
+
+ZM:
+  Shares: 5 @ $208.96
+  Current Price: $90.29
+  Initial Value: $1044.80
+  Current Value: $451.45
+  Gain: $-593.35
+  Stock CAGR: -17.95%
+  Stock XIRR: -17.95%
+  S&P 500 CAGR: 9.50%
+  S&P 500 XIRR: 9.50%
+  Outperformance (CAGR): -27.46%
+  Outperformance (XIRR): -27.46%
+
+ZM:
+  Shares: 5 @ $181.48
+  Current Price: $90.29
+  Initial Value: $907.40
+  Current Value: $451.45
+  Gain: $-455.95
+  Stock CAGR: -15.26%
+  Stock XIRR: -15.26%
+  S&P 500 CAGR: 10.48%
+  S&P 500 XIRR: 10.48%
+  Outperformance (CAGR): -25.74%
+  Outperformance (XIRR): -25.74%
+
+ZM:
+  Shares: 7 @ $148.46
+  Current Price: $90.29
+  Initial Value: $1039.22
+  Current Value: $632.03
+  Gain: $-407.19
+  Stock CAGR: -11.47%
+  Stock XIRR: -11.47%
+  S&P 500 CAGR: 11.70%
+  S&P 500 XIRR: 11.70%
+  Outperformance (CAGR): -23.17%
+  Outperformance (XIRR): -23.17%
+
+ZM:
+  Shares: 10 @ $102.67
+  Current Price: $90.29
+  Initial Value: $1026.70
+  Current Value: $902.90
+  Gain: $-123.80
+  Stock CAGR: -3.31%
+  Stock XIRR: -3.31%
+  S&P 500 CAGR: 14.43%
+  S&P 500 XIRR: 14.43%
+  Outperformance (CAGR): -17.75%
+  Outperformance (XIRR): -17.75%
+
+--- ZM ACCUMULATED ---
+  Total Trades: 13
+  Total Shares: 115
+  Total Initial Investment: $15585.03
+  Total Current Value: $10383.35
+  Total Gain: $-5201.68 (-33.38%)
+  Expected S&P 500 Value: $28486.03
+  Outperformance vs S&P 500: $-18102.68 (-116.15%)
+  Weighted Avg CAGR: -12.34%
+  Weighted Avg XIRR: -12.34%
+  Avg S&P 500 XIRR: 12.23%
+  XIRR Outperformance: -24.57%
+  Weighted Avg Years Held: 5.07 years
+
+=== PORTFOLIO SUMMARY ===
+Initial Investment: $159835.52
+Current Value: $2795071.13
+Total Gain: $2635235.61
+Expected Value if Invested in S&P 500: $338638.59
+
+Portfolio CAGR: 75.06%
+Portfolio XIRR: 37.91%
+S&P 500 CAGR: 15.83%
+S&P 500 XIRR: 13.10%
+
+Portfolio Outperformance (CAGR): 59.23%
+Portfolio Outperformance (XIRR): 24.81%

@@ -752,10 +752,28 @@ class PortfolioAnalyzer:
                     # Collect all purchase dates and current date with cash flows
                     dates = [t['purchase_date'] for t in trades_for_symbol]
                     cash_flows = [-t['initial_value'] for t in trades_for_symbol]
+                    
+                    # CRITICAL: Sort dates and cash flows together (dates may not be in order)
+                    # If dates are out of order, XIRR calculation will be completely wrong
+                    date_cf_pairs = list(zip(dates, cash_flows))
+                    date_cf_pairs.sort(key=lambda x: x[0])
+                    dates = [d for d, cf in date_cf_pairs]
+                    cash_flows = [cf for d, cf in date_cf_pairs]
+                    
                     # Add final cash flow (sale at current price)
                     dates.append(str(pd.Timestamp.now().date()))
                     cash_flows.append(current_val)
-                    stats['avg_xirr'] = self.calculate_xirr(dates, cash_flows)
+                    
+                    # Calculate XIRR
+                    xirr_result = self.calculate_xirr(dates, cash_flows)
+                    
+                    # Validate: XIRR should never significantly exceed CAGR for a no-leverage hold
+                    # If it does, use CAGR instead (indicates solver found spurious root)
+                    if xirr_result > stats['avg_cagr'] + 5.0:  # Allow 5% tolerance
+                        logger.warning(f"{symbol}: XIRR ({xirr_result:.1f}%) exceeds CAGR ({stats['avg_cagr']:.1f}%) - using CAGR")
+                        stats['avg_xirr'] = stats['avg_cagr']
+                    else:
+                        stats['avg_xirr'] = xirr_result
                 else:
                     # Fallback for test data: use weighted average
                     total_xirr_weighted = sum(t['stock_xirr'] * t['initial_value'] 

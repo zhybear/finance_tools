@@ -11,6 +11,16 @@ import pandas as pd
 import argparse
 import sys
 
+# Try to import visualization libraries
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib
+    matplotlib.use('Agg')  # Use non-interactive backend for PDF generation
+    import seaborn as sns
+    VISUALIZATIONS_AVAILABLE = True
+except ImportError:
+    VISUALIZATIONS_AVAILABLE = False
+
 # Constants
 DAYS_PER_YEAR = 365.25
 SP500_SYMBOL = '^GSPC'
@@ -580,6 +590,164 @@ class PortfolioAnalyzer:
                 print(f"\n✅ Report saved to: {output_file}")
             except Exception as e:
                 print(f"\n⚠️  Error saving report to file: {e}")
+    
+    def generate_pdf_report(self, pdf_path: str) -> None:
+        """
+        Generate a comprehensive PDF report with visualizations.
+        
+        Creates a PDF with charts showing portfolio composition, performance,
+        and key metrics. Requires matplotlib and seaborn libraries.
+        
+        Args:
+            pdf_path: Path where PDF file will be saved
+        """
+        if not VISUALIZATIONS_AVAILABLE:
+            print("⚠️  Visualization libraries not available. Install with:")
+            print("   pip3 install matplotlib seaborn")
+            return
+        
+        try:
+            from matplotlib.backends.backend_pdf import PdfPages
+            
+            analysis = self.analyze_portfolio()
+            if not analysis['trades']:
+                print("No valid trades to analyze.")
+                return
+            
+            symbol_stats = self._calculate_symbol_accumulation(analysis['trades'])
+            
+            # Create PDF with multiple pages
+            with PdfPages(pdf_path) as pdf:
+                # Page 1: Summary metrics and key charts
+                fig = plt.figure(figsize=(11, 8.5))
+                fig.suptitle('Portfolio Performance Report', fontsize=16, fontweight='bold')
+                
+                # Create grid for subplots
+                gs = fig.add_gridspec(3, 2, hspace=0.4, wspace=0.3)
+                
+                # Summary metrics
+                ax_text = fig.add_subplot(gs[0, :])
+                ax_text.axis('off')
+                summary_text = f"""
+PORTFOLIO SUMMARY
+Initial Investment: ${analysis['total_initial_value']:,.2f}
+Current Value: ${analysis['total_current_value']:,.2f}
+Total Gain: ${analysis['total_current_value'] - analysis['total_initial_value']:,.2f}
+
+Portfolio CAGR: {analysis['portfolio_cagr']:.2f}%
+S&P 500 CAGR: {analysis['sp500_cagr']:.2f}%
+Outperformance: {analysis['portfolio_outperformance']:.2f}%
+
+Expected S&P 500 Value: ${analysis['total_sp500_current_value']:,.2f}
+Actual Return vs Expected: {(analysis['total_current_value'] / analysis['total_sp500_current_value'] * 100):.1f}%
+                """
+                ax_text.text(0.1, 0.5, summary_text, fontsize=11, family='monospace',
+                           verticalalignment='center', bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.3))
+                
+                # Portfolio composition pie chart
+                ax_pie = fig.add_subplot(gs[1, 0])
+                symbol_values = {symbol: stats['total_current_value'] for symbol, stats in symbol_stats.items()}
+                sorted_symbols = sorted(symbol_values.items(), key=lambda x: x[1], reverse=True)[:10]
+                labels = [s[0] for s in sorted_symbols]
+                sizes = [s[1] for s in sorted_symbols]
+                colors = plt.cm.Set3(range(len(labels)))
+                ax_pie.pie(sizes, labels=labels, autopct='%1.1f%%', colors=colors, startangle=90)
+                ax_pie.set_title('Top 10 Holdings by Value', fontweight='bold')
+                
+                # CAGR comparison chart
+                ax_cagr = fig.add_subplot(gs[1, 1])
+                top_symbols = sorted(symbol_stats.items(), 
+                                   key=lambda x: x[1]['avg_cagr'], reverse=True)[:8]
+                names = [s[0] for s in top_symbols]
+                cagrs = [s[1]['avg_cagr'] for s in top_symbols]
+                colors_bar = ['green' if c > 0 else 'red' for c in cagrs]
+                ax_cagr.barh(names, cagrs, color=colors_bar, alpha=0.7)
+                ax_cagr.set_xlabel('CAGR %', fontweight='bold')
+                ax_cagr.set_title('Top 8 Performers by CAGR', fontweight='bold')
+                ax_cagr.axvline(x=analysis['sp500_cagr'], color='blue', linestyle='--', 
+                               label=f"S&P 500: {analysis['sp500_cagr']:.1f}%")
+                ax_cagr.legend()
+                ax_cagr.grid(axis='x', alpha=0.3)
+                
+                # Outperformance chart
+                ax_out = fig.add_subplot(gs[2, 0])
+                top_out = sorted(symbol_stats.items(), 
+                                key=lambda x: x[1]['total_gain'], reverse=True)[:8]
+                names_out = [s[0] for s in top_out]
+                gains = [s[1]['total_gain'] for s in top_out]
+                colors_out = ['darkgreen' if g > 0 else 'darkred' for g in gains]
+                ax_out.barh(names_out, gains, color=colors_out, alpha=0.7)
+                ax_out.set_xlabel('Total Gain ($)', fontweight='bold')
+                ax_out.set_title('Top 8 by Total Dollar Gain', fontweight='bold')
+                ax_out.grid(axis='x', alpha=0.3)
+                
+                # Win/Loss analysis
+                ax_stats = fig.add_subplot(gs[2, 1])
+                ax_stats.axis('off')
+                
+                winning = sum(1 for s in symbol_stats.values() if s['total_gain'] > 0)
+                losing = sum(1 for s in symbol_stats.values() if s['total_gain'] < 0)
+                neutral = sum(1 for s in symbol_stats.values() if s['total_gain'] == 0)
+                
+                stats_text = f"""
+POSITION STATISTICS
+
+Winning Positions: {winning}
+Losing Positions: {losing}
+Neutral Positions: {neutral}
+Total Symbols: {len(symbol_stats)}
+
+Win Rate: {(winning / len(symbol_stats) * 100):.1f}%
+Total Unique Symbols: {len(symbol_stats)}
+                """
+                ax_stats.text(0.1, 0.5, stats_text, fontsize=11, family='monospace',
+                            verticalalignment='center', bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.3))
+                
+                pdf.savefig(fig, bbox_inches='tight')
+                plt.close(fig)
+                
+                # Page 2: Top performers detailed table
+                fig = plt.figure(figsize=(11, 8.5))
+                fig.suptitle('Top 10 Positions - Detailed Metrics', fontsize=16, fontweight='bold')
+                ax = fig.add_subplot(111)
+                ax.axis('tight')
+                ax.axis('off')
+                
+                top_10 = sorted(symbol_stats.items(),
+                               key=lambda x: x[1]['total_current_value'], reverse=True)[:10]
+                
+                table_data = []
+                table_data.append(['Symbol', 'Trades', 'Invested', 'Current', 'Gain', 'Gain%', 'CAGR%'])
+                
+                for symbol, stats in top_10:
+                    table_data.append([
+                        symbol,
+                        f"{stats['trades_count']}",
+                        f"${stats['total_initial_value']:.0f}",
+                        f"${stats['total_current_value']:.0f}",
+                        f"${stats['total_gain']:.0f}",
+                        f"{stats['gain_percentage']:.1f}%",
+                        f"{stats['avg_cagr']:.1f}%"
+                    ])
+                
+                table = ax.table(cellText=table_data, cellLoc='center', loc='center',
+                               colWidths=[0.1, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15])
+                table.auto_set_font_size(False)
+                table.set_fontsize(10)
+                table.scale(1, 2)
+                
+                # Style header row
+                for i in range(len(table_data[0])):
+                    table[(0, i)].set_facecolor('#4CAF50')
+                    table[(0, i)].set_text_props(weight='bold', color='white')
+                
+                pdf.savefig(fig, bbox_inches='tight')
+                plt.close(fig)
+            
+            print(f"✅ PDF report generated: {pdf_path}")
+            
+        except Exception as e:
+            print(f"⚠️  Error generating PDF: {e}")
 
 
 # ============================================================================
@@ -590,6 +758,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Portfolio Analyzer")
     parser.add_argument("--csv", help="Path to CSV file with trades")
     parser.add_argument("--output", "-o", help="Path to save report to text file")
+    parser.add_argument("--pdf", help="Path to save report as PDF file with visualizations")
     args = parser.parse_args()
 
     if args.csv:
@@ -606,3 +775,6 @@ if __name__ == "__main__":
 
     analyzer = PortfolioAnalyzer(trades)
     analyzer.print_report(output_file=args.output)
+    
+    if args.pdf:
+        analyzer.generate_pdf_report(args.pdf)

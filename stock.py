@@ -430,14 +430,84 @@ class PortfolioAnalyzer:
     # Reporting
     # ============================================================================
     
-    def print_report(self) -> None:
+    def _calculate_symbol_accumulation(self, trades: List[Dict]) -> Dict:
         """
-        Print formatted portfolio analysis report to console.
+        Calculate accumulated earnings and metrics for each stock symbol.
         
-        Displays individual trade performance and portfolio summary with:
+        Groups all trades by symbol and aggregates their performance metrics.
+        
+        Args:
+            trades: List of trade performance dictionaries
+            
+        Returns:
+            Dictionary mapping symbols to accumulated metrics with total gains,
+            weighted averages, and S&P 500 comparison for each symbol.
+        """
+        symbol_stats = {}
+        
+        # Aggregate trades by symbol
+        for trade in trades:
+            symbol = trade['symbol']
+            if symbol not in symbol_stats:
+                symbol_stats[symbol] = {
+                    'trades_count': 0,
+                    'total_shares': 0,
+                    'total_initial_value': 0,
+                    'total_current_value': 0,
+                    'total_sp500_value': 0,
+                    'total_cagr_weighted': 0,
+                    'total_years_weighted': 0,
+                }
+            
+            stats = symbol_stats[symbol]
+            stats['trades_count'] += 1
+            stats['total_shares'] += trade['shares']
+            stats['total_initial_value'] += trade['initial_value']
+            stats['total_current_value'] += trade['current_value']
+            stats['total_sp500_value'] += trade['sp500_current_value']
+            stats['total_cagr_weighted'] += trade['stock_cagr'] * trade['initial_value']
+            stats['total_years_weighted'] += trade['years_held'] * trade['initial_value']
+        
+        # Calculate final metrics for each symbol
+        for symbol, stats in symbol_stats.items():
+            initial_val = stats['total_initial_value']
+            current_val = stats['total_current_value']
+            sp500_val = stats['total_sp500_value']
+            
+            # Gain calculations
+            stats['total_gain'] = current_val - initial_val
+            sp500_gain = sp500_val - initial_val
+            stats['sp500_gain'] = sp500_gain
+            
+            # Outperformance against S&P 500
+            stats['outperformance'] = stats['total_gain'] - sp500_gain
+            
+            # Weighted averages (avoid division by zero)
+            divisor = initial_val if initial_val > 0 else 1
+            stats['gain_percentage'] = (stats['total_gain'] / divisor * 100) if initial_val > 0 else 0
+            stats['avg_cagr'] = (stats['total_cagr_weighted'] / divisor) if initial_val > 0 else 0
+            stats['avg_years_held'] = (stats['total_years_weighted'] / divisor) if initial_val > 0 else 0
+            stats['outperformance_pct'] = (stats['outperformance'] / divisor * 100) if initial_val > 0 else 0
+            
+            # Remove intermediate calculation fields
+            del stats['total_cagr_weighted']
+            del stats['total_years_weighted']
+        
+        return symbol_stats
+    
+    def print_report(self, output_file: Optional[str] = None) -> None:
+        """
+        Print formatted portfolio analysis report to console and optionally to file.
+        
+        Displays individual trade performance, accumulated earnings per symbol,
+        and portfolio summary with:
         - Current values and CAGR for each trade
+        - Accumulated earnings and metrics per symbol
         - Portfolio totals and weighted CAGR
         - Comparison against S&P 500 benchmark
+        
+        Args:
+            output_file: Optional path to save report as text file
         """
         analysis = self.analyze_portfolio()
 
@@ -445,22 +515,71 @@ class PortfolioAnalyzer:
             print("No valid trades to analyze.")
             return
 
-        print("\n=== INDIVIDUAL STOCK PERFORMANCE ===")
+        # Calculate symbol accumulation
+        symbol_stats = self._calculate_symbol_accumulation(analysis['trades'])
+        
+        # Group trades by symbol
+        trades_by_symbol = {}
         for trade in analysis['trades']:
-            print(f"\n{trade['symbol']}:")
-            print(f"  Shares: {trade['shares']} @ ${trade['purchase_price']:.2f}")
-            print(f"  Current Price: ${trade['current_price']:.2f}")
-            print(f"  Stock CAGR: {trade['stock_cagr']:.2f}%")
-            print(f"  S&P 500 CAGR: {trade['sp500_cagr']:.2f}%")
-            print(f"  Outperformance: {trade['outperformance']:.2f}%")
+            symbol = trade['symbol']
+            if symbol not in trades_by_symbol:
+                trades_by_symbol[symbol] = []
+            trades_by_symbol[symbol].append(trade)
+        
+        # Build report output
+        report_lines = []
+        report_lines.append("\n=== INDIVIDUAL STOCK PERFORMANCE ===")
+        
+        # Iterate through symbols in sorted order
+        for symbol in sorted(trades_by_symbol.keys()):
+            trades = trades_by_symbol[symbol]
+            symbol_data = symbol_stats[symbol]
+            
+            # Print individual trades for this symbol
+            for trade in trades:
+                report_lines.append(f"\n{trade['symbol']}:")
+                report_lines.append(f"  Shares: {trade['shares']} @ ${trade['purchase_price']:.2f}")
+                report_lines.append(f"  Current Price: ${trade['current_price']:.2f}")
+                report_lines.append(f"  Initial Value: ${trade['initial_value']:.2f}")
+                report_lines.append(f"  Current Value: ${trade['current_value']:.2f}")
+                report_lines.append(f"  Gain: ${trade['current_value'] - trade['initial_value']:.2f}")
+                report_lines.append(f"  Stock CAGR: {trade['stock_cagr']:.2f}%")
+                report_lines.append(f"  S&P 500 CAGR: {trade['sp500_cagr']:.2f}%")
+                report_lines.append(f"  Outperformance: {trade['outperformance']:.2f}%")
+            
+            # Print accumulated stats for this symbol
+            report_lines.append(f"\n--- {symbol} ACCUMULATED ---")
+            report_lines.append(f"  Total Trades: {symbol_data['trades_count']}")
+            report_lines.append(f"  Total Shares: {symbol_data['total_shares']:.0f}")
+            report_lines.append(f"  Total Initial Investment: ${symbol_data['total_initial_value']:.2f}")
+            report_lines.append(f"  Total Current Value: ${symbol_data['total_current_value']:.2f}")
+            report_lines.append(f"  Total Gain: ${symbol_data['total_gain']:.2f} ({symbol_data['gain_percentage']:.2f}%)")
+            report_lines.append(f"  Expected S&P 500 Value: ${symbol_data['total_sp500_value']:.2f}")
+            report_lines.append(f"  Outperformance vs S&P 500: ${symbol_data['outperformance']:.2f} ({symbol_data['outperformance_pct']:.2f}%)")
+            report_lines.append(f"  Weighted Avg CAGR: {symbol_data['avg_cagr']:.2f}%")
+            report_lines.append(f"  Weighted Avg Years Held: {symbol_data['avg_years_held']:.2f} years")
 
-        print("\n=== PORTFOLIO SUMMARY ===")
-        print(f"Initial Investment: ${analysis['total_initial_value']:.2f}")
-        print(f"Current Value: ${analysis['total_current_value']:.2f}")
-        print(f"Expected Value if Invested in S&P 500: ${analysis['total_sp500_current_value']:.2f}")
-        print(f"Portfolio CAGR: {analysis['portfolio_cagr']:.2f}%")
-        print(f"S&P 500 CAGR: {analysis['sp500_cagr']:.2f}%")
-        print(f"Portfolio Outperformance: {analysis['portfolio_outperformance']:.2f}%")
+        report_lines.append("\n=== PORTFOLIO SUMMARY ===")
+        report_lines.append(f"Initial Investment: ${analysis['total_initial_value']:.2f}")
+        report_lines.append(f"Current Value: ${analysis['total_current_value']:.2f}")
+        report_lines.append(f"Total Gain: ${analysis['total_current_value'] - analysis['total_initial_value']:.2f}")
+        report_lines.append(f"Expected Value if Invested in S&P 500: ${analysis['total_sp500_current_value']:.2f}")
+        report_lines.append(f"Portfolio CAGR: {analysis['portfolio_cagr']:.2f}%")
+        report_lines.append(f"S&P 500 CAGR: {analysis['sp500_cagr']:.2f}%")
+        report_lines.append(f"Portfolio Outperformance: {analysis['portfolio_outperformance']:.2f}%")
+        
+        # Print to console
+        for line in report_lines:
+            print(line)
+        
+        # Optionally save to file
+        if output_file:
+            try:
+                with open(output_file, 'w') as f:
+                    f.write('\n'.join(report_lines))
+                print(f"\n✅ Report saved to: {output_file}")
+            except Exception as e:
+                print(f"\n⚠️  Error saving report to file: {e}")
 
 
 # ============================================================================
@@ -470,6 +589,7 @@ class PortfolioAnalyzer:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Portfolio Analyzer")
     parser.add_argument("--csv", help="Path to CSV file with trades")
+    parser.add_argument("--output", "-o", help="Path to save report to text file")
     args = parser.parse_args()
 
     if args.csv:
@@ -485,4 +605,4 @@ if __name__ == "__main__":
         ]
 
     analyzer = PortfolioAnalyzer(trades)
-    analyzer.print_report()
+    analyzer.print_report(output_file=args.output)

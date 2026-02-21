@@ -1051,6 +1051,566 @@ Win Rate: {win_rate:.0f}%
         except Exception as e:
             print(f"⚠️  Error generating PDF: {e}")
 
+    def generate_html_report(self, html_path: str) -> None:
+        """
+        Generate a professional interactive HTML dashboard report.
+        
+        Includes:
+        - Summary metrics and KPIs
+        - Interactive Plotly charts
+        - Sortable/filterable data tables
+        - Dark mode support
+        - Print-friendly layout
+        
+        Args:
+            html_path: Path where the HTML file will be saved
+        """
+        try:
+            # Prepare data
+            analysis = self.analyze_portfolio()
+            if not analysis['trades']:
+                print("No valid trades to analyze.")
+                return
+            
+            symbol_stats = self._calculate_symbol_accumulation(analysis['trades'])
+            pdf_data = self._prepare_pdf_data(analysis, symbol_stats)
+            
+            # Start building HTML
+            html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Analytics Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --accent-color: #0066cc;
+            --positive: #10b981;
+            --negative: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        body.dark-mode {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #444444;
+            --accent-color: #3b82f6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #0052a3 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .navbar-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .toggle-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .toggle-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metric-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .metric-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+        
+        .metric-unit {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        
+        .metric-positive { color: var(--positive); }
+        .metric-negative { color: var(--negative); }
+        
+        .section {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-color);
+            color: var(--text-primary);
+        }
+        
+        .chart-container {
+            min-height: 400px;
+            margin-bottom: 1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        table thead {
+            background: var(--bg-secondary);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        table tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+        
+        .number {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-weight: 600;
+        }
+        
+        .positive-return { color: var(--positive); }
+        .negative-return { color: var(--negative); }
+        
+        .dataTables_wrapper {
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .navbar { padding: 1rem; flex-direction: column; gap: 1rem; }
+            .navbar h1 { font-size: 1.3rem; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .section { padding: 1rem; }
+        }
+        
+        @media print {
+            .navbar-controls { display: none; }
+            .dataTables_filter, .dataTables_length, .dataTables_info, .dataTables_paginate { display: none !important; }
+            .section { break-inside: avoid; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>📊 Portfolio Analytics</h1>
+        <div class="navbar-controls">
+            <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+            <button class="toggle-btn" onclick="window.print()">🖨️ Print</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Key Metrics Section -->
+        <div class="metrics-grid">
+"""
+            
+            # Add metric cards - using analysis dict which has all portfolio metrics
+            cagr = analysis['portfolio_cagr']
+            xirr = analysis.get('portfolio_xirr', 0.0)
+            total_gain = analysis['total_current_value'] - analysis['total_initial_value']
+            gain_pct = self._safe_divide(total_gain, analysis['total_initial_value'], 0.0) * 100
+            
+            html_content += f"""
+            <div class="metric-card">
+                <div class="metric-label">Portfolio Value</div>
+                <div class="metric-value">${analysis['total_current_value']:,.0f}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total Gain</div>
+                <div class="metric-value {('metric-positive' if total_gain >= 0 else 'metric-negative')}">${total_gain:,.0f}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Return %</div>
+                <div class="metric-value {('metric-positive' if gain_pct >= 0 else 'metric-negative')}">{gain_pct:.1f}<span class="metric-unit">%</span></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">CAGR</div>
+                <div class="metric-value {('metric-positive' if cagr >= 0 else 'metric-negative')}">{cagr:.1f}<span class="metric-unit">%</span></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">XIRR (Time-Weighted)</div>
+                <div class="metric-value {('metric-positive' if xirr >= 0 else 'metric-negative')}">{xirr:.1f}<span class="metric-unit">%</span></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Invested Capital</div>
+                <div class="metric-value">${analysis['total_initial_value']:,.0f}</div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="section">
+            <h2 class="section-title">Position Allocation</h2>
+            <div class="chart-container" id="pieChart"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Performance Metrics</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+                <div class="chart-container" id="cagrChart"></div>
+                <div class="chart-container" id="xirrChart"></div>
+                <div class="chart-container" id="gainChart"></div>
+            </div>
+        </div>
+        
+        <!-- Top Positions Table -->
+        <div class="section">
+            <h2 class="section-title">Top 10 Holdings</h2>
+            <table id="topPositionsTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Trades</th>
+                        <th>Invested</th>
+                        <th>Current Value</th>
+                        <th>Dollar Gain</th>
+                        <th>Return %</th>
+                        <th>CAGR %</th>
+                        <th>XIRR %</th>
+                    </tr>
+                </thead>
+                <tbody>
+"""
+            
+            # Add top positions rows
+            for symbol, stats in pdf_data['top_10_value']:
+                html_content += f"""
+                    <tr>
+                        <td><strong>{symbol}</strong></td>
+                        <td class="number">{stats['trades_count']}</td>
+                        <td class="number">${stats['total_initial_value']:,.0f}</td>
+                        <td class="number">${stats['total_current_value']:,.0f}</td>
+                        <td class="number {('positive-return' if stats['total_gain'] >= 0 else 'negative-return')}">${stats['total_gain']:,.0f}</td>
+                        <td class="number {('positive-return' if stats['gain_percentage'] >= 0 else 'negative-return')}">{stats['gain_percentage']:.1f}%</td>
+                        <td class="number {('positive-return' if stats['avg_cagr'] >= 0 else 'negative-return')}">{stats['avg_cagr']:.1f}%</td>
+                        <td class="number {('positive-return' if stats['avg_xirr'] >= 0 else 'negative-return')}">{stats['avg_xirr']:.1f}%</td>
+                    </tr>
+"""
+            
+            html_content += """
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- All Positions Table -->
+        <div class="section">
+            <h2 class="section-title">All Positions</h2>
+            <table id="allPositionsTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Trades</th>
+                        <th>Invested</th>
+                        <th>Current Value</th>
+                        <th>Dollar Gain</th>
+                        <th>Return %</th>
+                        <th>CAGR %</th>
+                        <th>XIRR %</th>
+                    </tr>
+                </thead>
+                <tbody>
+"""
+            
+            # Add all positions (sorted by current value)
+            sorted_symbols = sorted(symbol_stats.items(), 
+                                   key=lambda x: x[1]['total_current_value'], 
+                                   reverse=True)
+            for symbol, stats in sorted_symbols:
+                html_content += f"""
+                    <tr>
+                        <td><strong>{symbol}</strong></td>
+                        <td class="number">{stats['trades_count']}</td>
+                        <td class="number">${stats['total_initial_value']:,.0f}</td>
+                        <td class="number">${stats['total_current_value']:,.0f}</td>
+                        <td class="number {('positive-return' if stats['total_gain'] >= 0 else 'negative-return')}">${stats['total_gain']:,.0f}</td>
+                        <td class="number {('positive-return' if stats['gain_percentage'] >= 0 else 'negative-return')}">{stats['gain_percentage']:.1f}%</td>
+                        <td class="number {('positive-return' if stats['avg_cagr'] >= 0 else 'negative-return')}">{stats['avg_cagr']:.1f}%</td>
+                        <td class="number {('positive-return' if stats['avg_xirr'] >= 0 else 'negative-return')}">{stats['avg_xirr']:.1f}%</td>
+                    </tr>
+"""
+            
+            html_content += """
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+        
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // Initialize DataTables
+        $(document).ready(function() {
+            $('#topPositionsTable').DataTable({
+                paging: false,
+                searching: true,
+                info: false,
+                columnDefs: [{
+                    targets: [1,2,3,4,5,6,7],
+                    className: 'dt-right'
+                }]
+            });
+            
+            $('#allPositionsTable').DataTable({
+                pageLength: 25,
+                columnDefs: [{
+                    targets: [1,2,3,4,5,6,7],
+                    className: 'dt-right'
+                }]
+            });
+            
+            // Create Pie Chart
+            createPieChart();
+            createCAGRChart();
+            createXIRRChart();
+            createGainChart();
+        });
+        
+        function createPieChart() {
+            const data = ["""
+            
+            # Add pie chart data
+            for symbol, stats in pdf_data['top_10_value']:
+                html_content += f"{{x: '{symbol}', value: {stats['total_current_value']:.0f}}},"
+            
+            html_content += """
+            ];
+            
+            const layout = {
+                title: 'Top 10 Holdings by Value',
+                height: 400,
+                font: { family: 'sans-serif' }
+            };
+            
+            const trace = {
+                labels: data.map(d => d.x),
+                values: data.map(d => d.value),
+                type: 'pie',
+                textposition: 'inside',
+                textinfo: 'label+percent'
+            };
+            
+            Plotly.newPlot('pieChart', [trace], layout, {responsive: true});
+        }
+        
+        function createCAGRChart() {
+            const topData = ["""
+            
+            for symbol, stats in pdf_data['top_10_value']:
+                html_content += f"{{symbol: '{symbol}', cagr: {stats['avg_cagr']:.2f}}},"
+            
+            html_content += """
+            ];
+            
+            const trace = {
+                x: topData.map(d => d.symbol),
+                y: topData.map(d => d.cagr),
+                type: 'bar',
+                marker: {
+                    color: topData.map(d => d.cagr >= 0 ? '#10b981' : '#ef4444')
+                }
+            };
+            
+            const layout = {
+                title: 'CAGR by Position',
+                xaxis: { title: 'Symbol' },
+                yaxis: { title: 'CAGR %' },
+                height: 400,
+                margin: { b: 100 }
+            };
+            
+            Plotly.newPlot('cagrChart', [trace], layout, {responsive: true});
+        }
+        
+        function createXIRRChart() {
+            const topData = ["""
+            
+            for symbol, stats in pdf_data['top_10_value']:
+                html_content += f"{{symbol: '{symbol}', xirr: {stats['avg_xirr']:.2f}}},"
+            
+            html_content += """
+            ];
+            
+            const trace = {
+                x: topData.map(d => d.symbol),
+                y: topData.map(d => d.xirr),
+                type: 'bar',
+                marker: {
+                    color: topData.map(d => d.xirr >= 0 ? '#10b981' : '#ef4444')
+                }
+            };
+            
+            const layout = {
+                title: 'XIRR by Position',
+                xaxis: { title: 'Symbol' },
+                yaxis: { title: 'XIRR %' },
+                height: 400,
+                margin: { b: 100 }
+            };
+            
+            Plotly.newPlot('xirrChart', [trace], layout, {responsive: true});
+        }
+        
+        function createGainChart() {
+            const topData = ["""
+            
+            for symbol, stats in pdf_data['top_10_value']:
+                html_content += f"{{symbol: '{symbol}', gain: {stats['total_gain']:.0f}}},"
+            
+            html_content += """
+            ];
+            
+            const trace = {
+                x: topData.map(d => d.symbol),
+                y: topData.map(d => d.gain),
+                type: 'bar',
+                marker: {
+                    color: topData.map(d => d.gain >= 0 ? '#10b981' : '#ef4444')
+                }
+            };
+            
+            const layout = {
+                title: 'Dollar Gain by Position',
+                xaxis: { title: 'Symbol' },
+                yaxis: { title: 'Gain ($)' },
+                height: 400,
+                margin: { b: 100 }
+            };
+            
+            Plotly.newPlot('gainChart', [trace], layout, {responsive: true});
+        }
+    </script>
+</body>
+</html>
+"""
+            
+            # Write HTML file
+            with open(html_path, 'w') as f:
+                f.write(html_content)
+            
+            print(f"✅ HTML report generated: {html_path}")
+            
+        except Exception as e:
+            print(f"⚠️  Error generating HTML: {e}")
+            import traceback
+            traceback.print_exc()
+
 
 # ============================================================================
 # Command Line Interface
@@ -1061,6 +1621,7 @@ if __name__ == "__main__":
     parser.add_argument("--csv", help="Path to CSV file with trades")
     parser.add_argument("--output", "-o", help="Path to save report to text file")
     parser.add_argument("--pdf", help="Path to save report as PDF file with visualizations")
+    parser.add_argument("--html", help="Path to save interactive HTML dashboard report")
     args = parser.parse_args()
 
     if args.csv:
@@ -1080,3 +1641,6 @@ if __name__ == "__main__":
     
     if args.pdf:
         analyzer.generate_pdf_report(args.pdf)
+    
+    if args.html:
+        analyzer.generate_html_report(args.html)

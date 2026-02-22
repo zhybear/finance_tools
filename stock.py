@@ -739,16 +739,39 @@ class PortfolioAnalyzer:
             # Calculate weighted average years held
             stats['avg_years_held'] = self._safe_divide(stats['total_years_weighted'], initial_val, 0.0)
             
-            # Calculate true CAGR using actual time span from first purchase to now
-            # (not weighted average of individual holding periods)
+            # Calculate weighted CAGR:
+            # For each transaction i: r_i = CAGR from purchase_date_i to today
+            #                         w_i = investment_amount_i * years_held_i
+            # weighted_CAGR = Σ(r_i * w_i) / Σ(w_i)
             if stats['trades_count'] > 0:
                 trades_for_symbol = symbol_trades[symbol]
                 trades_with_dates = [t for t in trades_for_symbol if 'purchase_date' in t]
+                
                 if trades_with_dates:
-                    first_date = min(pd.to_datetime(t['purchase_date']) for t in trades_with_dates)
-                    last_date = pd.Timestamp.now()
-                    actual_years = (last_date - first_date).days / 365.25
-                    stats['avg_cagr'] = self.calculate_cagr(initial_val, current_val, actual_years if actual_years > 0 else 0.1)
+                    total_weighted_cagr = 0.0
+                    total_weight = 0.0
+                    
+                    for trade in trades_with_dates:
+                        # Calculate years from this specific purchase to today
+                        purchase_date = pd.to_datetime(trade['purchase_date'])
+                        today = pd.Timestamp.now()
+                        years_held = (today - purchase_date).days / 365.25
+                        
+                        # Calculate CAGR for this individual transaction
+                        individual_cagr = self.calculate_cagr(
+                            trade['initial_value'],
+                            trade['current_value'],
+                            years_held if years_held > 0 else 0.1
+                        )
+                        
+                        # Weight = investment_amount * years_held
+                        weight = trade['initial_value'] * years_held
+                        
+                        total_weighted_cagr += individual_cagr * weight
+                        total_weight += weight
+                    
+                    # Weighted average CAGR
+                    stats['avg_cagr'] = self._safe_divide(total_weighted_cagr, total_weight, 0.0)
                 else:
                     # Fallback for test data: use weighted average years
                     stats['avg_cagr'] = self.calculate_cagr(initial_val, current_val, stats['avg_years_held'])

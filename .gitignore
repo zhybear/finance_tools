@@ -2,3 +2,25 @@
 /output.txt
 /output_final.txt
 /output_new.txt
+
+# Personal portfolio output files (generated reports)
+zhuo_personal_trade/portfolio_report.*
+
+# Coverage and cache files
+.coverage
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary test outputs
+/tmp_*.csv
+/test_output.*

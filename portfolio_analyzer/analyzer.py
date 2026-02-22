@@ -419,23 +419,6 @@ class PortfolioAnalyzer:
         from .reports import HTMLReportGenerator
         HTMLReportGenerator.generate(self, html_path)
     
-    def _prepare_pdf_data(self, analysis: Dict, symbol_stats: Dict) -> Dict:
-        """Prepare data for PDF generation."""
-        return {
-            'top_10_value': sorted(symbol_stats.items(), 
-                                  key=lambda x: x[1]['total_current_value'], reverse=True)[:10],
-            'top_8_cagr': sorted(symbol_stats.items(), 
-                                key=lambda x: x[1]['avg_cagr'], reverse=True)[:8],
-            'top_8_xirr': sorted(symbol_stats.items(), 
-                                key=lambda x: x[1]['avg_xirr'], reverse=True)[:8],
-            'top_8_gain': sorted(symbol_stats.items(), 
-                                key=lambda x: x[1]['total_gain'], reverse=True)[:8],
-            'winning': sum(1 for s in symbol_stats.values() if s['total_gain'] > 0),
-            'losing': sum(1 for s in symbol_stats.values() if s['total_gain'] < 0),
-            'neutral': sum(1 for s in symbol_stats.values() if s['total_gain'] == 0),
-            'total_symbols': len(symbol_stats)
-        }
-    
     # Backward compatibility methods
     def calculate_cagr(self, start_value: float, end_value: float, years: float) -> float:
         """Backward compatibility wrapper for calculate_cagr function."""

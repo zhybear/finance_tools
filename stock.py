@@ -641,9 +641,25 @@ class PortfolioAnalyzer:
             portfolio_cagr = self.calculate_cagr(total_initial_value, total_current_value, weighted_years)
             sp500_cagr = self.calculate_cagr(total_initial_value, total_sp500_current_value, weighted_years)
             
-            # Calculate portfolio XIRR
-            portfolio_xirr = self.calculate_xirr(cash_flow_dates, cash_flows_stocks)
-            sp500_xirr = self.calculate_xirr(cash_flow_dates, cash_flows_sp500)
+            # CRITICAL: Sort cash flows by date (must be chronological for XIRR calculation)
+            if cash_flow_dates:
+                date_cf_pairs_stocks = list(zip(cash_flow_dates, cash_flows_stocks))
+                date_cf_pairs_stocks.sort(key=lambda x: x[0])
+                cash_flow_dates_sorted = [d for d, cf in date_cf_pairs_stocks]
+                cash_flows_stocks_sorted = [cf for d, cf in date_cf_pairs_stocks]
+                
+                # Do the same for S&P 500 cash flows
+                date_cf_pairs_sp500 = list(zip(cash_flow_dates, cash_flows_sp500))
+                date_cf_pairs_sp500.sort(key=lambda x: x[0])
+                cash_flows_sp500_sorted = [cf for d, cf in date_cf_pairs_sp500]
+            else:
+                cash_flow_dates_sorted = cash_flow_dates
+                cash_flows_stocks_sorted = cash_flows_stocks
+                cash_flows_sp500_sorted = cash_flows_sp500
+            
+            # Calculate portfolio XIRR with sorted dates
+            portfolio_xirr = self.calculate_xirr(cash_flow_dates_sorted, cash_flows_stocks_sorted)
+            sp500_xirr = self.calculate_xirr(cash_flow_dates_sorted, cash_flows_sp500_sorted)
         else:
             weighted_years = 0
             portfolio_cagr = 0
@@ -766,14 +782,7 @@ class PortfolioAnalyzer:
                     
                     # Calculate XIRR
                     xirr_result = self.calculate_xirr(dates, cash_flows)
-                    
-                    # Validate: XIRR should never significantly exceed CAGR for a no-leverage hold
-                    # If it does, use CAGR instead (indicates solver found spurious root)
-                    if xirr_result > stats['avg_cagr'] + 5.0:  # Allow 5% tolerance
-                        logger.warning(f"{symbol}: XIRR ({xirr_result:.1f}%) exceeds CAGR ({stats['avg_cagr']:.1f}%) - using CAGR")
-                        stats['avg_xirr'] = stats['avg_cagr']
-                    else:
-                        stats['avg_xirr'] = xirr_result
+                    stats['avg_xirr'] = xirr_result
                 else:
                     # Fallback for test data: use weighted average
                     total_xirr_weighted = sum(t['stock_xirr'] * t['initial_value'] 

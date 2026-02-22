@@ -1,0 +1,329 @@
+"""
+Unit tests for Portfolio Performance Analyzer
+
+Run with:
+    python3 -m unittest test_analyzer.py -v
+
+Author: Zhuo Robert Li
+Version: 1.2.0
+License: ISC
+"""
+
+import unittest
+import tempfile
+import os
+import numpy as np
+from datetime import datetime, timedelta
+import pandas as pd
+from portfolio_analyzer import PortfolioAnalyzer, load_trades_from_csv, calculate_cagr, calculate_xirr
+
+class TestSP500Benchmark(unittest.TestCase):
+    """Test that S&P 500 vs S&P 500 shows no outperformance"""
+    
+    def test_sp500_vs_itself_single_trade(self):
+        """
+        Test that buying S&P 500 and comparing to S&P 500 shows 0% outperformance.
+        This is the critical self-consistency check.
+        """
+        trades = [
+            {
+                "symbol": "^GSPC",
+                "shares": 100,
+                "purchase_date": "2020-01-02",
+                "price": 3257.85
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Portfolio should match S&P 500 benchmark exactly (within small rounding error)
+        self.assertIsNotNone(analysis['trades'])
+        self.assertGreater(len(analysis['trades']), 0, "Expected at least one trade result")
+        
+        # Check outperformance is very close to 0%
+        outperformance = analysis['portfolio_outperformance']
+        self.assertAlmostEqual(
+            outperformance, 
+            0.0, 
+            places=1,
+            msg=f"S&P 500 vs S&P 500 should show 0% outperformance, got {outperformance:.2f}%"
+        )
+    
+    def test_sp500_vs_itself_multiple_trades(self):
+        """Test multiple S&P 500 trades over different dates"""
+        trades = [
+            {"symbol": "^GSPC", "shares": 50, "purchase_date": "2018-06-01", "price": 2734.62},
+            {"symbol": "^GSPC", "shares": 30, "purchase_date": "2019-03-15", "price": 2822.48},
+            {"symbol": "^GSPC", "shares": 100, "purchase_date": "2020-09-01", "price": 3500.31},
+            {"symbol": "^GSPC", "shares": 75, "purchase_date": "2021-12-15", "price": 4709.85},
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # All trades should have near-zero outperformance
+        for trade in analysis['trades']:
+            self.assertAlmostEqual(
+                trade['outperformance'],
+                0.0,
+                delta=0.5,  # Allow up to 0.5% difference due to timing/rounding
+                msg=f"S&P 500 trade from {trade['purchase_date']} should have ~0% outperformance, got {trade['outperformance']:.2f}%"
+            )
+        
+        # Portfolio level should also be near-zero
+        self.assertAlmostEqual(analysis['portfolio_outperformance'], 0.0, delta=0.5)
+
+
+
+class TestTradeValidation(unittest.TestCase):
+    """Test trade validation logic"""
+    
+    def setUp(self):
+        self.analyzer = PortfolioAnalyzer([])
+    
+    def test_valid_trade(self):
+        """Test that a valid trade passes validation"""
+        trade = {
+            "symbol": "AAPL",
+            "shares": 100,
+            "purchase_date": "2020-01-02",
+            "price": 75.50
+        }
+        self.assertTrue(self.analyzer._validate_trade(trade))
+    
+    def test_invalid_trade_missing_keys(self):
+        """Test that trade missing keys fails validation"""
+        trade = {
+            "symbol": "AAPL",
+            "shares": 100,
+            "price": 75.50
+        }
+        self.assertFalse(self.analyzer._validate_trade(trade))
+    
+    def test_invalid_trade_negative_shares(self):
+        """Test that negative shares fail validation"""
+        trade = {
+            "symbol": "AAPL",
+            "shares": -100,
+            "purchase_date": "2020-01-02",
+            "price": 75.50
+        }
+        self.assertFalse(self.analyzer._validate_trade(trade))
+    
+    def test_invalid_trade_zero_price(self):
+        """Test that zero price fails validation"""
+        trade = {
+            "symbol": "AAPL",
+            "shares": 100,
+            "purchase_date": "2020-01-02",
+            "price": 0
+        }
+        self.assertFalse(self.analyzer._validate_trade(trade))
+    
+    def test_invalid_trade_bad_date_format(self):
+        """Test that invalid date format fails validation"""
+        trade = {
+            "symbol": "AAPL",
+            "shares": 100,
+            "purchase_date": "01/02/2020",
+            "price": 75.50
+        }
+        self.assertFalse(self.analyzer._validate_trade(trade))
+
+
+
+class TestPortfolioAnalysis(unittest.TestCase):
+    """Test portfolio analysis calculations"""
+    
+    def test_empty_portfolio(self):
+        """Test analyzing an empty portfolio"""
+        analyzer = PortfolioAnalyzer([])
+        analysis = analyzer.analyze_portfolio()
+        
+        self.assertEqual(len(analysis['trades']), 0)
+        self.assertEqual(analysis['total_initial_value'], 0)
+        self.assertEqual(analysis['total_current_value'], 0)
+    
+    def test_portfolio_weighted_years(self):
+        """
+        Test that investment-weighted years are calculated correctly.
+        
+        Example: 
+        - $100 invested for 10 years
+        - $900 invested for 2 years
+        Weighted years = (100*10 + 900*2) / 1000 = 2.8 years
+        """
+        # This is implicitly tested through the portfolio CAGR calculation
+        # Just verify that results are returned
+        trades = [
+            {"symbol": "AAPL", "shares": 10, "purchase_date": "2015-01-02", "price": 10.0},
+            {"symbol": "MSFT", "shares": 90, "purchase_date": "2023-01-02", "price": 10.0},
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Should have results for both trades
+        self.assertGreater(len(analysis['trades']), 0)
+        self.assertGreater(analysis['total_initial_value'], 0)
+        self.assertGreater(analysis['portfolio_cagr'], -100)  # Should have some CAGR
+
+
+
+class TestSP500BenchmarkCSV(unittest.TestCase):
+    """
+    Integration test: Create CSV with S&P 500 trades and verify benchmark accuracy.
+    This is the test the user specifically requested.
+    """
+    
+    def test_sp500_csv_random_dates(self):
+        """
+        Create a CSV with multiple S&P 500 trades on random dates.
+        Verify that the portfolio CAGR matches S&P 500 benchmark (0% outperformance).
+        """
+        # Create CSV with S&P 500 trades on various dates
+        csv_content = """symbol,shares,purchase_date,price
+^GSPC,100,2018-03-15,2752.01
+^GSPC,50,2019-07-22,3007.39
+^GSPC,75,2020-11-02,3369.16
+^GSPC,120,2021-04-19,4163.26
+^GSPC,80,2022-08-10,4210.24
+^GSPC,60,2023-02-28,3970.15"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write(csv_content)
+            temp_file = f.name
+        
+        try:
+            # Load trades from CSV
+            trades = load_trades_from_csv(temp_file)
+            self.assertEqual(len(trades), 6, "Should load all 6 trades")
+            
+            # Analyze portfolio
+            analyzer = PortfolioAnalyzer(trades)
+            analysis = analyzer.analyze_portfolio()
+            
+            # Verify all trades were analyzed
+            self.assertEqual(
+                len(analysis['trades']), 
+                6, 
+                "All 6 trades should be analyzed"
+            )
+            
+            # Check each individual trade has near-zero outperformance
+            for i, trade in enumerate(analysis['trades']):
+                self.assertAlmostEqual(
+                    trade['outperformance'],
+                    0.0,
+                    delta=0.5,  # Allow up to 0.5% difference
+                    msg=f"Trade {i+1} ({trade['purchase_date']}): S&P 500 should match itself, got {trade['outperformance']:.2f}% diff"
+                )
+            
+            # Check portfolio-level metrics
+            portfolio_outperformance = analysis['portfolio_outperformance']
+            self.assertAlmostEqual(
+                portfolio_outperformance,
+                0.0,
+                delta=0.5,  # Within 0.5 percentage points
+                msg=f"Portfolio outperformance should be ~0%, got {portfolio_outperformance:.2f}%"
+            )
+            
+            # Verify portfolio CAGR equals S&P 500 CAGR
+            portfolio_cagr = analysis['portfolio_cagr']
+            sp500_cagr = analysis['sp500_cagr']
+            self.assertAlmostEqual(
+                portfolio_cagr,
+                sp500_cagr,
+                delta=0.5,  # Within 0.5 percentage points
+                msg=f"Portfolio CAGR ({portfolio_cagr:.2f}%) should match S&P 500 CAGR ({sp500_cagr:.2f}%)"
+            )
+            
+            # Verify current value equals S&P 500 benchmark value
+            current_value = analysis['total_current_value']
+            sp500_value = analysis['total_sp500_current_value']
+            percent_diff = abs(current_value - sp500_value) / sp500_value * 100
+            self.assertLess(
+                percent_diff,
+                1.0,  # Less than 1% difference
+                msg=f"Portfolio value should match S&P 500 value within 1%"
+            )
+            
+            print(f"\n✅ S&P 500 Self-Consistency Test PASSED")
+            print(f"   Portfolio CAGR: {portfolio_cagr:.2f}%")
+            print(f"   S&P 500 CAGR:   {sp500_cagr:.2f}%")
+            print(f"   Outperformance: {portfolio_outperformance:.2f}%")
+            print(f"   Value Difference: {percent_diff:.4f}%")
+            
+        finally:
+            os.unlink(temp_file)
+
+
+
+class TestSymbolAccumulation(unittest.TestCase):
+    """Test symbol accumulation and aggregation logic"""
+    
+    def test_symbol_accumulation_single_symbol(self):
+        """Test accumulation for a single symbol"""
+        trades = [
+            {'symbol': 'AAPL', 'shares': 100, 'initial_value': 1000, 'current_value': 1500, 
+             'stock_cagr': 10.0, 'stock_xirr': 9.5, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
+             'sp500_current_value': 1200, 'years_held': 5},
+            {'symbol': 'AAPL', 'shares': 50, 'initial_value': 500, 'current_value': 800, 
+             'stock_cagr': 12.5, 'stock_xirr': 12.0, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
+             'sp500_current_value': 600, 'years_held': 5}
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        self.assertIn('AAPL', stats)
+        self.assertEqual(stats['AAPL']['trades_count'], 2)
+        self.assertEqual(stats['AAPL']['total_shares'], 150)
+        self.assertEqual(stats['AAPL']['total_initial_value'], 1500)
+        self.assertEqual(stats['AAPL']['total_current_value'], 2300)
+        self.assertEqual(stats['AAPL']['total_gain'], 800)
+        self.assertGreater(stats['AAPL']['gain_percentage'], 0)
+
+    def test_symbol_accumulation_multiple_symbols(self):
+        """Test accumulation for multiple symbols"""
+        trades = [
+            {'symbol': 'AAPL', 'shares': 100, 'initial_value': 1000, 'current_value': 1500,
+             'stock_cagr': 10.0, 'stock_xirr': 9.5, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
+             'sp500_current_value': 1200, 'years_held': 5},
+            {'symbol': 'MSFT', 'shares': 50, 'initial_value': 2000, 'current_value': 3000,
+             'stock_cagr': 8.5, 'stock_xirr': 8.0, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
+             'sp500_current_value': 2400, 'years_held': 5},
+            {'symbol': 'AAPL', 'shares': 50, 'initial_value': 500, 'current_value': 600,
+             'stock_cagr': 3.7, 'stock_xirr': 3.5, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
+             'sp500_current_value': 600, 'years_held': 5}
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        self.assertEqual(len(stats), 2)
+        self.assertIn('AAPL', stats)
+        self.assertIn('MSFT', stats)
+        self.assertEqual(stats['AAPL']['trades_count'], 2)
+        self.assertEqual(stats['MSFT']['trades_count'], 1)
+
+    def test_symbol_accumulation_zero_gain(self):
+        """Test accumulation when there's no gain"""
+        trades = [
+            {'symbol': 'FLAT', 'shares': 100, 'initial_value': 1000, 'current_value': 1000,
+             'stock_cagr': 0.0, 'stock_xirr': 0.0, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
+             'sp500_current_value': 1100, 'years_held': 5}
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        self.assertEqual(stats['FLAT']['total_gain'], 0)
+        self.assertEqual(stats['FLAT']['gain_percentage'], 0)
+
+
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)

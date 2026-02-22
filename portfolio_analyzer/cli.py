@@ -1,4 +1,7 @@
-"""Command-line interface for portfolio analyzer."""
+"""Command-line interface for portfolio analyzer.
+
+Author: Zhuo Robert Li
+"""
 
 import argparse
 import sys

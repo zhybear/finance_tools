@@ -2,6 +2,8 @@
 
 Provides CAGR (Compound Annual Growth Rate) and XIRR (Extended Internal Rate of Return)
 calculation functions.
+
+Author: Zhuo Robert Li
 """
 
 import numpy as np
@@ -11,7 +13,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Constants
 DAYS_PER_YEAR = 365.25
+NPV_CONVERGENCE_TOLERANCE = 1e-6  # Tolerance for NPV convergence check
+XIRR_MAX_ITERATIONS = 100  # Maximum iterations for Newton-Raphson method
+XIRR_INITIAL_GUESSES = [0.1, 0.01, -0.1, 0.5, -0.5]  # Initial rate guesses for XIRR
 
 
 def calculate_cagr(start_value: float, end_value: float, years: float) -> float:
@@ -77,16 +83,17 @@ def calculate_xirr(dates: list[str], cash_flows: list[float]) -> float:
                 npv += cf / ((1 + rate) ** years)
             return npv
         
-        # Try multiple initial guesses
-        for initial_guess in [0.1, 0.01, -0.1, 0.5, -0.5]:
+        # Try multiple initial guesses for better convergence
+        for initial_guess in XIRR_INITIAL_GUESSES:
             try:
-                xirr_decimal = newton(npv_func, initial_guess, maxiter=100)
+                xirr_decimal = newton(npv_func, initial_guess, maxiter=XIRR_MAX_ITERATIONS)
                 
                 if np.isnan(xirr_decimal) or np.isinf(xirr_decimal):
                     continue
                 
+                # Verify convergence by checking NPV is close to zero
                 npv_check = npv_func(xirr_decimal)
-                if abs(npv_check) < 1e-6:
+                if abs(npv_check) < NPV_CONVERGENCE_TOLERANCE:
                     return xirr_decimal * 100
             except (RuntimeError, ValueError, OverflowError):
                 continue

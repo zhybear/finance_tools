@@ -1,4 +1,7 @@
-"""Core portfolio analyzer class."""
+"""Core portfolio analyzer class.
+
+Author: Zhuo Robert Li
+"""
 
 import yfinance as yf
 from datetime import datetime
@@ -88,38 +91,45 @@ class PortfolioAnalyzer:
             self._sp500_full_history = normalize_history_index(sp500_hist)
 
     def _validate_trade(self, trade: Dict) -> bool:
-        """Validate that a trade has all required fields."""
+        """Validate that a trade has all required fields and valid values.
+        
+        Args:
+            trade: Trade dictionary to validate
+            
+        Returns:
+            True if valid, False otherwise
+        """
         required_keys = {"symbol", "shares", "purchase_date", "price"}
         
         if not isinstance(trade, dict):
-            print("Invalid trade: expected dict")
+            logger.warning("Invalid trade: expected dict")
             return False
         
         missing = required_keys - trade.keys()
         if missing:
-            print(f"Invalid trade: missing keys {missing}")
+            logger.warning(f"Invalid trade: missing keys {missing}")
             return False
         
         if not isinstance(trade["symbol"], str) or not trade["symbol"].strip():
-            print("Invalid trade: symbol must be a non-empty string")
+            logger.warning("Invalid trade: symbol must be a non-empty string")
             return False
         
         if not isinstance(trade["shares"], (int, float)) or trade["shares"] <= 0:
-            print("Invalid trade: shares must be a positive number")
+            logger.warning("Invalid trade: shares must be a positive number")
             return False
         
         if not isinstance(trade["price"], (int, float)) or trade["price"] <= 0:
-            print("Invalid trade: price must be a positive number")
+            logger.warning("Invalid trade: price must be a positive number")
             return False
         
         if not isinstance(trade["purchase_date"], str):
-            print("Invalid trade: purchase_date must be a string in YYYY-MM-DD format")
+            logger.warning("Invalid trade: purchase_date must be a string in YYYY-MM-DD format")
             return False
         
         try:
             datetime.fromisoformat(trade["purchase_date"])
         except ValueError:
-            print("Invalid trade: purchase_date must be in YYYY-MM-DD format")
+            logger.warning("Invalid trade: purchase_date must be in YYYY-MM-DD format")
             return False
         
         return True
@@ -259,14 +269,12 @@ class PortfolioAnalyzer:
             sp500_cagr = calculate_cagr(total_initial_value, total_sp500_current_value, weighted_years)
             
             if cash_flow_dates:
-                date_cf_pairs_stocks = list(zip(cash_flow_dates, cash_flows_stocks))
-                date_cf_pairs_stocks.sort(key=lambda x: x[0])
-                cash_flow_dates_sorted = [d for d, cf in date_cf_pairs_stocks]
-                cash_flows_stocks_sorted = [cf for d, cf in date_cf_pairs_stocks]
-                
-                date_cf_pairs_sp500 = list(zip(cash_flow_dates, cash_flows_sp500))
-                date_cf_pairs_sp500.sort(key=lambda x: x[0])
-                cash_flows_sp500_sorted = [cf for d, cf in date_cf_pairs_sp500]
+                # Sort cash flows by date (optimization: sort once, use for both stock and sp500)
+                sorted_pairs = sorted(zip(cash_flow_dates, cash_flows_stocks, cash_flows_sp500), 
+                                     key=lambda x: x[0])
+                cash_flow_dates_sorted = [d for d, _, _ in sorted_pairs]
+                cash_flows_stocks_sorted = [stock_cf for _, stock_cf, _ in sorted_pairs]
+                cash_flows_sp500_sorted = [sp500_cf for _, _, sp500_cf in sorted_pairs]
             else:
                 cash_flow_dates_sorted = cash_flow_dates
                 cash_flows_stocks_sorted = cash_flows_stocks

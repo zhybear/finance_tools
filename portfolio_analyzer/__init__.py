@@ -13,7 +13,7 @@ from .metrics import calculate_cagr, calculate_xirr
 from .reports import TextReportGenerator, PDFReportGenerator, HTMLReportGenerator
 from .cli import main
 
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 __author__ = "Zhuo Robert Li"
 __license__ = "ISC"
 

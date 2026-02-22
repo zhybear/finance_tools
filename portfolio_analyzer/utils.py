@@ -1,4 +1,7 @@
-"""Utility functions for portfolio analyzer."""
+"""Utility functions for portfolio analyzer.
+
+Author: Zhuo Robert Li
+"""
 
 import pandas as pd
 import yfinance as yf

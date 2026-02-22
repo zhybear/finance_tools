@@ -1,4 +1,7 @@
-"""Report generation module for portfolio analyzer."""
+"""Report generation module for portfolio analyzer.
+
+Author: Zhuo Robert Li
+"""
 
 from typing import Optional, Dict, Any
 import logging

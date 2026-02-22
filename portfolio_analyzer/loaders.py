@@ -1,4 +1,7 @@
-"""CSV data loaders for portfolio analyzer."""
+"""CSV data loaders for portfolio analyzer.
+
+Author: Zhuo Robert Li
+"""
 
 from datetime import datetime
 from typing import List, Dict

@@ -9,30 +9,57 @@ A Python tool for analyzing stock portfolio performance and comparing against S&
 - **Symbol Aggregation**: View accumulated earnings and metrics per stock symbol
 - **Text Reports**: Generate detailed text reports with per-trade and per-symbol analysis
 - **PDF Visualizations**: Create professional 2-page PDF reports with charts and tables
+- **HTML Dashboard**: Interactive HTML reports with Plotly charts, sortable tables, and dark mode
 - **CSV Support**: Load trades from CSV files with validation
+- **Modular Architecture**: Clean separation of concerns across 7 focused modules
 
 ## Installation
 
 ```bash
-pip3 install yfinance pandas numpy scipy matplotlib seaborn
+pip3 install yfinance pandas numpy scipy matplotlib seaborn plotly
 ```
 
 ## Usage
 
-### Basic Command Line Usage
+### Command Line Usage
 
 ```bash
-# Analyze trades from CSV file with default symbols
-python3 stock.py --csv your_trades.csv
+# Analyze trades from CSV file
+python3 -m portfolio_analyzer.cli --csv your_trades.csv
 
 # Save text report to file
-python3 stock.py --csv your_trades.csv --output report.txt
+python3 -m portfolio_analyzer.cli --csv your_trades.csv --output report.txt
 
 # Generate PDF report with visualizations
-python3 stock.py --csv your_trades.csv --pdf report.pdf
+python3 -m portfolio_analyzer.cli --csv your_trades.csv --pdf report.pdf
 
-# Both text and PDF reports
-python3 stock.py --csv your_trades.csv --output report.txt --pdf report.pdf
+# Generate interactive HTML dashboard
+python3 -m portfolio_analyzer.cli --csv your_trades.csv --html report.html
+
+# All report formats together
+python3 -m portfolio_analyzer.cli --csv your_trades.csv --output report.txt --pdf report.pdf --html report.html
+```
+
+### Python API Usage
+
+```python
+from portfolio_analyzer import PortfolioAnalyzer, load_trades_from_csv
+
+# Load trades from CSV
+trades = load_trades_from_csv("your_trades.csv")
+
+# Create analyzer
+analyzer = PortfolioAnalyzer(trades)
+
+# Generate reports
+analyzer.print_report()  # Text to stdout
+analyzer.generate_pdf_report("report.pdf")  # PDF
+analyzer.generate_html_report("dashboard.html")  # HTML
+
+# Get analysis data programmatically
+analysis = analyzer.analyze_portfolio()
+print(f"Portfolio CAGR: {analysis['portfolio_cagr']:.2f}%")
+print(f"Portfolio XIRR: {analysis['portfolio_xirr']:.2f}%")
 ```
 
 ### Running Tests
@@ -64,7 +91,7 @@ NVDA,50,2018-06-10,55.25
 
 **Example Files:**
 - `example_trades.csv` - Diverse portfolio example with 12 stocks
-- `my_trades.csv` - User's portfolio (if loaded via --csv option)
+  (Load your own portfolio by specifying your CSV file with --csv)
 
 ## Output Reports
 
@@ -93,81 +120,140 @@ Each report includes:
 
 ```
 === PORTFOLIO SUMMARY ===
-Initial Investment: $159,835.52
-Current Value: $2,795,071.13
-Total Gain: $2,635,235.61
-Portfolio CAGR: 75.06%
-Portfolio XIRR: 37.91%
-S&P 500 CAGR: 15.83%
-S&P 500 XIRR: 13.10%
-Portfolio Outperformance (CAGR): 59.23%
-Portfolio Outperformance (XIRR): 24.81%
+Initial Investment: $[total_invested]
+Current Value: $[current_value]
+Total Gain: $[total_gain]
+Portfolio CAGR: [cagr]%
+Portfolio XIRR: [xirr]%
+S&P 500 CAGR: [sp500_cagr]%
+S&P 500 XIRR: [sp500_xirr]%
+Portfolio Outperformance (CAGR): [outperf_cagr]%
+Portfolio Outperformance (XIRR): [outperf_xirr]%
 ```
 
 
 ## Key Metrics Explained
 
-- **CAGR** (Compound Annual Growth Rate): Annual growth rate accounting for reinvestment
-  - Formula: `((End Value / Start Value)^(1/Years) - 1) × 100`
-  - Best for: Simple annual return comparison when investments are made at similar times
-  - Advantages: Intuitive, easy to understand, widely used
+### CAGR (Compound Annual Growth Rate) - NEW Weighted Formula in 1.1
 
-- **XIRR** (Extended Internal Rate of Return): IRR accounting for irregular cash flow timing
-  - Uses Newton-Raphson optimization to solve: `NPV = Σ(CF / (1+r)^(Years)) = 0`
-  - Best for: Investments with multiple purchases at different dates
-  - Advantages: Accounts for exact timing of cash flows, more accurate for irregular investments
+**For single trades**: `CAGR = ((End Value / Start Value)^(1/Years) - 1) × 100`
 
-- **When to Use**:
-  - Use CAGR for simple buy-and-hold investments over a fixed period
-  - Use XIRR when you have multiple purchases/sales at different times
-  - Both metrics provided for complete performance analysis
+**For multiple trades (weighted)**:
+```
+For each trade i:
+  r_i = CAGR from purchase_date_i to today
+  w_i = investment_amount_i × years_held_i
+  
+Weighted CAGR = Σ(r_i × w_i) / Σ(w_i)
+```
 
-- **Other Metrics**:
-  - **Initial Investment**: Total amount invested across all trades
-  - **Current Value**: Today's market value of all positions
-  - **Outperformance**: Performance metric minus S&P 500 performance
-  - **Weighted CAGR/XIRR**: Investment-weighted average (larger investments weighted more)
+This weights each transaction by both its investment size and holding period, giving more prominence to early, large purchases.
 
-## Code Structure
+**Example**:
+- Trade 1: $100 invested 5 years ago → $200 (CAGR=14.87%), weight = 100×5 = 500
+- Trade 2: $100 invested 1 year ago → $110 (CAGR=10%), weight = 100×1 = 100
+- **Weighted CAGR = (14.87×500 + 10×100) / 600 = 14.14%**
+
+**Best for**: Understanding average return considering both time and size of investments
+
+### XIRR (Extended Internal Rate of Return)
+
+The rate where NPV (Net Present Value) = 0:
+```
+NPV = Σ(CF / (1+r)^(Years from purchase to today)) = 0
+```
+
+Solved using Newton-Raphson optimization. Accounts for exact timing of cash flows.
+
+**Best for**: Investments with multiple purchases at different dates
+
+**Key Difference from CAGR**: XIRR weights all cash flows by exact timing, while weighted CAGR uses simple weighting by size and duration.
+
+### Other Metrics
+
+- **Initial Investment**: Total amount invested across all trades
+- **Current Value**: Today's market value of all positions
+- **Gain**: Dollar amount of profit/loss
+- **Gain %**: Percentage gain on total investment
+- **Outperformance**: Your metric minus S&P 500 metric
+
+## Code Structure (v1.2.0)
+
+The portfolio analyzer is organized as a modular package for maintainability and extensibility:
+
+### Package Architecture
+
+```
+portfolio_analyzer/
+├── __init__.py         # Package exports and version
+├── analyzer.py         # Core PortfolioAnalyzer class (442 lines)
+├── metrics.py          # CAGR and XIRR calculations (99 lines)
+├── loaders.py          # CSV loading and validation (65 lines)
+├── reports.py          # Report generators (319 lines)
+├── utils.py            # Helper functions (110 lines)
+└── cli.py              # Command-line interface (46 lines)
+```
 
 ### Main Classes
 
-- `PortfolioAnalyzer`: Core analysis engine
+- **`PortfolioAnalyzer`** (analyzer.py): Core analysis engine
   - `analyze_portfolio()`: Calculate overall portfolio metrics
   - `get_stock_performance()`: Calculate individual trade performance
   - `print_report()`: Generate text reports
   - `generate_pdf_report()`: Create PDF visualizations
+  - `generate_html_report()`: Create interactive HTML dashboards
 
-- Helper Functions
+- **Report Generators** (reports.py)
+  - `TextReportGenerator`: Console and text file reports
+  - `PDFReportGenerator`: Professional PDF reports with charts
+  - `HTMLReportGenerator`: Interactive dashboards with Plotly
+
+### Key Functions
+
+- **Metrics** (metrics.py)
+  - `calculate_cagr()`: Compound annual growth rate
+  - `calculate_xirr()`: Extended internal rate of return (Newton-Raphson)
+
+- **Loaders** (loaders.py)
   - `load_trades_from_csv()`: Load and validate CSV files
 
-### Key Methods
-
-- `calculate_cagr()`: Calculate compound annual growth rate
-- `calculate_xirr()`: Calculate extended internal rate of return using scipy Newton method
-- `_validate_trade()`: Validate trade data
-- `_prepare_histories()`: Bulk download stock price histories
-- `_safe_divide()`: Safe division with zero-handling
-- `_calculate_symbol_accumulation()`: Aggregate trades by symbol with both CAGR and XIRR
+- **Utils** (utils.py)
+  - `safe_divide()`: Zero-safe division
+  - `normalize_history_index()`: Timezone handling
+  - `download_history()`: Bulk stock price download
 
 ## Testing
 
-The project includes 36 comprehensive unit tests covering:
-- CAGR calculations (5 tests)
-- XIRR calculations (7 tests) - NEW
-- S&P 500 benchmark validation (3 tests)
+The project includes 55 comprehensive unit tests with 88% code coverage:
+
+**Test Coverage by Module:**
+- `__init__.py`: 100% (package exports)
+- `cli.py`: 96% (command-line interface)
+- `loaders.py`: 91% (CSV loading)
+- `reports.py`: 90% (report generation)
+- `analyzer.py`: 86% (core analysis)
+- `metrics.py`: 77% (CAGR/XIRR calculations)
+- `utils.py`: 97% (helper functions)
+
+**Test Suites:**
+- CAGR calculations (6 tests) - Including weighted CAGR formula
+- XIRR calculations (7 tests) - Newton-Raphson convergence
+- CLI interface (7 tests) - Argument parsing and file handling
 - CSV loading and validation (3 tests)
 - Trade validation (5 tests)
 - Portfolio analysis (2 tests)
 - Symbol accumulation (3 tests)
-- Safe division helper (4 tests)
-- PDF data preparation (2 tests)
-- Report generation (2 tests)
-- S&P 500 self-consistency integration test (1 test)
+- Utils functions (7 tests) - Timezone handling, downloads
+- Report generation (8 tests) - Text, PDF, HTML outputs
+- S&P 500 benchmark (4 tests) - Self-consistency validation
 
 Run tests with:
 ```bash
 python3 -m unittest test_stock.py -v
+
+# With coverage report
+python3 -m coverage run -m unittest test_stock
+python3 -m coverage report --include="portfolio_analyzer/*"
 ```
 
 ## Example Analysis

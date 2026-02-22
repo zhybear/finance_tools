@@ -1,4 +1,7 @@
-"""Portfolio Performance Analyzer - Backward compatibility shim.
+#!/usr/bin/env python3
+"""Replace stock.py with a backward-compatibility shim."""
+
+content = """\"\"\"Portfolio Performance Analyzer - Backward compatibility shim.
 
 This module provides backward compatibility by re-exporting the main components
 from the refactored portfolio_analyzer package.
@@ -9,7 +12,7 @@ For new code, import directly from portfolio_analyzer:
 Author: Zhuo Robert Li
 Version: 1.2.0
 License: ISC
-"""
+\"\"\"
 
 # Import all public symbols from the package
 from portfolio_analyzer import (
@@ -37,3 +40,8 @@ __all__ = [
 if __name__ == '__main__':
     from portfolio_analyzer.cli import main
     main()
+"""
+
+with open('/Users/zhuoli/python/stock/stock.py', 'w') as f:
+    f.write(content)
+print("✅ stock.py replaced with backward-compatibility shim")

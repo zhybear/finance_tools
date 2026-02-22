@@ -75,14 +75,10 @@ February 21, 2026
 - `QUICKSTART.md`: Added XIRR to features
 - `IMPROVEMENTS_SUMMARY.md`: This file
 
-### Generated Reports (Latest)
-- `my_trades_report.txt`: 46KB text report with XIRR metrics
-- `my_trades_report.pdf`: 56KB PDF with all visualizations
-
 ## Testing Summary
 
-### Test Coverage (36 tests)
-1. **CAGR Calculations** (5 tests): Basic, triple, zero handling, negative performance
+### Test Coverage (42 tests)
+1. **CAGR Calculations** (6 tests): Basic, triple, zero handling, negative performance, weighted CAGR
 2. **XIRR Calculations** (7 tests): Doubling, zero return, multiple flows, edge cases
 3. **CSV Loading** (3 tests): Valid/invalid data, missing columns
 4. **Trade Validation** (5 tests): Date format, missing keys, negative values
@@ -112,16 +108,13 @@ OK - All tests passing
   - Best for: Irregular investment timing, multiple purchases/sales
   - Accounts for precise timing of each cash flow
 
-### Portfolio Performance (Example)
-```
-Portfolio CAGR: 75.06%     (Compound annual growth)
-Portfolio XIRR: 37.91%     (Accounting for timing)
-S&P 500 CAGR: 15.83%       (Benchmark)
-S&P 500 XIRR: 13.10%       (Benchmark)
+### Portfolio Performance Metrics
 
-Outperformance (CAGR): 59.23%   (75.06% - 15.83%)
-Outperformance (XIRR): 24.81%   (37.91% - 13.10%)
-```
+The tool calculates both CAGR and XIRR metrics:
+- **Portfolio CAGR**: Weighted average return across all positions
+- **Portfolio XIRR**: Accounts for timing and magnitude of all investments
+- **S&P 500 Benchmark**: Calculated for same holding period
+- **Outperformance**: Difference between portfolio and benchmark metrics
 
 ## Technical Details
 
@@ -157,7 +150,7 @@ Outperformance (XIRR): 24.81%   (37.91% - 13.10%)
 
 ### Generate Both Reports
 ```bash
-python3 stock.py --csv my_trades.csv --output report.txt --pdf report.pdf
+python3 stock.py --csv example_trades.csv --output report.txt --pdf report.pdf --html report.html
 ```
 
 ### Run All Tests

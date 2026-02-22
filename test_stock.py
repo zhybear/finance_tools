@@ -1,18 +1,21 @@
 """
-Unit tests for Portfolio Analyzer
+Unit tests for Portfolio Performance Analyzer
 
 Run with:
-    python3 -m pytest test_stock.py -v
-    or
     python3 -m unittest test_stock.py -v
+
+Author: Zhuo Robert Li
+Version: 1.2.0
+License: ISC
 """
 
 import unittest
 import tempfile
 import os
+import numpy as np
 from datetime import datetime, timedelta
 import pandas as pd
-from stock import PortfolioAnalyzer, load_trades_from_csv
+from portfolio_analyzer import PortfolioAnalyzer, load_trades_from_csv, calculate_cagr, calculate_xirr
 
 
 class TestCAGRCalculation(unittest.TestCase):
@@ -48,6 +51,67 @@ class TestCAGRCalculation(unittest.TestCase):
         # $100 becomes $50 in 5 years = -12.94% CAGR
         cagr = self.analyzer.calculate_cagr(100, 50, 5)
         self.assertAlmostEqual(cagr, -12.94, places=1)
+    
+    def test_weighted_cagr_multiple_purchases_same_year(self):
+        """
+        Test weighted CAGR formula with multiple purchases.
+        
+        Formula: weighted_cagr = Σ(r_i * w_i) / Σ(w_i)
+        where r_i = CAGR of transaction i
+              w_i = investment_amount_i * years_held_i
+        
+        Example:
+        - Transaction 1: $100 invested 5 years ago, current value $200 (CAGR=14.87%)
+          weight_1 = 100 * 5 = 500
+        - Transaction 2: $100 invested 1 year ago, current value $110 (CAGR=10%)
+          weight_2 = 100 * 1 = 100
+        - weighted_cagr = (14.87*500 + 10*100) / (500+100) = 8493.5 / 600 = 14.16%
+        """
+        # Create trades with different purchase dates
+        from datetime import datetime, timedelta
+        today = datetime.now().strftime('%Y-%m-%d')
+        five_years_ago = (datetime.now() - timedelta(days=365.25*5)).strftime('%Y-%m-%d')
+        one_year_ago = (datetime.now() - timedelta(days=365.25)).strftime('%Y-%m-%d')
+        
+        trades = [
+            {
+                'symbol': 'TEST',
+                'shares': 100,
+                'purchase_date': five_years_ago,
+                'price': 1.0,
+                'initial_value': 100,
+                'current_value': 200,  # 100% gain = 14.87% CAGR
+                'years_held': 5.0,
+                'stock_xirr': 14.87,
+                'sp500_current_value': 150,
+                'sp500_xirr': 8.0,
+            },
+            {
+                'symbol': 'TEST',
+                'shares': 100,
+                'purchase_date': one_year_ago,
+                'price': 1.0,
+                'initial_value': 100,
+                'current_value': 110,  # 10% gain = 10% CAGR
+                'years_held': 1.0,
+                'stock_xirr': 10.0,
+                'sp500_current_value': 120,
+                'sp500_xirr': 20.0,
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        # Verify weighted CAGR
+        weighted_cagr = (14.87 * (100 * 5) + 10.0 * (100 * 1)) / ((100 * 5) + (100 * 1))
+        expected_weighted_cagr = weighted_cagr
+        
+        self.assertIn('TEST', stats)
+        test_stats = stats['TEST']
+        
+        # Check that weighted CAGR is weighted toward the longer-held position
+        self.assertAlmostEqual(test_stats['avg_cagr'], expected_weighted_cagr, places=1)
 
 
 class TestSP500Benchmark(unittest.TestCase):
@@ -447,6 +511,79 @@ class TestSafeDivide(unittest.TestCase):
         self.assertEqual(result, 0)
 
 
+class TestUtilsFunctions(unittest.TestCase):
+    """Test utility functions in utils.py"""
+    
+    def test_normalize_history_index_empty_dataframe(self):
+        """Test normalize_history_index with empty DataFrame"""
+        from portfolio_analyzer.utils import normalize_history_index
+        
+        empty_df = pd.DataFrame()
+        result = normalize_history_index(empty_df)
+        self.assertTrue(result.empty)
+    
+    def test_normalize_history_index_with_timezone(self):
+        """Test normalize_history_index removes timezone"""
+        from portfolio_analyzer.utils import normalize_history_index
+        
+        dates = pd.date_range('2020-01-01', periods=3, tz='UTC')
+        df = pd.DataFrame({'price': [100, 101, 102]}, index=dates)
+        
+        result = normalize_history_index(df)
+        self.assertIsNone(result.index.tz)
+    
+    def test_normalize_datetime_with_timezone(self):
+        """Test normalize_datetime removes timezone"""
+        from portfolio_analyzer.utils import normalize_datetime
+        
+        dt = pd.Timestamp('2020-01-01', tz='UTC')
+        result = normalize_datetime(dt)
+        self.assertIsNone(result.tzinfo)
+    
+    def test_extract_history_empty_dataframe(self):
+        """Test extract_history with empty DataFrame"""
+        from portfolio_analyzer.utils import extract_history
+        
+        empty_df = pd.DataFrame()
+        result = extract_history(empty_df, 'AAPL')
+        self.assertTrue(result.empty)
+    
+    def test_extract_history_multiindex_columns(self):
+        """Test extract_history with MultiIndex columns"""
+        from portfolio_analyzer.utils import extract_history
+        
+        # Create MultiIndex DataFrame like yf.download returns
+        dates = pd.date_range('2020-01-01', periods=3)
+        columns = pd.MultiIndex.from_product([['Close', 'Open'], ['AAPL', 'MSFT']])
+        data = np.random.rand(3, 4)
+        df = pd.DataFrame(data, index=dates, columns=columns)
+        
+        result = extract_history(df, 'AAPL')
+        self.assertFalse(result.empty)
+        self.assertIn('Close', result.columns)
+    
+    def test_extract_history_symbol_not_found(self):
+        """Test extract_history when symbol not in MultiIndex"""
+        from portfolio_analyzer.utils import extract_history
+        
+        dates = pd.date_range('2020-01-01', periods=3)
+        columns = pd.MultiIndex.from_product([['Close'], ['AAPL']])
+        data = np.random.rand(3, 1)
+        df = pd.DataFrame(data, index=dates, columns=columns)
+        
+        result = extract_history(df, 'NONEXISTENT')
+        self.assertTrue(result.empty)
+    
+    def test_download_history_exception_handling(self):
+        """Test download_history handles exceptions gracefully"""
+        from portfolio_analyzer.utils import download_history
+        from unittest.mock import patch
+        
+        with patch('portfolio_analyzer.utils.yf.download', side_effect=Exception("Network error")):
+            result = download_history(['AAPL'], '2020-01-01')
+            self.assertTrue(result.empty)
+
+
 class TestPDFDataPreparation(unittest.TestCase):
     """Test PDF data preparation logic"""
     
@@ -640,7 +777,188 @@ class TestXIRRCalculation(unittest.TestCase):
                                 msg=f"XIRR ({xirr:.2f}%) significantly exceeds CAGR ({cagr:.2f}%) in {description}")
 
 
-def run_tests():
+class TestHTMLReportGeneration(unittest.TestCase):
+    """Test HTML report generation"""
+    
+    def test_generate_html_report_creates_file(self):
+        """Test that HTML report file is created successfully"""
+        trades = [
+            {"symbol": "AAPL", "shares": 10, "purchase_date": "2015-01-02", "price": 10.0},
+            {"symbol": "MSFT", "shares": 5, "purchase_date": "2016-06-15", "price": 50.0},
+        ]
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+            temp_file = f.name
+        
+        try:
+            analyzer = PortfolioAnalyzer(trades)
+            analyzer.generate_html_report(temp_file)
+            
+            # Verify file was created and has content
+            self.assertTrue(os.path.exists(temp_file))
+            with open(temp_file, 'r') as f:
+                content = f.read()
+            
+            # Check for HTML structure
+            self.assertIn('<html', content.lower())
+            self.assertIn('</html>', content.lower())
+            
+            # Check for dashboard elements
+            self.assertIn('Portfolio Analytics Dashboard', content)
+            self.assertIn('plotly', content.lower())
+            
+        finally:
+            if os.path.exists(temp_file):
+                os.unlink(temp_file)
+    
+    def test_generate_html_report_empty_portfolio(self):
+        """Test HTML report generation with empty portfolio"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+            temp_file = f.name
+        
+        try:
+            analyzer = PortfolioAnalyzer([])
+            # Should not raise exception
+            analyzer.generate_html_report(temp_file)
+            
+            # File should exist but may be empty or contain error message
+            self.assertTrue(os.path.exists(temp_file))
+        finally:
+            if os.path.exists(temp_file):
+                os.unlink(temp_file)
+    
+    def test_html_report_contains_metrics(self):
+        """Test that HTML report contains portfolio metrics"""
+        trades = [
+            {"symbol": "AAPL", "shares": 100, "purchase_date": "2015-01-02", "price": 10.0},
+        ]
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+            temp_file = f.name
+        
+        try:
+            analyzer = PortfolioAnalyzer(trades)
+            analyzer.generate_html_report(temp_file)
+            
+            with open(temp_file, 'r') as f:
+                content = f.read()
+            
+            # Check for key metric labels
+            self.assertIn('CAGR', content)
+            self.assertIn('XIRR', content)
+            self.assertIn('Current Value', content)
+            self.assertIn('Total Gain', content)
+        finally:
+            if os.path.exists(temp_file):
+                os.unlink(temp_file)
+
+
+class TestCLI(unittest.TestCase):
+    """Test command-line interface."""
+    
+    def test_cli_with_csv_argument(self):
+        """Test CLI with --csv argument"""
+        from portfolio_analyzer.cli import main
+        from unittest.mock import patch
+        import sys
+        
+        # Create temp CSV file
+        temp_csv = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv')
+        temp_csv.write("symbol,shares,purchase_date,price\n")
+        temp_csv.write("AAPL,10,2020-01-02,75.50\n")
+        temp_csv.close()
+        
+        try:
+            with patch.object(sys, 'argv', ['cli', '--csv', temp_csv.name]):
+                # Should not raise exception
+                main()
+        finally:
+            os.unlink(temp_csv.name)
+    
+    def test_cli_with_output_argument(self):
+        """Test CLI with --output argument"""
+        from portfolio_analyzer.cli import main
+        from unittest.mock import patch
+        import sys
+        
+        temp_output = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt')
+        temp_output.close()
+        
+        try:
+            with patch.object(sys, 'argv', ['cli', '--output', temp_output.name]):
+                main()
+            
+            # Check that output file was created
+            self.assertTrue(os.path.exists(temp_output.name))
+            with open(temp_output.name, 'r') as f:
+                content = f.read()
+                self.assertIn('PORTFOLIO SUMMARY', content)
+        finally:
+            if os.path.exists(temp_output.name):
+                os.unlink(temp_output.name)
+    
+    def test_cli_with_pdf_argument(self):
+        """Test CLI with --pdf argument"""
+        from portfolio_analyzer.cli import main
+        from unittest.mock import patch
+        import sys
+        
+        temp_pdf = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.pdf')
+        temp_pdf.close()
+        
+        try:
+            with patch.object(sys, 'argv', ['cli', '--pdf', temp_pdf.name]):
+                main()
+            
+            # Check that PDF file was created
+            self.assertTrue(os.path.exists(temp_pdf.name))
+        finally:
+            if os.path.exists(temp_pdf.name):
+                os.unlink(temp_pdf.name)
+    
+    def test_cli_with_html_argument(self):
+        """Test CLI with --html argument"""
+        from portfolio_analyzer.cli import main
+        from unittest.mock import patch
+        import sys
+        
+        temp_html = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.html')
+        temp_html.close()
+        
+        try:
+            with patch.object(sys, 'argv', ['cli', '--html', temp_html.name]):
+                main()
+            
+            # Check that HTML file was created
+            self.assertTrue(os.path.exists(temp_html.name))
+            with open(temp_html.name, 'r') as f:
+                content = f.read()
+                self.assertIn('Portfolio Analytics Dashboard', content)
+        finally:
+            if os.path.exists(temp_html.name):
+                os.unlink(temp_html.name)
+    
+    def test_cli_invalid_csv_file(self):
+        """Test CLI with invalid CSV file"""
+        from portfolio_analyzer.cli import main
+        from unittest.mock import patch
+        import sys
+        
+        with patch.object(sys, 'argv', ['cli', '--csv', 'nonexistent.csv']):
+            with self.assertRaises(SystemExit):
+                main()
+    
+    def test_cli_no_arguments(self):
+        """Test CLI without any arguments (uses default trades)"""
+        from portfolio_analyzer.cli import main
+        from unittest.mock import patch
+        import sys
+        
+        with patch.object(sys, 'argv', ['cli']):
+            # Should not raise exception
+            main()
+
+
     """Run all tests with verbose output"""
     unittest.main(argv=[''], verbosity=2, exit=False)
 

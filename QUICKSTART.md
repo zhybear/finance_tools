@@ -16,8 +16,11 @@ python3 stock.py --csv example_trades.csv --output example_report.txt
 # Generate PDF report with charts
 python3 stock.py --csv example_trades.csv --pdf example_report.pdf
 
-# Both reports at once
-python3 stock.py --csv example_trades.csv --output example_report.txt --pdf example_report.pdf
+# Generate interactive HTML dashboard
+python3 stock.py --csv example_trades.csv --html example_report.html
+
+# All report formats at once
+python3 stock.py --csv example_trades.csv --output example_report.txt --pdf example_report.pdf --html example_report.html
 ```
 
 ## Example Portfolio Contents
@@ -63,7 +66,7 @@ MY_STOCK,10,2022-03-10,150.00
 2. Run the analyzer:
 
 ```bash
-python3 stock.py --csv your_trades.csv --output your_report.txt --pdf your_report.pdf
+python3 stock.py --csv your_trades.csv --output your_report.txt --pdf your_report.pdf --html your_report.html
 ```
 
 ## Key Features Demonstrated
@@ -76,7 +79,7 @@ Using the example file, you'll see:
 - ✅ **Diversification** (semiconductors, e-commerce, finance, holding companies)
 - ✅ **Different performance periods** (IPOs to mature companies)
 - ✅ **S&P 500 benchmark comparison** (verify your outperformance)
-- ✅ **Text and PDF report generation**
+- ✅ **Text, PDF, and HTML report generation**
 
 ## Next Steps
 

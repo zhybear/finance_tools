@@ -46,6 +46,12 @@ A comprehensive stock portfolio analyzer with S&P 500 benchmarking, PDF visualiz
   - Dollar gain analysis
   - Position win/loss statistics
   - Detailed metrics table
+- **HTML Dashboard**: Interactive reports with:
+  - Plotly.js charts with hover details
+  - Sortable DataTables
+  - Dark mode toggle
+  - Responsive design
+  - Print-friendly layout
 
 ### ✓ Code Quality
 - 811 lines of well-documented production code
@@ -72,8 +78,11 @@ python3 stock.py --csv example_trades.csv --output report.txt
 # PDF with visualizations
 python3 stock.py --csv example_trades.csv --pdf report.pdf
 
-# Both reports
-python3 stock.py --csv example_trades.csv --output report.txt --pdf report.pdf
+# Interactive HTML dashboard
+python3 stock.py --csv example_trades.csv --html report.html
+
+# All report formats
+python3 stock.py --csv example_trades.csv --output report.txt --pdf report.pdf --html report.html
 ```
 
 ### Run Tests
@@ -204,7 +213,7 @@ YOUR_STOCK,10,2022-03-10,150.00
 
 2. Run analyzer:
 ```bash
-python3 stock.py --csv your_trades.csv --output report.txt --pdf report.pdf
+python3 stock.py --csv your_trades.csv --output report.txt --pdf report.pdf --html report.html
 ```
 
 3. View results:

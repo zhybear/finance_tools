@@ -30,16 +30,18 @@
 - [x] CSV loading and validation
 - [x] Text report generation
 - [x] PDF report generation (2+ pages)
-- [x] Visualization with matplotlib/seaborn
+- [x] HTML dashboard generation (interactive)
+- [x] Visualization with matplotlib/seaborn and Plotly
 
 ### ✅ Reports
-- [x] Text reports align with PDF metrics
+- [x] Text reports align with PDF and HTML metrics
 - [x] Per-trade metrics (CAGR, XIRR, outperformance)
 - [x] Symbol accumulation (weighted metrics)
 - [x] Portfolio summary with dual metrics
 - [x] PDF page 1: 4 charts + summary box
 - [x] PDF page 2: Detailed metrics table
-- [x] Professional formatting and styling
+- [x] HTML: Interactive charts, sortable tables, dark mode
+- [x] Professional formatting and styling for all formats
 
 ### ✅ Metrics Accuracy
 - [x] Symbol CAGR: Calculated from aggregated values
@@ -111,56 +113,40 @@ Categories:
   - Usage examples
   - Metrics explanation
 
-### Sample Reports
-- **my_trades_report.txt** (46KB)
-  - Per-trade metrics
-  - Per-symbol accumulation
-  - Portfolio summary
-  - All metrics properly aligned
-
-- **my_trades_report.pdf** (56KB, 2 pages)
-  - Professional formatting
-  - 5 visualizations
-  - Detailed metrics table
-  - Portfolio summary box
-
 ### Sample Data
-- **my_trades.csv** (4.2KB)
-  - 148 real trades
-  - 147 valid entries
-  - Diverse portfolio
-
-- **example_trades.csv** (0.3KB)
-  - Quick start example
-  - 12 stocks from 2014-2019
+- **example_trades.csv** 
+  - Quick start example with 12 stocks
+  - Provides reference portfolio for testing
+  - IMPORTANT: Use only with example data files
+  - Users should provide their own trade data via --csv option
 
 ---
 
-## Key Metrics (Example Portfolio)
+## Key Metrics (Example Portfolio Format)
 
-**Portfolio Performance**:
+The tool generates metrics in the following format:
+
+**Portfolio Performance Output**:
 ```
-Initial Investment: $159,835.52
-Current Value: $2,795,071.13
-Total Gain: $2,635,235.61 (1,647.8%)
-
-Portfolio CAGR: 75.06%
-Portfolio XIRR: 37.91%
-S&P 500 CAGR: 15.83%
-S&P 500 XIRR: 13.10%
-
-Outperformance (CAGR): 59.23%
-Outperformance (XIRR): 24.81%
+Portfolio performance metrics will include:
+- Initial Investment
+- Current Value
+- Total Gain
+- Portfolio CAGR
+- Portfolio XIRR
+- S&P 500 Comparison (CAGR & XIRR)
+- Outperformance metrics
 ```
 
-**Symbol Example (Multi-Purchase)** - ADBE (9 trades):
+**Symbol-Level Example**:
 ```
-Total Invested: $10,363.85
-Current Value: $21,723.24
-Total Gain: $11,359.39 (109.61%)
-Weighted Avg CAGR: 13.26%
-Weighted Avg XIRR: 10.20%
-(XIRR < CAGR: purchases weighted toward peak prices)
+Per symbol metrics include:
+- Total Invested
+- Current Value
+- Total Gain
+- Weighted Average CAGR
+- Weighted Average XIRR
+- Trade count
 ```
 
 ---
@@ -174,7 +160,9 @@ pip install yfinance pandas numpy scipy matplotlib seaborn
 
 ### Basic Usage
 ```bash
-python3 stock.py --csv my_trades.csv --output report.txt --pdf report.pdf
+python3 stock.py --csv example_trades.csv --output report.txt --pdf report.pdf --html report.html
+# Or with your own portfolio:
+python3 stock.py --csv your_trades.csv --output report.txt --pdf report.pdf --html report.html
 ```
 
 ### Running Tests

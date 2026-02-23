@@ -437,6 +437,124 @@ class TestReportGeneration(unittest.TestCase):
         # Should not raise exception
         analyzer.print_report()
 
+    def test_html_report_contains_tooltips(self):
+        """Test that HTML report includes tooltip elements"""
+        trades = [
+            {
+                'symbol': 'AAPL',
+                'shares': 100,
+                'purchase_date': '2020-01-02',
+                'price': 75.09
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        temp_file = tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False)
+        try:
+            temp_path = temp_file.name
+            temp_file.close()
+            
+            analyzer.generate_html_report(temp_path)
+            
+            # Read the generated HTML
+            with open(temp_path, 'r') as f:
+                html_content = f.read()
+            
+            # Verify tooltip CSS classes exist
+            self.assertIn('tooltip-term', html_content,
+                         "HTML should contain tooltip-term CSS class")
+            
+            # Verify tooltip styling for positioning
+            self.assertIn('data-tooltip', html_content,
+                         "HTML should contain data-tooltip attributes")
+            
+            # Verify specific tooltips for key metrics
+            tooltip_checks = [
+                'WCAGR',
+                'XIRR',
+                'position: absolute',
+                'z-index: 10000',
+                'overflow: visible'
+            ]
+            
+            for check in tooltip_checks:
+                self.assertIn(check, html_content,
+                             f"HTML should contain '{check}' for tooltip functionality")
+        
+        finally:
+            if os.path.exists(temp_file.name):
+                os.unlink(temp_file.name)
+
+    def test_html_report_wcagr_label(self):
+        """Test that HTML report uses WCAGR instead of CAGR"""
+        trades = [
+            {
+                'symbol': 'TEST',
+                'shares': 100,
+                'purchase_date': '2020-01-02',
+                'price': 100.0
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        temp_file = tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False)
+        try:
+            temp_path = temp_file.name
+            temp_file.close()
+            
+            analyzer.generate_html_report(temp_path)
+            
+            with open(temp_path, 'r') as f:
+                html_content = f.read()
+            
+            # Verify WCAGR appears in headers
+            self.assertIn('WCAGR', html_content,
+                         "HTML should use WCAGR instead of CAGR")
+            
+            # Verify both portfolio and S&P 500 WCAGR mentioned
+            wcagr_count = html_content.count('WCAGR')
+            self.assertGreater(wcagr_count, 2,
+                              "HTML should have multiple WCAGR references (header + S&P)")
+        
+        finally:
+            if os.path.exists(temp_file.name):
+                os.unlink(temp_file.name)
+
+    def test_html_report_sp500_columns(self):
+        """Test that HTML detailed holdings table has S&P 500 columns"""
+        trades = [
+            {
+                'symbol': 'TEST',
+                'shares': 100,
+                'purchase_date': '2020-01-02',
+                'price': 100.0
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        temp_file = tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False)
+        try:
+            temp_path = temp_file.name
+            temp_file.close()
+            
+            analyzer.generate_html_report(temp_path)
+            
+            with open(temp_path, 'r') as f:
+                html_content = f.read()
+            
+            # Verify S&P columns in detailed holdings
+            self.assertIn('S&P WCAGR %', html_content,
+                         "HTML should have S&P WCAGR % column")
+            self.assertIn('S&P XIRR %', html_content,
+                         "HTML should have S&P XIRR % column")
+        
+        finally:
+            if os.path.exists(temp_file.name):
+                os.unlink(temp_file.name)
+
 
 
 

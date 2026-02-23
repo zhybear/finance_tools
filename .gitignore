@@ -20,6 +20,12 @@ portfolio_report.*
 **/portfolio_report.*
 **/example_report.*
 
+# Local notes
+DEVELOPMENT_HISTORY.md
+
+# Local clean-clone experiments
+clean_clone/
+
 # Coverage and compiled files
 .coverage
 .DS_Store

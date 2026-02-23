@@ -27,6 +27,21 @@ pip install matplotlib seaborn plotly reportlab
 
 ## Quick Start
 
+### Try the Example
+
+The `examples/` directory contains a sample portfolio with pre-generated outputs:
+
+- **Input**: `examples/example_trades.csv` (12-stock portfolio)
+- **Outputs**: 
+  - `examples/example_report.txt` (Text report with detailed analysis)
+  - `examples/example_report.pdf` (PDF with charts and visualizations)
+  - `examples/example_report.html` (Interactive HTML dashboard)
+
+Generate these yourself:
+```bash
+python -m portfolio_analyzer.cli --csv examples/example_trades.csv --output examples/example_report.txt --pdf examples/example_report.pdf --html examples/example_report.html
+```
+
 ### Command Line
 
 ```bash

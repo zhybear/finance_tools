@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Analytics Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header h1 { margin: 0; font-size: 2.5rem; }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: white; padding: 24px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .metric-label { color: #666; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .metric-value { font-size: 2.2rem; font-weight: 700; color: #333; margin-top: 12px; }
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
+        .chart-container { background: white; padding: 25px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        th { background: #f8f9fa; padding: 16px; text-align: left; font-weight: 600; border-bottom: 2px solid #0066cc; font-size: 0.9rem; color: #333; text-transform: uppercase; letter-spacing: 0.3px; }
+        td { padding: 14px 16px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        tr:hover { background: #f9fafb; }
+        .symbol-row { cursor: pointer; transition: background 0.2s; }
+        .symbol-row:hover { background: #e8f4f8; }
+        .symbol-cell { display: flex; align-items: center; gap: 8px; }
+        .expand-icon { display: inline-block; width: 16px; height: 16px; transition: transform 0.3s; font-size: 12px; color: #0066cc; }
+        .expand-icon.expanded { transform: rotate(90deg); }
+        .trades-row { display: none; background: #f8f9fa; }
+        .trades-row.show { display: table-row; }
+        .trades-detail { padding: 0 !important; }
+        .trades-table { width: 100%; margin: 10px 0; background: white; border: 1px solid #e0e0e0; }
+        .trades-table th { background: #e8f4f8; padding: 10px; font-size: 0.85rem; border-bottom: 1px solid #d0d0d0; }
+        .trades-table td { padding: 10px; font-size: 0.9rem; border-bottom: 1px solid #f0f0f0; }
+        .trade-count { color: #0066cc; font-weight: 600; text-decoration: underline; text-decoration-style: dotted; }
+        h2 { margin-top: 0; color: #333; border-bottom: 3px solid #0066cc; padding-bottom: 12px; font-size: 1.8rem; }
+        .number { font-family: 'SF Mono', Monaco, monospace; font-weight: 600; }
+        .tooltip-term { position: relative; cursor: help; border-bottom: 1px dotted #0066cc; }
+        .tooltip-term:hover::after { 
+            content: attr(data-tooltip); 
+            position: absolute; 
+            bottom: 125%; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background-color: #333; 
+            color: white; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            font-size: 0.85rem; 
+            white-space: nowrap; 
+            z-index: 10000; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .tooltip-term:hover::before { 
+            content: ''; 
+            position: absolute; 
+            bottom: 115%; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            border: 6px solid transparent; 
+            border-top-color: #333; 
+            z-index: 10000;
+        }
+        .section { background: white; padding: 25px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: visible; }
+        table { overflow: visible; }
+        th, td { overflow: visible; } 
+        }
+        @media (max-width: 768px) {
+            .metrics { grid-template-columns: 1fr; }
+            .metric-value { font-size: 1.8rem; }
+            .header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Portfolio Analytics Dashboard</h1>
+            <p style="margin: 10px 0 0 0; opacity: 0.9; font-size: 1.1rem;">Comprehensive Investment Performance Analysis</p>
+        </div>
+        
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-label">Portfolio Value</div>
+                <div class="metric-value">$215,018</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total Gain</div>
+                <div class="metric-value positive">$101,543</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Return %</div>
+                <div class="metric-value positive">89.5%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Portfolio <span class="tooltip-term" data-tooltip="Weighted CAGR: Compound Annual Growth Rate weighted by investment amount and time held">WCAGR</span></div>
+                <div class="metric-value positive">7.2%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Portfolio <span class="tooltip-term" data-tooltip="XIRR: Internal Rate of Return accounting for timing and size of each cash flow">XIRR</span></div>
+                <div class="metric-value positive">7.2%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">S&P 500 <span class="tooltip-term" data-tooltip="S&P 500 WCAGR: Weighted average annual return of S&P 500 for your investment periods">WCAGR</span></div>
+                <div class="metric-value">12.6%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">S&P 500 <span class="tooltip-term" data-tooltip="S&P 500 XIRR: True return of S&P 500 given your exact investment dates and amounts">XIRR</span></div>
+                <div class="metric-value">12.4%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Outperformance</div>
+                <div class="metric-value negative">-5.2%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total Positions</div>
+                <div class="metric-value">11</div>
+            </div>
+        </div>
+        
+        <div class="chart-container"><div id="chart1"></div></div><div class="chart-container"><div id="chart2"></div></div><div class="chart-container"><div id="chart3"></div></div><div class="chart-container"><div id="chart4"></div></div><div class="chart-container"><div id="chart5"></div></div>
+        
+        <div class="section">
+            <h2>Detailed Holdings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Trades</th>
+                        <th>Invested</th>
+                        <th>Current Value</th>
+                        <th>Gain</th>
+                        <th>Return %</th>
+                        <th><span class="tooltip-term" data-tooltip="Weighted CAGR: Compound Annual Growth Rate weighted by amount and time">WCAGR %</span></th>
+                        <th><span class="tooltip-term" data-tooltip="XIRR: Internal Rate of Return for actual cash flows">XIRR %</span></th>
+                        <th><span class="tooltip-term" data-tooltip="S&P WCAGR: Bench. weighted avg return">S&P WCAGR %</span></th>
+                        <th><span class="tooltip-term" data-tooltip="S&P XIRR: Benchmark internal rate return">S&P XIRR %</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr class="symbol-row" onclick="toggleTrades('NVDA')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-NVDA">▶</span>
+                                <strong>NVDA</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">3</td>
+                        <td class="number">$23,925</td>
+                        <td class="number">$56,946</td>
+                        <td class="number positive">$33,021</td>
+                        <td class="number positive">138.0%</td>
+                        <td class="number positive">6.8%</td>
+                        <td class="number positive">10.5%</td>
+                        <td class="number">13.3%</td>
+                        <td class="number">13.0%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-NVDA">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for NVDA</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2015-01-15</td>
+                                            <td class="number">150</td>
+                                            <td class="number">$19.50</td>
+                                            <td class="number">$189.82</td>
+                                            <td class="number">$2,925.00</td>
+                                            <td class="number">$28,473.00</td>
+                                            <td class="number positive">$25,548.00</td>
+                                            <td class="number positive">22.76%</td>
+                                            <td class="number positive">22.76%</td>
+                                            <td class="number">11.85%</td>
+                                            <td class="number">11.85%</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>2017-06-01</td>
+                                            <td class="number">100</td>
+                                            <td class="number">$145.00</td>
+                                            <td class="number">$189.82</td>
+                                            <td class="number">$14,500.00</td>
+                                            <td class="number">$18,982.00</td>
+                                            <td class="number positive">$4,482.00</td>
+                                            <td class="number positive">3.14%</td>
+                                            <td class="number positive">3.14%</td>
+                                            <td class="number">12.73%</td>
+                                            <td class="number">12.73%</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>2019-01-01</td>
+                                            <td class="number">50</td>
+                                            <td class="number">$130.00</td>
+                                            <td class="number">$189.82</td>
+                                            <td class="number">$6,500.00</td>
+                                            <td class="number">$9,491.00</td>
+                                            <td class="number positive">$2,991.00</td>
+                                            <td class="number positive">5.45%</td>
+                                            <td class="number positive">5.45%</td>
+                                            <td class="number">15.24%</td>
+                                            <td class="number">15.24%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('META')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-META">▶</span>
+                                <strong>META</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$9,930</td>
+                        <td class="number">$39,340</td>
+                        <td class="number positive">$29,410</td>
+                        <td class="number positive">296.2%</td>
+                        <td class="number positive">22.6%</td>
+                        <td class="number positive">22.6%</td>
+                        <td class="number">14.0%</td>
+                        <td class="number">14.0%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-META">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for META</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2019-05-18</td>
+                                            <td class="number">60</td>
+                                            <td class="number">$165.50</td>
+                                            <td class="number">$655.66</td>
+                                            <td class="number">$9,930.00</td>
+                                            <td class="number">$39,339.60</td>
+                                            <td class="number positive">$29,409.60</td>
+                                            <td class="number positive">22.58%</td>
+                                            <td class="number positive">22.58%</td>
+                                            <td class="number">14.05%</td>
+                                            <td class="number">14.05%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('MSFT')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-MSFT">▶</span>
+                                <strong>MSFT</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$4,290</td>
+                        <td class="number">$29,792</td>
+                        <td class="number positive">$25,502</td>
+                        <td class="number positive">594.5%</td>
+                        <td class="number positive">22.6%</td>
+                        <td class="number positive">22.6%</td>
+                        <td class="number">12.9%</td>
+                        <td class="number">12.9%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-MSFT">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for MSFT</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2016-08-22</td>
+                                            <td class="number">75</td>
+                                            <td class="number">$57.20</td>
+                                            <td class="number">$397.23</td>
+                                            <td class="number">$4,290.00</td>
+                                            <td class="number">$29,792.25</td>
+                                            <td class="number positive">$25,502.25</td>
+                                            <td class="number positive">22.64%</td>
+                                            <td class="number positive">22.64%</td>
+                                            <td class="number">12.90%</td>
+                                            <td class="number">12.90%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('AAPL')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-AAPL">▶</span>
+                                <strong>AAPL</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$12,550</td>
+                        <td class="number">$26,458</td>
+                        <td class="number positive">$13,908</td>
+                        <td class="number positive">110.8%</td>
+                        <td class="number positive">7.1%</td>
+                        <td class="number positive">7.1%</td>
+                        <td class="number">11.6%</td>
+                        <td class="number">11.6%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-AAPL">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for AAPL</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2015-04-15</td>
+                                            <td class="number">100</td>
+                                            <td class="number">$125.50</td>
+                                            <td class="number">$264.58</td>
+                                            <td class="number">$12,550.00</td>
+                                            <td class="number">$26,458.00</td>
+                                            <td class="number positive">$13,908.00</td>
+                                            <td class="number positive">7.11%</td>
+                                            <td class="number positive">7.11%</td>
+                                            <td class="number">11.57%</td>
+                                            <td class="number">11.57%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('AMD')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-AMD">▶</span>
+                                <strong>AMD</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$1,116</td>
+                        <td class="number">$16,012</td>
+                        <td class="number positive">$14,896</td>
+                        <td class="number positive">1334.8%</td>
+                        <td class="number positive">34.9%</td>
+                        <td class="number positive">34.9%</td>
+                        <td class="number">12.9%</td>
+                        <td class="number">12.9%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-AMD">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for AMD</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2017-04-03</td>
+                                            <td class="number">80</td>
+                                            <td class="number">$13.95</td>
+                                            <td class="number">$200.15</td>
+                                            <td class="number">$1,116.00</td>
+                                            <td class="number">$16,012.00</td>
+                                            <td class="number positive">$14,896.00</td>
+                                            <td class="number positive">34.96%</td>
+                                            <td class="number positive">34.96%</td>
+                                            <td class="number">12.86%</td>
+                                            <td class="number">12.86%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('JPM')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-JPM">▶</span>
+                                <strong>JPM</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$5,238</td>
+                        <td class="number">$15,540</td>
+                        <td class="number positive">$10,302</td>
+                        <td class="number positive">196.7%</td>
+                        <td class="number positive">14.5%</td>
+                        <td class="number positive">14.5%</td>
+                        <td class="number">12.4%</td>
+                        <td class="number">12.4%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-JPM">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for JPM</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2018-02-14</td>
+                                            <td class="number">50</td>
+                                            <td class="number">$104.75</td>
+                                            <td class="number">$310.79</td>
+                                            <td class="number">$5,237.50</td>
+                                            <td class="number">$15,539.50</td>
+                                            <td class="number positive">$10,302.00</td>
+                                            <td class="number positive">14.53%</td>
+                                            <td class="number positive">14.53%</td>
+                                            <td class="number">12.44%</td>
+                                            <td class="number">12.44%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('GOOGL')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-GOOGL">▶</span>
+                                <strong>GOOGL</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$33,900</td>
+                        <td class="number">$12,599</td>
+                        <td class="number negative">$-21,301</td>
+                        <td class="number negative">-62.8%</td>
+                        <td class="number negative">-10.4%</td>
+                        <td class="number negative">-10.4%</td>
+                        <td class="number">12.7%</td>
+                        <td class="number">12.6%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-GOOGL">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for GOOGL</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2017-03-05</td>
+                                            <td class="number">40</td>
+                                            <td class="number">$847.50</td>
+                                            <td class="number">$314.98</td>
+                                            <td class="number">$33,900.00</td>
+                                            <td class="number">$12,599.20</td>
+                                            <td class="number negative">$-21,300.80</td>
+                                            <td class="number negative">-10.45%</td>
+                                            <td class="number negative">-10.45%</td>
+                                            <td class="number">12.65%</td>
+                                            <td class="number">12.65%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('TSLA')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-TSLA">▶</span>
+                                <strong>TSLA</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$2,116</td>
+                        <td class="number">$10,296</td>
+                        <td class="number positive">$8,179</td>
+                        <td class="number positive">386.5%</td>
+                        <td class="number positive">28.9%</td>
+                        <td class="number positive">28.9%</td>
+                        <td class="number">13.7%</td>
+                        <td class="number">13.7%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-TSLA">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for TSLA</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2019-12-01</td>
+                                            <td class="number">25</td>
+                                            <td class="number">$84.65</td>
+                                            <td class="number">$411.82</td>
+                                            <td class="number">$2,116.25</td>
+                                            <td class="number">$10,295.50</td>
+                                            <td class="number positive">$8,179.25</td>
+                                            <td class="number positive">28.95%</td>
+                                            <td class="number positive">28.95%</td>
+                                            <td class="number">13.66%</td>
+                                            <td class="number">13.66%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('AMZN')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-AMZN">▶</span>
+                                <strong>AMZN</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$4,680</td>
+                        <td class="number">$3,152</td>
+                        <td class="number negative">$-1,528</td>
+                        <td class="number negative">-32.7%</td>
+                        <td class="number negative">-3.5%</td>
+                        <td class="number negative">-3.5%</td>
+                        <td class="number">11.4%</td>
+                        <td class="number">11.4%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-AMZN">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for AMZN</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2014-11-20</td>
+                                            <td class="number">15</td>
+                                            <td class="number">$312.00</td>
+                                            <td class="number">$210.11</td>
+                                            <td class="number">$4,680.00</td>
+                                            <td class="number">$3,151.65</td>
+                                            <td class="number negative">$-1,528.35</td>
+                                            <td class="number negative">-3.45%</td>
+                                            <td class="number negative">-3.45%</td>
+                                            <td class="number">11.39%</td>
+                                            <td class="number">11.39%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('SHOP')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-SHOP">▶</span>
+                                <strong>SHOP</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$2,650</td>
+                        <td class="number">$2,524</td>
+                        <td class="number negative">$-126</td>
+                        <td class="number negative">-4.8%</td>
+                        <td class="number negative">-0.6%</td>
+                        <td class="number negative">-0.6%</td>
+                        <td class="number">13.0%</td>
+                        <td class="number">13.0%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-SHOP">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for SHOP</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2017-09-08</td>
+                                            <td class="number">20</td>
+                                            <td class="number">$132.50</td>
+                                            <td class="number">$126.20</td>
+                                            <td class="number">$2,650.00</td>
+                                            <td class="number">$2,524.00</td>
+                                            <td class="number negative">$-126.00</td>
+                                            <td class="number negative">-0.57%</td>
+                                            <td class="number negative">-0.57%</td>
+                                            <td class="number">12.99%</td>
+                                            <td class="number">12.99%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="symbol-row" onclick="toggleTrades('NFLX')">
+                        <td>
+                            <div class="symbol-cell">
+                                <span class="expand-icon" id="icon-NFLX">▶</span>
+                                <strong>NFLX</strong>
+                            </div>
+                        </td>
+                        <td class="number trade-count">1</td>
+                        <td class="number">$13,080</td>
+                        <td class="number">$2,360</td>
+                        <td class="number negative">$-10,720</td>
+                        <td class="number negative">-82.0%</td>
+                        <td class="number negative">-14.3%</td>
+                        <td class="number negative">-14.3%</td>
+                        <td class="number">11.7%</td>
+                        <td class="number">11.7%</td>
+                    </tr>
+
+                    <tr class="trades-row" id="trades-NFLX">
+                        <td colspan="10" class="trades-detail">
+                            <div style="padding: 15px; background: #f8f9fa;">
+                                <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for NFLX</h4>
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Shares</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Initial Value</th>
+                                            <th>Current Value</th>
+                                            <th>Gain</th>
+                                            <th>WCAGR %</th>
+                                            <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>2015-01-12</td>
+                                            <td class="number">30</td>
+                                            <td class="number">$436.00</td>
+                                            <td class="number">$78.67</td>
+                                            <td class="number">$13,080.00</td>
+                                            <td class="number">$2,360.10</td>
+                                            <td class="number negative">$-10,719.90</td>
+                                            <td class="number negative">-14.29%</td>
+                                            <td class="number negative">-14.29%</td>
+                                            <td class="number">11.67%</td>
+                                            <td class="number">11.67%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+<script>
+    Plotly.newPlot('chart1', {"data":[{"hovertemplate":"\u003cb\u003e%{y}\u003c\u002fb\u003e\u003cbr\u003eValue: $%{x:,.2f}\u003cbr\u003eGain: $%{marker.color:,.2f}\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":[33021.002197265625,29409.598388671875,25502.25082397461,13907.998657226562,14895.99951171875,10302.000427246094,-21300.799560546875,8179.250183105469,-1528.3499908447266,-126.00006103515625],"colorbar":{"title":{"text":"Gain ($)"}},"colorscale":[[0.0,"rgb(165,0,38)"],[0.1,"rgb(215,48,39)"],[0.2,"rgb(244,109,67)"],[0.3,"rgb(253,174,97)"],[0.4,"rgb(254,224,139)"],[0.5,"rgb(255,255,191)"],[0.6,"rgb(217,239,139)"],[0.7,"rgb(166,217,106)"],[0.8,"rgb(102,189,99)"],[0.9,"rgb(26,152,80)"],[1.0,"rgb(0,104,55)"]],"showscale":true},"orientation":"h","text":["$56,946","$39,340","$29,792","$26,458","$16,012","$15,540","$12,599","$10,296","$3,152","$2,524"],"textfont":{"size":10},"textposition":"outside","x":[56946.002197265625,39339.598388671875,29792.25082397461,26457.998657226562,16011.99951171875,15539.500427246094,12599.200439453125,10295.500183105469,3151.6500091552734,2523.9999389648438],"y":["NVDA","META","MSFT","AAPL","AMD","JPM","GOOGL","TSLA","AMZN","SHOP"],"type":"bar"}],"layout":{"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":80,"r":150,"t":60,"b":60},"title":{"text":"Top 10 Holdings by Current Value"},"xaxis":{"title":{"text":"Current Value ($)"}},"yaxis":{"title":{"text":"Symbol"}},"height":500,"showlegend":false}});
+    Plotly.newPlot('chart2', {"data":[{"hovertemplate":"\u003cb\u003e%{x}\u003c\u002fb\u003e\u003cbr\u003eXIRR: %{y:.2f}%\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":[34.93497866454277,28.91706022648662,22.62121176712543,22.557465699913454,14.519100487876383,10.534923367249496,7.110215362049575,-0.5743575389103189,-3.4509551655183706,-10.448240004574986],"colorscale":[[0.0,"rgb(165,0,38)"],[0.1,"rgb(215,48,39)"],[0.2,"rgb(244,109,67)"],[0.3,"rgb(253,174,97)"],[0.4,"rgb(254,224,139)"],[0.5,"rgb(255,255,191)"],[0.6,"rgb(217,239,139)"],[0.7,"rgb(166,217,106)"],[0.8,"rgb(102,189,99)"],[0.9,"rgb(26,152,80)"],[1.0,"rgb(0,104,55)"]],"showscale":false},"text":["34.9%","28.9%","22.6%","22.6%","14.5%","10.5%","7.1%","-0.6%","-3.5%","-10.4%"],"textfont":{"size":11,"weight":"bold"},"textposition":"outside","x":["AMD","TSLA","MSFT","META","JPM","NVDA","AAPL","SHOP","AMZN","GOOGL"],"y":[34.93497866454277,28.91706022648662,22.62121176712543,22.557465699913454,14.519100487876383,10.534923367249496,7.110215362049575,-0.5743575389103189,-3.4509551655183706,-10.448240004574986],"type":"bar"}],"layout":{"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":60,"r":60,"t":60,"b":80},"title":{"text":"Top 10 Performers by XIRR"},"xaxis":{"title":{"text":"Symbol"}},"yaxis":{"title":{"text":"XIRR (%)"}},"height":500,"showlegend":false}});
+    Plotly.newPlot('chart3', {"data":[{"hole":0.3,"hovertemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003eValue: $%{value:,.2f}\u003cbr\u003e%{percent}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["NVDA","META","MSFT","AAPL","AMD","JPM","GOOGL","TSLA","Others"],"textfont":{"size":12},"textinfo":"label+percent","values":[56946.002197265625,39339.598388671875,29792.25082397461,26457.998657226562,16011.99951171875,15539.500427246094,12599.200439453125,10295.500183105469,8035.749893188477],"type":"pie"}],"layout":{"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":20,"r":20,"t":60,"b":20},"title":{"text":"Portfolio Allocation by Value"},"height":500}});
+    Plotly.newPlot('chart4', {"data":[{"hovertemplate":"\u003cb\u003e%{text}\u003c\u002fb\u003e\u003cbr\u003eXIRR: %{x:.2f}%\u003cbr\u003eWCAGR: %{y:.2f}%\u003cbr\u003eGain: $%{marker.color:,.2f}\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":[33021.002197265625,29409.598388671875,25502.25082397461,13907.998657226562,14895.99951171875,10302.000427246094,-21300.799560546875,8179.250183105469,-1528.3499908447266,-126.00006103515625,-10719.90005493164],"colorbar":{"title":{"text":"Gain ($)"}},"colorscale":[[0.0,"rgb(165,0,38)"],[0.1,"rgb(215,48,39)"],[0.2,"rgb(244,109,67)"],[0.3,"rgb(253,174,97)"],[0.4,"rgb(254,224,139)"],[0.5,"rgb(255,255,191)"],[0.6,"rgb(217,239,139)"],[0.7,"rgb(166,217,106)"],[0.8,"rgb(102,189,99)"],[0.9,"rgb(26,152,80)"],[1.0,"rgb(0,104,55)"]],"line":{"color":"white","width":1},"showscale":true,"size":[50,39.339598388671874,29.79225082397461,26.45799865722656,16.01199951171875,15.539500427246093,12.599200439453124,10.295500183105469,5,5,5]},"mode":"markers","text":["NVDA","META","MSFT","AAPL","AMD","JPM","GOOGL","TSLA","AMZN","SHOP","NFLX"],"x":[10.534923367249496,22.557465699913454,22.62121176712543,7.110215362049575,34.93497866454277,14.519100487876383,-10.448240004574986,28.91706022648662,-3.4509551655183706,-0.5743575389103189,-14.280420568223473],"y":[6.755528143075499,22.557465699913458,22.621211767125438,7.110215362049566,34.93497866454276,14.51910048787639,-10.448240004574993,28.917060226486612,-3.450955165523595,-0.5743575389105304,-14.280420568223473],"type":"scatter"},{"hoverinfo":"skip","line":{"color":"gray","dash":"dash","width":1},"mode":"lines","name":"x=y","showlegend":false,"x":[-14.280420568223473,34.93497866454277],"y":[-14.280420568223473,34.93497866454277],"type":"scatter"}],"layout":{"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":60,"r":100,"t":60,"b":60},"title":{"text":"XIRR vs WCAGR Performance (Bubble Size = Position Value)"},"xaxis":{"title":{"text":"XIRR (%)"}},"yaxis":{"title":{"text":"WCAGR (%)"}},"height":500,"showlegend":false}});
+    Plotly.newPlot('chart5', {"data":[{"hovertemplate":"\u003cb\u003e%{x}\u003c\u002fb\u003e\u003cbr\u003eCount: %{y}\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":["#10b981","#ef4444","#9ca3af"]},"text":["7","4","0"],"textfont":{"size":14,"weight":"bold"},"textposition":"outside","x":["Winners","Losers","Breakeven"],"y":[7,4,0],"type":"bar"}],"layout":{"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":60,"r":60,"t":60,"b":60},"title":{"text":"Win\u002fLoss Distribution"},"xaxis":{"title":{"text":"Category"}},"yaxis":{"title":{"text":"Number of Positions"}},"height":400,"showlegend":false}});
+</script>
+
+    <script>
+        function toggleTrades(symbolId) {
+            const tradesRow = document.getElementById('trades-' + symbolId);
+            const icon = document.getElementById('icon-' + symbolId);
+            
+            if (tradesRow.classList.contains('show')) {
+                tradesRow.classList.remove('show');
+                icon.classList.remove('expanded');
+            } else {
+                tradesRow.classList.add('show');
+                icon.classList.add('expanded');
+            }
+        }
+    </script>
+</body>
+</html>

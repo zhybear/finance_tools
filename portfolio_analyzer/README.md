@@ -35,7 +35,7 @@ The `examples/` directory contains a sample portfolio with pre-generated outputs
 - **Outputs**: 
   - `examples/example_report.txt` (Text report with detailed analysis)
   - `examples/example_report.pdf` (PDF with charts and visualizations)
-  - `examples/example_report.html` (Interactive HTML dashboard)
+  - **[`examples/example_report.html`](https://htmlpreview.github.io/?https://github.com/zhybear/finance_tools/blob/main/portfolio_analyzer/examples/example_report.html)** (Interactive HTML dashboard - click to preview)
 
 Generate these yourself:
 ```bash

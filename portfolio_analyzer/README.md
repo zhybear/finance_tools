@@ -4,12 +4,29 @@ A comprehensive Python tool for analyzing stock portfolio performance with preci
 
 ## Why This Tool
 
-Standard portfolio apps show "1 year gain" by comparing snapshots (value today vs 1 year ago). This misses important details:
-- **When** you invested your money
-- **How much** you invested at each time
-- **Real returns** accounting for your actual cash flows
+**Better than fixed-period snapshots:**
+Standard apps show returns for fixed periods (1, 3, 5, 10 years) by comparing two snapshots. This misses important context:
+- If you invested $5K one year ago and $20K three months ago, the "1 year return" ignores that most of your money hasn't been invested for 1 year
+- XIRR accounts for this - your actual time-weighted return is much more accurate than simple snapshots
 
-This tool uses **XIRR (Internal Rate of Return)** to calculate your true performance accounting for investment timing and amounts. Combined with **real S&P 500 market data** validation, you get exact benchmark comparisons.
+**Know if active stock picking is worth it:**
+This tool compares your portfolio to S&P 500 to help answer: "Should I just buy an index fund instead?"
+- If consistently underperforming S&P 500, a low-cost index fund might be a better strategy
+- Helps separate skill from luck - are you outperforming the market, or just lucky?
+- You decide what to do with this information - the tool removes the guesswork
+
+**Multi-period analysis at any time interval:**
+Unlike apps locked to 1/3/5/10 year periods, analyze any date range you want
+- "What was my return from March 2023 to now?"
+- "How did I perform in the bull market of 2024?" 
+- Compare any periods without artificial constraints
+
+**Real cash flow accounting:**
+- **When** you invested your money
+- **How much** you invested at each time  
+- **Real returns** accounting for your actual investment patterns
+
+This tool uses **XIRR (Internal Rate of Return)** to calculate your true performance accounting for investment timing and amounts. Combined with **real S&P 500 market data**, you get exact comparisons to help guide your investment decisions.
 
 ## Features
 

@@ -5,15 +5,22 @@
 ### What Makes This Release Special
 
 **Cash Flow Aware Analysis**
-- Tracks every buy date and amount, not just start/end snapshots
-- XIRR (Internal Rate of Return) calculations account for investment timing
-- Weighted CAGR reflects your actual capital deployment
+- Tracks every buy date and amount, not just fixed-point snapshots
+- XIRR (Internal Rate of Return) accounts for investment timing - more accurate than comparing "value today vs 3 years ago"
+- Works with any time period - analyze any date range, not limited to preset years (1, 3, 5, 10)
+- Weighted CAGR reflects your actual capital deployment and timing
 - Accurate performance even with irregular buying patterns
 
-**Mathematically Rigorous**
-- S&P 500 benchmark uses REAL closing prices from yfinance (never estimates)
+**S&P 500 Benchmarking - Know If Active Stock Picking Is Worth It**
+- Compare your portfolio returns to S&P 500 index fund performance
+- If consistently underperforming S&P 500, a low-cost index fund might be a better option
+- Real market data from yfinance (never estimates or approximations)
+- Helps you make informed decision: Is active stock selection worth the effort vs passive indexing?
 - Outperformance calculations are perfectly consistent (0% when comparing identical assets)
+
+**Mathematically Rigorous**
 - All calculations use standard financial formulas with full transparency
+- Consistent results across repeated analysis - same input always produces exact same output
 - No approximations or tolerance hacks - results are mathematically exact
 
 **Comprehensive Testing**

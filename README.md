@@ -24,7 +24,9 @@ finance_tools/
 **Analyze stock portfolio performance with cash flow tracking and real S&P 500 benchmarking.**
 
 What makes this different:
-- **Cash Flow Aware**: XIRR calculations account for when and how much you invested
+- **Cash Flow Aware**: XIRR calculations account for when and how much you invested (not just snapshots)
+- **Multi-Period Analysis**: Analyze any time period, not locked to 1/3/5/10 year presets
+- **S&P 500 Comparison**: Helps you decide if active stock picking beats a simple index fund investment
 - **Real Market Data**: S&P 500 benchmark uses actual yfinance closing prices
 - **Mathematically Rigorous**: All calculations are transparent and testable (149 tests, 91% coverage)
 - **Multiple Formats**: Text, PDF, and interactive HTML reports

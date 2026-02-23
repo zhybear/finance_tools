@@ -656,5 +656,155 @@ class TestReportEdgeCases(unittest.TestCase):
                 os.unlink(output_file)
 
 
+class TestReportsPhase2(unittest.TestCase):
+    """Phase 2 production hardening tests for reports"""
+    
+    def test_text_report_consistency(self):
+        """Test that text reports generated twice are identical"""
+        trades = [
+            {
+                "symbol": "SBUX",
+                "shares": 100,
+                "purchase_date": "2020-01-02",
+                "price": 89.35
+            },
+            {
+                "symbol": "MSFT",
+                "shares": 50,
+                "purchase_date": "2021-01-04",
+                "price": 217.69
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f1, \
+             tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f2:
+            output_file1 = f1.name
+            output_file2 = f2.name
+        
+        try:
+            from portfolio_analyzer.reports import TextReportGenerator
+            
+            # Generate report twice
+            TextReportGenerator.generate(analyzer, output_file=output_file1)
+            TextReportGenerator.generate(analyzer, output_file=output_file2)
+            
+            # Read both files
+            with open(output_file1, 'r') as f:
+                content1 = f.read()
+            with open(output_file2, 'r') as f:
+                content2 = f.read()
+            
+            # Content should be identical
+            self.assertEqual(content1, content2)
+        finally:
+            if os.path.exists(output_file1):
+                os.unlink(output_file1)
+            if os.path.exists(output_file2):
+                os.unlink(output_file2)
+    
+    def test_html_report_contains_required_sections(self):
+        """Test that HTML report contains all required sections"""
+        trades = [
+            {
+                "symbol": "GOOG",
+                "shares": 10,
+                "purchase_date": "2015-01-01",
+                "price": 500.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as f:
+            output_file = f.name
+        
+        try:
+            HTMLReportGenerator.generate(analyzer, output_file)
+            
+            with open(output_file, 'r') as f:
+                content = f.read()
+            
+            # Verify required sections exist (use section titles from HTML template)
+            self.assertIn('Portfolio Analytics', content)
+            self.assertIn('Detailed Holdings', content)
+            self.assertIn('GOOG', content)
+        finally:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
+    
+    def test_pdf_report_creation_no_error(self):
+        """Test that PDF report creation doesn't raise errors"""
+        trades = [
+            {
+                "symbol": "AMZN",
+                "shares": 5,
+                "purchase_date": "2014-11-20",
+                "price": 300.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as f:
+            output_file = f.name
+        
+        try:
+            # Should not raise any exceptions
+            PDFReportGenerator.generate(analyzer, output_file)
+            
+            # File should be created
+            self.assertTrue(os.path.exists(output_file))
+            # File should have some content
+            self.assertGreater(os.path.getsize(output_file), 0)
+        finally:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
+    
+    def test_report_with_mixed_symbols(self):
+        """Test report generation with diverse symbols and performance"""
+        trades = [
+            {
+                "symbol": "AAPL",
+                "shares": 10,
+                "purchase_date": "2010-01-01",
+                "price": 30.00  # Way up
+            },
+            {
+                "symbol": "FB",
+                "shares": 50,
+                "purchase_date": "2020-01-01",
+                "price": 100.00
+            },
+            {
+                "symbol": "TSLA",
+                "shares": 5,
+                "purchase_date": "2019-12-01",
+                "price": 650.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+            output_file = f.name
+        
+        try:
+            from portfolio_analyzer.reports import TextReportGenerator
+            TextReportGenerator.generate(analyzer, output_file=output_file)
+            
+            with open(output_file, 'r') as f:
+                content = f.read()
+            
+            # All symbols should be in the report
+            self.assertIn('AAPL', content)
+            self.assertIn('FB', content)
+            self.assertIn('TSLA', content)
+        finally:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

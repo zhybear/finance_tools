@@ -205,5 +205,120 @@ IBM,100,1920-01-15,100.00"""
             os.unlink(temp_file)
 
 
+class TestLoadersPhase2(unittest.TestCase):
+    """Phase 2 production hardening tests for loaders"""
+    
+    def test_date_parsing_multiple_formats(self):
+        """Test that different date formats are parsed correctly"""
+        # Test YYYY-MM-DD format (standard)
+        csv_content = """symbol,shares,purchase_date,price
+SBUX,100,2020-01-02,89.35"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write(csv_content)
+            temp_file = f.name
+        
+        try:
+            trades = load_trades_from_csv(temp_file)
+            self.assertEqual(trades[0]['purchase_date'], '2020-01-02')
+            # Should be normalized to YYYY-MM-DD
+            self.assertEqual(len(trades[0]['purchase_date']), 10)
+        finally:
+            os.unlink(temp_file)
+    
+    def test_unicode_symbol_names(self):
+        """Test that symbols with special characters are handled"""
+        csv_content = """symbol,shares,purchase_date,price
+BRK.B,10,2020-01-02,179.50
+BRK.A,5,2020-01-02,279.50"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write(csv_content)
+            temp_file = f.name
+        
+        try:
+            trades = load_trades_from_csv(temp_file)
+            self.assertEqual(len(trades), 2)
+            # Verify symbols are properly normalized
+            symbols = [t['symbol'] for t in trades]
+            self.assertIn('BRK.B', symbols)
+            self.assertIn('BRK.A', symbols)
+        finally:
+            os.unlink(temp_file)
+    
+    def test_csv_with_extra_columns(self):
+        """Test that CSV with extra columns is handled gracefully"""
+        csv_content = """symbol,shares,purchase_date,price,notes,exchange
+SBUX,100,2020-01-02,89.35,good deal,NASDAQ
+MSFT,50,2021-01-04,220.00,excellent,NASDAQ"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write(csv_content)
+            temp_file = f.name
+        
+        try:
+            trades = load_trades_from_csv(temp_file)
+            # Should load successfully, ignoring extra columns
+            self.assertEqual(len(trades), 2)
+            self.assertEqual(trades[0]['symbol'], 'SBUX')
+            self.assertEqual(trades[1]['symbol'], 'MSFT')
+        finally:
+            os.unlink(temp_file)
+    
+    def test_csv_with_decimal_shares(self):
+        """Test that fractional shares are handled correctly"""
+        csv_content = """symbol,shares,purchase_date,price
+SBUX,100.5,2020-01-02,89.35
+MSFT,50.25,2021-01-04,220.00"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write(csv_content)
+            temp_file = f.name
+        
+        try:
+            trades = load_trades_from_csv(temp_file)
+            self.assertEqual(len(trades), 2)
+            self.assertAlmostEqual(trades[0]['shares'], 100.5)
+            self.assertAlmostEqual(trades[1]['shares'], 50.25)
+        finally:
+            os.unlink(temp_file)
+    
+    def test_csv_with_very_high_prices(self):
+        """Test loading stocks with very high prices (like BRK.A)"""
+        csv_content = """symbol,shares,purchase_date,price
+BRK.A,1,2020-01-02,350000.00
+TSLA,100,2020-01-02,800.00"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write(csv_content)
+            temp_file = f.name
+        
+        try:
+            trades = load_trades_from_csv(temp_file)
+            self.assertEqual(len(trades), 2)
+            self.assertEqual(trades[0]['price'], 350000.00)
+            self.assertEqual(trades[1]['price'], 800.00)
+        finally:
+            os.unlink(temp_file)
+    
+    def test_csv_with_very_low_prices(self):
+        """Test loading penny stocks with very low prices"""
+        csv_content = """symbol,shares,purchase_date,price
+PENNY,10000,2020-01-02,0.01
+MICRO,5000,2020-01-02,0.0001"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write(csv_content)
+            temp_file = f.name
+        
+        try:
+            trades = load_trades_from_csv(temp_file)
+            self.assertEqual(len(trades), 2)
+            self.assertEqual(trades[0]['price'], 0.01)
+            self.assertEqual(trades[1]['price'], 0.0001)
+        finally:
+            os.unlink(temp_file)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

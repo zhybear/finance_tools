@@ -166,6 +166,107 @@ class TestCLI(unittest.TestCase):
     unittest.main(argv=[''], verbosity=2, exit=False)
 
 
+class TestCLIPhase2(unittest.TestCase):
+    """Phase 2 production hardening tests for CLI"""
+    
+    def test_cli_malformed_csv_error_handling(self):
+        """Test CLI graceful handling of malformed CSV"""
+        csv_content = """symbol,shares,purchase_date,price
+SBUX,invalid_shares,2020-01-02,89.35"""
+        
+        temp_csv = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv')
+        temp_csv.write(csv_content)
+        temp_csv.close()
+        
+        try:
+            from portfolio_analyzer.cli import main
+            from unittest.mock import patch
+            import sys
+            
+            # Some data is valid (header), but no valid trades
+            # This should either process what's valid or error gracefully
+            with patch.object(sys, 'argv', ['cli', '--csv', temp_csv.name]):
+                try:
+                    main()
+                    # If it doesn't raise, that's acceptable (graceful handling)
+                except SystemExit:
+                    # Exiting is also acceptable for error cases
+                    pass
+        finally:
+            os.unlink(temp_csv.name)
+    
+    def test_cli_invalid_output_path_handling(self):
+        """Test CLI handling of invalid output path"""
+        from portfolio_analyzer.cli import main
+        from unittest.mock import patch
+        import sys
+        
+        # Use an invalid path that can't be written to
+        invalid_path = "/dev/null/impossible/path/report.txt"
+        
+        with patch.object(sys, 'argv', ['cli', '--output', invalid_path]):
+            # Should handle gracefully
+            try:
+                main()
+            except (SystemExit, FileNotFoundError, OSError):
+                # Any of these are acceptable error handling
+                pass
+    
+    def test_cli_with_empty_csv_file(self):
+        """Test CLI with empty CSV file (no data rows)"""
+        csv_content = """symbol,shares,purchase_date,price
+"""
+        
+        temp_csv = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv')
+        temp_csv.write(csv_content)
+        temp_csv.close()
+        
+        try:
+            from portfolio_analyzer.cli import main
+            from unittest.mock import patch
+            import sys
+            
+            with patch.object(sys, 'argv', ['cli', '--csv', temp_csv.name]):
+                with self.assertRaises(SystemExit):
+                    # Should exit due to empty CSV
+                    main()
+        finally:
+            os.unlink(temp_csv.name)
+    
+    def test_cli_output_formats_combination(self):
+        """Test various combinations of output formats"""
+        from portfolio_analyzer.cli import main
+        from unittest.mock import patch
+        import sys
+        
+        temp_csv = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv')
+        temp_csv.write("symbol,shares,purchase_date,price\n")
+        temp_csv.write("SBUX,10,2020-01-02,89.35\n")
+        temp_csv.close()
+        
+        temp_txt = tempfile.NamedTemporaryFile(delete=False, suffix='.txt')
+        temp_txt.close()
+        
+        try:
+            with patch.object(sys, 'argv', [
+                'cli',
+                '--csv', temp_csv.name,
+                '--output', temp_txt.name,
+            ]):
+                main()
+            
+            # Text file should be created
+            self.assertTrue(os.path.exists(temp_txt.name))
+            
+            # Should have content
+            with open(temp_txt.name, 'r') as f:
+                content = f.read()
+                self.assertGreater(len(content), 0)
+                self.assertIn('SBUX', content)
+        finally:
+            os.unlink(temp_csv.name)
+            if os.path.exists(temp_txt.name):
+                os.unlink(temp_txt.name)
 
 
 if __name__ == '__main__':

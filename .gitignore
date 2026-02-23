@@ -35,6 +35,11 @@ __pycache__/
 *.pyd
 .pytest_cache/
 
+# Build artifacts (PyPI packaging)
+dist/
+build/
+*.egg-info/
+
 # IDE and editor files
 .vscode/
 .idea/

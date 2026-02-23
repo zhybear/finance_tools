@@ -1,0 +1,16 @@
+# Portfolio Analyzer Requirements
+
+# Core dependencies
+yfinance>=0.2.0       # Stock price data
+pandas>=1.3.0         # Data manipulation and analysis
+numpy>=1.20.0         # Numerical computing
+scipy>=1.7.0          # Scientific computing (for XIRR)
+
+# Optional dependencies for visualizations
+matplotlib>=3.3.0     # Plotting library
+seaborn>=0.11.0       # Statistical data visualization
+plotly>=5.0.0         # Interactive visualizations
+reportlab>=3.6.0      # PDF generation
+
+# Development dependencies (for testing)
+# unittest is built-in, no additional test framework needed

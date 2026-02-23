@@ -1,22 +1,33 @@
-/my_trades.csv
+# Generated output files
 /output.txt
 /output_final.txt
 /output_new.txt
+**/output.txt
+**/output_final.txt
+
+# User portfolio files
+/my_trades.csv
+/user_trades.csv
 
 # Legacy files
 stock.py
 
-# Personal portfolio data (excluded from repo)
+# Personal portfolio data
 zhuo_personal_trade/
-portfolio_report.*
 
-# Coverage and cache files
+# Generated reports
+portfolio_report.*
+**/portfolio_report.*
+**/example_report.*
+
+# Coverage and compiled files
 .coverage
 .DS_Store
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
 
 # IDE and editor files
 .vscode/
@@ -24,7 +35,10 @@ __pycache__/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
 
-# Temporary test outputs
+# Temporary files
 /tmp_*.csv
 /test_output.*
+**/test_output.*

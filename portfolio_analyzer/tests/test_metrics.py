@@ -84,6 +84,7 @@ class TestCAGRCalculation(unittest.TestCase):
                 'stock_xirr': 14.87,
                 'sp500_current_value': 150,
                 'sp500_xirr': 8.0,
+                'sp500_cagr': 5.0,
             },
             {
                 'symbol': 'TEST',
@@ -96,6 +97,7 @@ class TestCAGRCalculation(unittest.TestCase):
                 'stock_xirr': 10.0,
                 'sp500_current_value': 120,
                 'sp500_xirr': 20.0,
+                'sp500_cagr': 7.0,
             }
         ]
         

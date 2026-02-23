@@ -272,8 +272,9 @@ class TestHTMLReportWithCharts(unittest.TestCase):
             self.assertIn('Portfolio Value', content)
             self.assertIn('Total Gain', content)
             self.assertIn('Return %', content)
-            self.assertIn('Portfolio CAGR', content)
-            self.assertIn('Portfolio XIRR', content)
+            self.assertIn('Portfolio <span', content)
+            self.assertIn('WCAGR</span>', content)
+            self.assertIn('XIRR</span>', content)
             self.assertIn('S&P 500 XIRR', content)
             self.assertIn('Outperformance', content)
             self.assertIn('Total Positions', content)
@@ -366,7 +367,7 @@ class TestHTMLReportWithCharts(unittest.TestCase):
             self.assertIn('<th>Initial Value</th>', content)
             self.assertIn('<th>Current Value</th>', content)
             self.assertIn('<th>Gain</th>', content)
-            self.assertIn('<th>CAGR %</th>', content)
+            self.assertIn('<th>WCAGR %</th>', content)
             self.assertIn('<th>XIRR %</th>', content)
             
         finally:

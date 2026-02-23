@@ -13,7 +13,7 @@ A comprehensive Python tool for analyzing stock portfolio performance with S&P 5
   - Interactive HTML dashboards with Plotly charts and dark mode support
 - **CSV Support**: Load and validate trades from CSV files
 - **Modular Architecture**: Clean, testable code with separation of concerns
-- **Production Ready**: v1.3.3 with comprehensive test coverage (89%)
+- **Production Ready**: v1.3.3 with comprehensive test coverage (91%)
 
 ## Installation
 

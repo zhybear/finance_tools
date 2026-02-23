@@ -567,6 +567,141 @@ class TestSymbolAccumulation(unittest.TestCase):
         self.assertIsNotNone(analysis)
 
 
+class TestAnalyzerEdgeCases(unittest.TestCase):
+    """Test edge cases and error handling"""
+    
+    def test_empty_portfolio_analysis(self):
+        """Test analyzing an empty portfolio"""
+        analyzer = PortfolioAnalyzer([])
+        analysis = analyzer.analyze_portfolio()
+        
+        # Should handle empty case gracefully
+        self.assertIsNotNone(analysis)
+        self.assertEqual(len(analysis['trades']), 0)
+    
+    def test_single_trade_analysis(self):
+        """Test analyzing a portfolio with only one trade"""
+        trades = [
+            {
+                "symbol": "SBUX",
+                "shares": 100,
+                "purchase_date": "2020-01-02",
+                "price": 89.35
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        self.assertEqual(len(analysis['trades']), 1)
+        self.assertEqual(analysis['trades'][0]['symbol'], 'SBUX')
+    
+    def test_analyzer_type_validation_invalid_trades_type(self):
+        """Test that analyzer rejects invalid trades type"""
+        with self.assertRaises(TypeError):
+            PortfolioAnalyzer("not a list")
+    
+    def test_analyzer_type_validation_dict_not_list(self):
+        """Test that analyzer rejects dict instead of list"""
+        with self.assertRaises(TypeError):
+            PortfolioAnalyzer({"symbol": "SBUX"})
+    
+    def test_duplicate_symbol_same_day_different_prices(self):
+        """Test aggregation when same symbol bought on same day at different prices"""
+        trades = [
+            {
+                "symbol": "SBUX",
+                "shares": 100,
+                "purchase_date": "2020-01-02",
+                "price": 89.35
+            },
+            {
+                "symbol": "SBUX",
+                "shares": 50,
+                "purchase_date": "2020-01-02",
+                "price": 89.50
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Should have aggregated results
+        self.assertIsNotNone(analysis)
+        # Both trades should be in individual analysis
+        sbux_trades = [t for t in analysis['trades'] if t['symbol'] == 'SBUX']
+        self.assertEqual(len(sbux_trades), 2)
+    
+    def test_duplicate_symbol_different_days(self):
+        """Test aggregation when same symbol bought on different days"""
+        trades = [
+            {
+                "symbol": "MSFT",
+                "shares": 50,
+                "purchase_date": "2020-01-02",
+                "price": 160.00
+            },
+            {
+                "symbol": "MSFT",
+                "shares": 25,
+                "purchase_date": "2021-06-15",
+                "price": 270.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Should have both trades and aggregated symbol stats
+        self.assertIsNotNone(analysis)
+        msft_trades = [t for t in analysis['trades'] if t['symbol'] == 'MSFT']
+        self.assertEqual(len(msft_trades), 2)
+    
+    def test_cache_consistency_multiple_calls(self):
+        """Test that calling analyze_portfolio twice gives same results"""
+        trades = [
+            {
+                "symbol": "TSLA",
+                "shares": 10,
+                "purchase_date": "2020-06-01",
+                "price": 150.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis1 = analyzer.analyze_portfolio()
+        analysis2 = analyzer.analyze_portfolio()
+        
+        # Results should be identical (cache working)
+        self.assertEqual(len(analysis1['trades']), len(analysis2['trades']))
+        self.assertEqual(
+            analysis1['trades'][0]['symbol'],
+            analysis2['trades'][0]['symbol']
+        )
+    
+    def test_mixed_performance_portfolio(self):
+        """Test portfolio with both winning and losing positions"""
+        trades = [
+            {
+                "symbol": "GOOG",
+                "shares": 10,
+                "purchase_date": "2015-01-01",
+                "price": 50.00  # Should be way up
+            },
+            {
+                "symbol": "GE",
+                "shares": 100,
+                "purchase_date": "2018-01-01",
+                "price": 20.00  # Should be way down
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        self.assertEqual(len(analysis['trades']), 2)
+        # Should have mixed results
+        self.assertIsNotNone(analysis)
 
 
 if __name__ == '__main__':

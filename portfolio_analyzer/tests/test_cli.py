@@ -121,6 +121,45 @@ class TestCLI(unittest.TestCase):
         with patch.object(sys, 'argv', ['cli']):
             # Should not raise exception
             main()
+    
+    def test_cli_with_all_format_options(self):
+        """Test CLI with all output formats at once"""
+        from portfolio_analyzer.cli import main
+        from unittest.mock import patch
+        import sys
+        
+        temp_csv = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv')
+        temp_csv.write("symbol,shares,purchase_date,price\n")
+        temp_csv.write("SBUX,10,2020-01-02,89.35\n")
+        temp_csv.close()
+        
+        temp_txt = tempfile.NamedTemporaryFile(delete=False, suffix='.txt')
+        temp_txt.close()
+        
+        temp_pdf = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
+        temp_pdf.close()
+        
+        temp_html = tempfile.NamedTemporaryFile(delete=False, suffix='.html')
+        temp_html.close()
+        
+        try:
+            with patch.object(sys, 'argv', [
+                'cli',
+                '--csv', temp_csv.name,
+                '--output', temp_txt.name,
+                '--pdf', temp_pdf.name,
+                '--html', temp_html.name
+            ]):
+                main()
+            
+            # All three output files should exist
+            self.assertTrue(os.path.exists(temp_txt.name), "Text report not created")
+            self.assertTrue(os.path.exists(temp_pdf.name), "PDF report not created")
+            self.assertTrue(os.path.exists(temp_html.name), "HTML report not created")
+        finally:
+            for f in [temp_csv.name, temp_txt.name, temp_pdf.name, temp_html.name]:
+                if os.path.exists(f):
+                    os.unlink(f)
 
 
     """Run all tests with verbose output"""

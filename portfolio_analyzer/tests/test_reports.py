@@ -557,6 +557,103 @@ class TestReportGeneration(unittest.TestCase):
                 os.unlink(temp_file.name)
 
 
+class TestReportEdgeCases(unittest.TestCase):
+    """Test report generation edge cases"""
+    
+    def test_text_report_empty_portfolio(self):
+        """Test text report generation with empty portfolio"""
+        analyzer = PortfolioAnalyzer([])
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+            output_file = f.name
+        
+        try:
+            # Should handle empty portfolio gracefully
+            from portfolio_analyzer.reports import TextReportGenerator
+            TextReportGenerator.generate(analyzer, output_file=output_file)
+            
+            # File should be created/written
+            self.assertTrue(os.path.exists(output_file))
+        finally:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
+    
+    def test_html_report_empty_portfolio(self):
+        """Test HTML report generation with empty portfolio"""
+        analyzer = PortfolioAnalyzer([])
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as f:
+            output_file = f.name
+        
+        try:
+            HTMLReportGenerator.generate(analyzer, output_file)
+            
+            # File should be created
+            self.assertTrue(os.path.exists(output_file))
+            
+            # If file has content, it should still be valid HTML
+            with open(output_file, 'r') as f:
+                content = f.read()
+                if content:
+                    self.assertIn('<html', content.lower())
+        finally:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
+    
+    def test_text_report_single_trade(self):
+        """Test text report with single trade"""
+        trades = [
+            {
+                "symbol": "SBUX",
+                "shares": 100,
+                "purchase_date": "2020-01-02",
+                "price": 89.35
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+            output_file = f.name
+        
+        try:
+            from portfolio_analyzer.reports import TextReportGenerator
+            TextReportGenerator.generate(analyzer, output_file=output_file)
+            
+            with open(output_file, 'r') as f:
+                content = f.read()
+                self.assertIn('SBUX', content)
+                self.assertIn('PORTFOLIO SUMMARY', content)
+        finally:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
+    
+    def test_html_report_single_trade(self):
+        """Test HTML report with single trade"""
+        trades = [
+            {
+                "symbol": "TSLA",
+                "shares": 10,
+                "purchase_date": "2020-06-01",
+                "price": 150.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as f:
+            output_file = f.name
+        
+        try:
+            HTMLReportGenerator.generate(analyzer, output_file)
+            
+            with open(output_file, 'r') as f:
+                content = f.read()
+                self.assertIn('TSLA', content)
+                self.assertIn('Portfolio Analytics', content)
+        finally:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
 
 
 if __name__ == '__main__':

@@ -21,6 +21,11 @@ finance_tools/
 
 ### Portfolio Analyzer
 
+![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Tests](https://img.shields.io/badge/tests-149%2F149-brightgreen.svg)
+![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
+![License](https://img.shields.io/badge/license-ISC-blue.svg)
+
 **Analyze stock portfolio performance with cash flow tracking and real S&P 500 benchmarking.**
 
 What makes this different:

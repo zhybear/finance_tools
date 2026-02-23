@@ -1,5 +1,10 @@
 # Portfolio Analyzer
 
+![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Tests](https://img.shields.io/badge/tests-149%2F149-brightgreen.svg)
+![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
+![License](https://img.shields.io/badge/license-ISC-blue.svg)
+
 A comprehensive Python tool for analyzing stock portfolio performance with precise cash flow tracking and S&P 500 benchmarking.
 
 ## Why This Tool

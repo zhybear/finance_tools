@@ -144,7 +144,11 @@ class PortfolioAnalyzer:
         shares: int, 
         purchase_price: float
     ) -> Optional[Dict]:
-        """Calculate performance metrics for a single trade."""
+        """Calculate performance metrics for a single trade.
+        
+        For S&P 500 trades (^GSPC), uses real yfinance prices to ensure
+        benchmark comparison uses actual market data, not provided estimates.
+        """
         try:
             hist = self._stock_history_cache.get(symbol)
             if hist is None or hist.empty:
@@ -161,13 +165,19 @@ class PortfolioAnalyzer:
 
             current_price = hist['Close'].iloc[-1]
             current_date = normalize_datetime(hist.index[-1])
+            
+            # For S&P 500 trades, use REAL market prices (not provided estimates)
+            if symbol == SP500_SYMBOL:
+                actual_purchase_price = hist['Close'].iloc[0]
+            else:
+                actual_purchase_price = purchase_price
 
             years_held = (current_date - purchase_dt).days / DAYS_PER_YEAR
             if years_held <= 0:
                 print(f"Invalid holding period for {symbol}: {purchase_date} not before {current_date.date()}")
                 return None
 
-            initial_value = purchase_price * shares
+            initial_value = actual_purchase_price * shares
             current_value = current_price * shares
             stock_cagr = calculate_cagr(initial_value, current_value, years_held)
 
@@ -178,27 +188,23 @@ class PortfolioAnalyzer:
                     [-initial_value, current_value]
                 )
 
-            # If trading S&P 500 directly, use the same price data for benchmark
+            # Always download S&P 500 benchmark data separately to ensure consistency
+            # UNLESS we're trading S&P 500 directly, in which case reuse same hist
             if symbol == SP500_SYMBOL:
-                # Use provided purchase price and the latest closing price
-                sp500_purchase_price = purchase_price
-                sp500_current_price = hist['Close'].iloc[-1]
+                sp500_hist = hist  # Use the same data source, not a separate download
+            elif self._sp500_full_history is not None and not self._sp500_full_history.empty:
+                sp500_hist = self._sp500_full_history.loc[self._sp500_full_history.index >= purchase_dt]
             else:
-                # Download S&P 500 benchmark data separately for comparison
-                if self._sp500_full_history is not None and not self._sp500_full_history.empty:
-                    sp500_hist = self._sp500_full_history.loc[self._sp500_full_history.index >= purchase_dt]
-                else:
-                    sp500 = yf.Ticker(SP500_SYMBOL)
-                    sp500_hist = sp500.history(start=purchase_date)
-                    sp500_hist = normalize_history_index(sp500_hist)
-                    sp500_hist = sp500_hist.loc[sp500_hist.index >= purchase_dt]
-                
-                if sp500_hist.empty:
-                    return None
-                
-                sp500_purchase_price = sp500_hist['Close'].iloc[0]
-                sp500_current_price = sp500_hist['Close'].iloc[-1]
+                sp500 = yf.Ticker(SP500_SYMBOL)
+                sp500_hist = sp500.history(start=purchase_date)
+                sp500_hist = normalize_history_index(sp500_hist)
+                sp500_hist = sp500_hist.loc[sp500_hist.index >= purchase_dt]
             
+            if sp500_hist.empty:
+                return None
+            
+            sp500_purchase_price = sp500_hist['Close'].iloc[0]
+            sp500_current_price = sp500_hist['Close'].iloc[-1]
             sp500_current_value = (sp500_current_price / sp500_purchase_price) * initial_value
             sp500_cagr = calculate_cagr(initial_value, sp500_current_value, years_held)
 

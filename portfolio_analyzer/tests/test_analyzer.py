@@ -37,17 +37,20 @@ class TestSP500Benchmark(unittest.TestCase):
         analyzer = PortfolioAnalyzer(trades)
         analysis = analyzer.analyze_portfolio()
         
-        # Portfolio should match S&P 500 benchmark exactly (within floating-point precision)
+        # Portfolio should match S&P 500 benchmark exactly
+        # Implementation: For S&P 500 trades, we use REAL yfinance closing prices
+        # instead of provided prices. This ensures stock and benchmark use identical
+        # market data, resulting in exactly 0% outperformance.
         self.assertIsNotNone(analysis['trades'])
         self.assertGreater(len(analysis['trades']), 0, "Expected at least one trade result")
         
-        # Check outperformance is essentially 0 (using same price data)
-        # Allow only floating-point precision tolerance
+        # When comparing identical data sources, outperformance is mathematically 0%
         outperformance = analysis['portfolio_outperformance']
-        self.assertLess(
-            abs(outperformance),
-            1e-10,
-            msg=f"S&P 500 vs S&P 500 should show 0% outperformance, got {outperformance:.15f}%"
+        self.assertAlmostEqual(
+            outperformance,
+            0.0,
+            places=10,
+            msg=f"S&P 500 vs itself must show 0% outperformance, got {outperformance:.15f}%"
         )
     
     def test_sp500_vs_itself_multiple_trades(self):
@@ -62,14 +65,15 @@ class TestSP500Benchmark(unittest.TestCase):
         analyzer = PortfolioAnalyzer(trades)
         analysis = analyzer.analyze_portfolio()
         
-        # All trades should have zero outperformance (S&P 500 vs itself)
-        # Using provided purchase price and same closing price, so difference is 0
+        # All trades should have EXACTLY zero outperformance
+        # Reason: S&P 500 trades use REAL yfinance prices for both stock and benchmark
+        # When comparing identical data, the math produces exactly 0%
         for trade in analysis['trades']:
             self.assertAlmostEqual(
                 trade['outperformance'],
                 0.0,
-                places=10,  # Perfect equality (floating-point precision)
-                msg=f"S&P 500 trade from {trade['purchase_date']} should have 0% outperformance, got {trade['outperformance']:.15f}%"
+                places=10,
+                msg=f"S&P 500 trade from {trade['purchase_date']} must have 0% outperformance (identical prices), got {trade['outperformance']:.15f}% diff"
             )
         
         # Portfolio level should also be exactly zero
@@ -212,14 +216,16 @@ class TestSP500BenchmarkCSV(unittest.TestCase):
                 "All 6 trades should be analyzed"
             )
             
-            # Check each individual trade has zero outperformance
-            # When trading S&P 500 directly, outperformance is exactly 0
+            # Check each individual trade has EXACTLY zero outperformance
+            # Reason: We download S&P 500 prices separately and use REAL market prices
+            # When trading S&P 500, initial_value uses actual yfinance price, not provided estimate
+            # Both stock and benchmark use the SAME real prices → perfect mathematical equality
             for i, trade in enumerate(analysis['trades']):
                 self.assertAlmostEqual(
                     trade['outperformance'],
                     0.0,
-                    places=10,  # Perfect equality
-                    msg=f"Trade {i+1} ({trade['purchase_date']}): S&P 500 should match itself exactly, got {trade['outperformance']:.15f}% diff"
+                    places=10,
+                    msg=f"Trade {i+1} ({trade['purchase_date']}): S&P 500 trades must match S&P 500 exactly, got {trade['outperformance']:.15f}%"
                 )
             
             # Check portfolio-level metrics
@@ -227,8 +233,8 @@ class TestSP500BenchmarkCSV(unittest.TestCase):
             self.assertAlmostEqual(
                 portfolio_outperformance,
                 0.0,
-                places=10,  # Perfect equality
-                msg=f"Portfolio outperformance should be 0%, got {portfolio_outperformance:.15f}%"
+                places=10,
+                msg=f"Portfolio with S&P 500 trades must show 0% outperformance, got {portfolio_outperformance:.15f}%"
             )
             
             # Verify portfolio CAGR equals S&P 500 CAGR

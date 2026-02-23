@@ -7,11 +7,11 @@ AAPL:
   Initial Value: $12550.00
   Current Value: $26458.00
   Gain: $13908.00
-  Stock CAGR: 7.11%
+  Stock WCAGR: 7.11%
   Stock XIRR: 7.11%
-  S&P 500 CAGR: 11.57%
+  S&P 500 WCAGR: 11.57%
   S&P 500 XIRR: 11.57%
-  Outperformance (CAGR): -4.45%
+  Outperformance (WCAGR): -4.45%
   Outperformance (XIRR): -4.45%
 
 --- AAPL ACCUMULATED ---
@@ -22,9 +22,10 @@ AAPL:
   Total Gain: $13908.00 (110.82%)
   Expected S&P 500 Value: $41162.59
   Outperformance vs S&P 500: $-14704.59 (-117.17%)
-  Weighted Avg CAGR: 7.11%
+  WCAGR: 7.11%
   Weighted Avg XIRR: 7.11%
-  Avg S&P 500 XIRR: 11.57%
+  S&P 500 WCAGR: 11.57%
+  S&P 500 XIRR: 11.57%
   XIRR Outperformance: -4.46%
   Weighted Avg Years Held: 10.85 years
 
@@ -34,11 +35,11 @@ AMD:
   Initial Value: $1116.00
   Current Value: $16012.00
   Gain: $14896.00
-  Stock CAGR: 34.96%
+  Stock WCAGR: 34.96%
   Stock XIRR: 34.96%
-  S&P 500 CAGR: 12.86%
+  S&P 500 WCAGR: 12.86%
   S&P 500 XIRR: 12.86%
-  Outperformance (CAGR): 22.10%
+  Outperformance (WCAGR): 22.10%
   Outperformance (XIRR): 22.10%
 
 --- AMD ACCUMULATED ---
@@ -49,9 +50,10 @@ AMD:
   Total Gain: $14896.00 (1334.77%)
   Expected S&P 500 Value: $3268.99
   Outperformance vs S&P 500: $12743.01 (1141.85%)
-  Weighted Avg CAGR: 34.93%
+  WCAGR: 34.93%
   Weighted Avg XIRR: 34.93%
-  Avg S&P 500 XIRR: 12.86%
+  S&P 500 WCAGR: 12.86%
+  S&P 500 XIRR: 12.86%
   XIRR Outperformance: 22.08%
   Weighted Avg Years Held: 8.88 years
 
@@ -61,11 +63,11 @@ AMZN:
   Initial Value: $4680.00
   Current Value: $3151.65
   Gain: $-1528.35
-  Stock CAGR: -3.45%
+  Stock WCAGR: -3.45%
   Stock XIRR: -3.45%
-  S&P 500 CAGR: 11.39%
+  S&P 500 WCAGR: 11.39%
   S&P 500 XIRR: 11.39%
-  Outperformance (CAGR): -14.84%
+  Outperformance (WCAGR): -14.84%
   Outperformance (XIRR): -14.84%
 
 --- AMZN ACCUMULATED ---
@@ -76,9 +78,10 @@ AMZN:
   Total Gain: $-1528.35 (-32.66%)
   Expected S&P 500 Value: $15752.77
   Outperformance vs S&P 500: $-12601.12 (-269.25%)
-  Weighted Avg CAGR: -3.45%
+  WCAGR: -3.45%
   Weighted Avg XIRR: -3.45%
-  Avg S&P 500 XIRR: 11.39%
+  S&P 500 WCAGR: 11.39%
+  S&P 500 XIRR: 11.39%
   XIRR Outperformance: -14.84%
   Weighted Avg Years Held: 11.25 years
 
@@ -88,11 +91,11 @@ GOOGL:
   Initial Value: $33900.00
   Current Value: $12599.20
   Gain: $-21300.80
-  Stock CAGR: -10.45%
+  Stock WCAGR: -10.45%
   Stock XIRR: -10.45%
-  S&P 500 CAGR: 12.65%
+  S&P 500 WCAGR: 12.65%
   S&P 500 XIRR: 12.65%
-  Outperformance (CAGR): -23.10%
+  Outperformance (WCAGR): -23.10%
   Outperformance (XIRR): -23.10%
 
 --- GOOGL ACCUMULATED ---
@@ -103,9 +106,10 @@ GOOGL:
   Total Gain: $-21300.80 (-62.83%)
   Expected S&P 500 Value: $98611.29
   Outperformance vs S&P 500: $-86012.09 (-253.72%)
-  Weighted Avg CAGR: -10.45%
+  WCAGR: -10.45%
   Weighted Avg XIRR: -10.45%
-  Avg S&P 500 XIRR: 12.65%
+  S&P 500 WCAGR: 12.65%
+  S&P 500 XIRR: 12.65%
   XIRR Outperformance: -23.10%
   Weighted Avg Years Held: 8.96 years
 
@@ -115,11 +119,11 @@ JPM:
   Initial Value: $5237.50
   Current Value: $15539.50
   Gain: $10302.00
-  Stock CAGR: 14.53%
+  Stock WCAGR: 14.53%
   Stock XIRR: 14.53%
-  S&P 500 CAGR: 12.44%
+  S&P 500 WCAGR: 12.44%
   S&P 500 XIRR: 12.44%
-  Outperformance (CAGR): 2.09%
+  Outperformance (WCAGR): 2.09%
   Outperformance (XIRR): 2.09%
 
 --- JPM ACCUMULATED ---
@@ -130,9 +134,10 @@ JPM:
   Total Gain: $10302.00 (196.70%)
   Expected S&P 500 Value: $13409.97
   Outperformance vs S&P 500: $2129.53 (40.66%)
-  Weighted Avg CAGR: 14.52%
+  WCAGR: 14.52%
   Weighted Avg XIRR: 14.52%
-  Avg S&P 500 XIRR: 12.44%
+  S&P 500 WCAGR: 12.44%
+  S&P 500 XIRR: 12.44%
   XIRR Outperformance: 2.08%
   Weighted Avg Years Held: 8.02 years
 
@@ -142,11 +147,11 @@ META:
   Initial Value: $9930.00
   Current Value: $39339.60
   Gain: $29409.60
-  Stock CAGR: 22.58%
+  Stock WCAGR: 22.58%
   Stock XIRR: 22.58%
-  S&P 500 CAGR: 14.05%
+  S&P 500 WCAGR: 14.05%
   S&P 500 XIRR: 14.05%
-  Outperformance (CAGR): 8.53%
+  Outperformance (WCAGR): 8.53%
   Outperformance (XIRR): 8.53%
 
 --- META ACCUMULATED ---
@@ -157,9 +162,10 @@ META:
   Total Gain: $29409.60 (296.17%)
   Expected S&P 500 Value: $24157.00
   Outperformance vs S&P 500: $15182.60 (152.90%)
-  Weighted Avg CAGR: 22.56%
+  WCAGR: 22.56%
   Weighted Avg XIRR: 22.56%
-  Avg S&P 500 XIRR: 14.05%
+  S&P 500 WCAGR: 14.05%
+  S&P 500 XIRR: 14.05%
   XIRR Outperformance: 8.51%
   Weighted Avg Years Held: 6.76 years
 
@@ -169,11 +175,11 @@ MSFT:
   Initial Value: $4290.00
   Current Value: $29792.25
   Gain: $25502.25
-  Stock CAGR: 22.64%
+  Stock WCAGR: 22.64%
   Stock XIRR: 22.64%
-  S&P 500 CAGR: 12.90%
+  S&P 500 WCAGR: 12.90%
   S&P 500 XIRR: 12.90%
-  Outperformance (CAGR): 9.74%
+  Outperformance (WCAGR): 9.74%
   Outperformance (XIRR): 9.74%
 
 --- MSFT ACCUMULATED ---
@@ -184,9 +190,10 @@ MSFT:
   Total Gain: $25502.25 (594.46%)
   Expected S&P 500 Value: $13580.71
   Outperformance vs S&P 500: $16211.54 (377.89%)
-  Weighted Avg CAGR: 22.62%
+  WCAGR: 22.62%
   Weighted Avg XIRR: 22.62%
-  Avg S&P 500 XIRR: 12.90%
+  S&P 500 WCAGR: 12.90%
+  S&P 500 XIRR: 12.90%
   XIRR Outperformance: 9.72%
   Weighted Avg Years Held: 9.50 years
 
@@ -196,11 +203,11 @@ NFLX:
   Initial Value: $13080.00
   Current Value: $2360.10
   Gain: $-10719.90
-  Stock CAGR: -14.29%
+  Stock WCAGR: -14.29%
   Stock XIRR: -14.29%
-  S&P 500 CAGR: 11.67%
+  S&P 500 WCAGR: 11.67%
   S&P 500 XIRR: 11.67%
-  Outperformance (CAGR): -25.95%
+  Outperformance (WCAGR): -25.95%
   Outperformance (XIRR): -25.95%
 
 --- NFLX ACCUMULATED ---
@@ -211,9 +218,10 @@ NFLX:
   Total Gain: $-10719.90 (-81.96%)
   Expected S&P 500 Value: $44558.58
   Outperformance vs S&P 500: $-42198.48 (-322.62%)
-  Weighted Avg CAGR: -14.28%
+  WCAGR: -14.28%
   Weighted Avg XIRR: -14.28%
-  Avg S&P 500 XIRR: 11.67%
+  S&P 500 WCAGR: 11.67%
+  S&P 500 XIRR: 11.67%
   XIRR Outperformance: -25.95%
   Weighted Avg Years Held: 11.11 years
 
@@ -223,11 +231,11 @@ NVDA:
   Initial Value: $2925.00
   Current Value: $28473.00
   Gain: $25548.00
-  Stock CAGR: 22.76%
+  Stock WCAGR: 22.76%
   Stock XIRR: 22.76%
-  S&P 500 CAGR: 11.85%
+  S&P 500 WCAGR: 11.85%
   S&P 500 XIRR: 11.85%
-  Outperformance (CAGR): 10.90%
+  Outperformance (WCAGR): 10.90%
   Outperformance (XIRR): 10.90%
 
 NVDA:
@@ -236,11 +244,11 @@ NVDA:
   Initial Value: $14500.00
   Current Value: $18982.00
   Gain: $4482.00
-  Stock CAGR: 3.14%
+  Stock WCAGR: 3.14%
   Stock XIRR: 3.14%
-  S&P 500 CAGR: 12.73%
+  S&P 500 WCAGR: 12.73%
   S&P 500 XIRR: 12.73%
-  Outperformance (CAGR): -9.59%
+  Outperformance (WCAGR): -9.59%
   Outperformance (XIRR): -9.59%
 
 NVDA:
@@ -249,11 +257,11 @@ NVDA:
   Initial Value: $6500.00
   Current Value: $9491.00
   Gain: $2991.00
-  Stock CAGR: 5.45%
+  Stock WCAGR: 5.45%
   Stock XIRR: 5.45%
-  S&P 500 CAGR: 15.24%
+  S&P 500 WCAGR: 15.24%
   S&P 500 XIRR: 15.24%
-  Outperformance (CAGR): -9.80%
+  Outperformance (WCAGR): -9.80%
   Outperformance (XIRR): -9.80%
 
 --- NVDA ACCUMULATED ---
@@ -264,9 +272,10 @@ NVDA:
   Total Gain: $33021.00 (138.02%)
   Expected S&P 500 Value: $69263.83
   Outperformance vs S&P 500: $-12317.83 (-51.49%)
-  Weighted Avg CAGR: 6.76%
+  WCAGR: 6.76%
   Weighted Avg XIRR: 10.53%
-  Avg S&P 500 XIRR: 13.30%
+  S&P 500 WCAGR: 13.30%
+  S&P 500 XIRR: 13.30%
   XIRR Outperformance: -2.77%
   Weighted Avg Years Held: 8.58 years
 
@@ -276,11 +285,11 @@ SHOP:
   Initial Value: $2650.00
   Current Value: $2524.00
   Gain: $-126.00
-  Stock CAGR: -0.57%
+  Stock WCAGR: -0.57%
   Stock XIRR: -0.57%
-  S&P 500 CAGR: 12.99%
+  S&P 500 WCAGR: 12.99%
   S&P 500 XIRR: 12.99%
-  Outperformance (CAGR): -13.56%
+  Outperformance (WCAGR): -13.56%
   Outperformance (XIRR): -13.56%
 
 --- SHOP ACCUMULATED ---
@@ -291,9 +300,10 @@ SHOP:
   Total Gain: $-126.00 (-4.75%)
   Expected S&P 500 Value: $7438.85
   Outperformance vs S&P 500: $-4914.85 (-185.47%)
-  Weighted Avg CAGR: -0.57%
+  WCAGR: -0.57%
   Weighted Avg XIRR: -0.57%
-  Avg S&P 500 XIRR: 12.99%
+  S&P 500 WCAGR: 12.99%
+  S&P 500 XIRR: 12.99%
   XIRR Outperformance: -13.56%
   Weighted Avg Years Held: 8.45 years
 
@@ -303,11 +313,11 @@ TSLA:
   Initial Value: $2116.25
   Current Value: $10295.50
   Gain: $8179.25
-  Stock CAGR: 28.95%
+  Stock WCAGR: 28.95%
   Stock XIRR: 28.95%
-  S&P 500 CAGR: 13.66%
+  S&P 500 WCAGR: 13.66%
   S&P 500 XIRR: 13.66%
-  Outperformance (CAGR): 15.28%
+  Outperformance (WCAGR): 15.28%
   Outperformance (XIRR): 15.28%
 
 --- TSLA ACCUMULATED ---
@@ -318,9 +328,10 @@ TSLA:
   Total Gain: $8179.25 (386.50%)
   Expected S&P 500 Value: $4695.84
   Outperformance vs S&P 500: $5599.66 (264.60%)
-  Weighted Avg CAGR: 28.92%
+  WCAGR: 28.92%
   Weighted Avg XIRR: 28.92%
-  Avg S&P 500 XIRR: 13.66%
+  S&P 500 WCAGR: 13.66%
+  S&P 500 XIRR: 13.66%
   XIRR Outperformance: 15.25%
   Weighted Avg Years Held: 6.22 years
 
@@ -330,10 +341,10 @@ Current Value: $215017.80
 Total Gain: $101543.05
 Expected Value if Invested in S&P 500: $335900.43
 
-Portfolio CAGR: 7.23%
+Portfolio WCAGR: 7.23%
 Portfolio XIRR: 7.17%
-S&P 500 CAGR: 12.59%
+S&P 500 WCAGR: 12.59%
 S&P 500 XIRR: 12.41%
 
-Portfolio Outperformance (CAGR): -5.36%
+Portfolio Outperformance (WCAGR): -5.36%
 Portfolio Outperformance (XIRR): -5.24%

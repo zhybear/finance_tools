@@ -315,6 +315,7 @@ class PortfolioAnalyzer:
                     'total_current_value': 0,
                     'total_sp500_value': 0,
                     'total_sp500_xirr_weighted': 0,
+                    'total_sp500_cagr_weighted': 0,
                     'total_years_weighted': 0,
                 }
                 symbol_trades[symbol] = []
@@ -326,6 +327,7 @@ class PortfolioAnalyzer:
             stats['total_current_value'] += trade['current_value']
             stats['total_sp500_value'] += trade['sp500_current_value']
             stats['total_sp500_xirr_weighted'] += trade['sp500_xirr'] * trade['initial_value']
+            stats['total_sp500_cagr_weighted'] += trade['sp500_cagr'] * trade['initial_value']
             stats['total_years_weighted'] += trade['years_held'] * trade['initial_value']
             symbol_trades[symbol].append(trade)
         
@@ -397,9 +399,11 @@ class PortfolioAnalyzer:
                 stats['avg_xirr'] = 0.0
             
             stats['avg_sp500_xirr'] = safe_divide(stats['total_sp500_xirr_weighted'], initial_val, 0.0)
+            stats['avg_sp500_cagr'] = safe_divide(stats['total_sp500_cagr_weighted'], initial_val, 0.0)
             stats['xirr_outperformance_pct'] = stats['avg_xirr'] - stats['avg_sp500_xirr']
             
             del stats['total_sp500_xirr_weighted']
+            del stats['total_sp500_cagr_weighted']
             del stats['total_years_weighted']
         
         return symbol_stats

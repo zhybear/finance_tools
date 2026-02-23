@@ -82,11 +82,11 @@ class TextReportGenerator:
                 report_lines.append(f"  Initial Value: ${trade['initial_value']:.2f}")
                 report_lines.append(f"  Current Value: ${trade['current_value']:.2f}")
                 report_lines.append(f"  Gain: ${trade['current_value'] - trade['initial_value']:.2f}")
-                report_lines.append(f"  Stock CAGR: {trade['stock_cagr']:.2f}%")
+                report_lines.append(f"  Stock WCAGR: {trade['stock_cagr']:.2f}%")
                 report_lines.append(f"  Stock XIRR: {trade['stock_xirr']:.2f}%")
-                report_lines.append(f"  S&P 500 CAGR: {trade['sp500_cagr']:.2f}%")
+                report_lines.append(f"  S&P 500 WCAGR: {trade['sp500_cagr']:.2f}%")
                 report_lines.append(f"  S&P 500 XIRR: {trade['sp500_xirr']:.2f}%")
-                report_lines.append(f"  Outperformance (CAGR): {trade['outperformance']:.2f}%")
+                report_lines.append(f"  Outperformance (WCAGR): {trade['outperformance']:.2f}%")
                 report_lines.append(f"  Outperformance (XIRR): {trade['xirr_outperformance']:.2f}%")
             
             report_lines.append(f"\n--- {symbol} ACCUMULATED ---")
@@ -97,9 +97,10 @@ class TextReportGenerator:
             report_lines.append(f"  Total Gain: ${symbol_data['total_gain']:.2f} ({symbol_data['gain_percentage']:.2f}%)")
             report_lines.append(f"  Expected S&P 500 Value: ${symbol_data['total_sp500_value']:.2f}")
             report_lines.append(f"  Outperformance vs S&P 500: ${symbol_data['outperformance']:.2f} ({symbol_data['outperformance_pct']:.2f}%)")
-            report_lines.append(f"  Weighted Avg CAGR: {symbol_data['avg_cagr']:.2f}%")
+            report_lines.append(f"  WCAGR: {symbol_data['avg_cagr']:.2f}%")
             report_lines.append(f"  Weighted Avg XIRR: {symbol_data['avg_xirr']:.2f}%")
-            report_lines.append(f"  Avg S&P 500 XIRR: {symbol_data['avg_sp500_xirr']:.2f}%")
+            report_lines.append(f"  S&P 500 WCAGR: {symbol_data['avg_sp500_cagr']:.2f}%")
+            report_lines.append(f"  S&P 500 XIRR: {symbol_data['avg_sp500_xirr']:.2f}%")
             report_lines.append(f"  XIRR Outperformance: {symbol_data['xirr_outperformance_pct']:.2f}%")
             report_lines.append(f"  Weighted Avg Years Held: {symbol_data['avg_years_held']:.2f} years")
 
@@ -108,11 +109,11 @@ class TextReportGenerator:
         report_lines.append(f"Current Value: ${analysis['total_current_value']:.2f}")
         report_lines.append(f"Total Gain: ${analysis['total_current_value'] - analysis['total_initial_value']:.2f}")
         report_lines.append(f"Expected Value if Invested in S&P 500: ${analysis['total_sp500_current_value']:.2f}")
-        report_lines.append(f"\nPortfolio CAGR: {analysis['portfolio_cagr']:.2f}%")
+        report_lines.append(f"\nPortfolio WCAGR: {analysis['portfolio_cagr']:.2f}%")
         report_lines.append(f"Portfolio XIRR: {analysis.get('portfolio_xirr', 0.0):.2f}%")
-        report_lines.append(f"S&P 500 CAGR: {analysis['sp500_cagr']:.2f}%")
+        report_lines.append(f"S&P 500 WCAGR: {analysis['sp500_cagr']:.2f}%")
         report_lines.append(f"S&P 500 XIRR: {analysis.get('sp500_xirr', 0.0):.2f}%")
-        report_lines.append(f"\nPortfolio Outperformance (CAGR): {analysis['portfolio_outperformance']:.2f}%")
+        report_lines.append(f"\nPortfolio Outperformance (WCAGR): {analysis['portfolio_outperformance']:.2f}%")
         report_lines.append(f"Portfolio Outperformance (XIRR): {analysis.get('portfolio_xirr_outperformance', 0.0):.2f}%")
         
         for line in report_lines:
@@ -174,9 +175,9 @@ class PDFReportGenerator:
                     ['Initial Investment', f"${analysis['total_initial_value']:,.2f}"],
                     ['Current Value', f"${analysis['total_current_value']:,.2f}"],
                     ['Total Gain/Loss', f"${analysis['total_current_value'] - analysis['total_initial_value']:,.2f}"],
-                    ['Portfolio CAGR', f"{analysis['portfolio_cagr']:.2f}%"],
+                    ['Portfolio WCAGR', f"{analysis['portfolio_cagr']:.2f}%"],
                     ['Portfolio XIRR', f"{analysis.get('portfolio_xirr', 0):.2f}%"],
-                    ['S&P 500 CAGR', f"{analysis['sp500_cagr']:.2f}%"],
+                    ['S&P 500 WCAGR', f"{analysis['sp500_cagr']:.2f}%"],
                     ['S&P 500 XIRR', f"{analysis.get('sp500_xirr', 0):.2f}%"],
                     ['Outperformance', f"{analysis.get('portfolio_xirr_outperformance', 0):.2f}%"]
                 ]
@@ -262,7 +263,7 @@ class PDFReportGenerator:
                     ax4.text(gain, i, f' ${gain:,.0f}', va='center',
                             ha='left' if gain >= 0 else 'right', fontsize=8)
                 
-                # Top by CAGR
+                # Top by WCAGR
                 ax5 = fig2.add_subplot(gs2[0, 1])
                 top_cagr = pdf_data['top_8_cagr']
                 symbols_cagr = [s[0] for s in top_cagr]
@@ -270,8 +271,8 @@ class PDFReportGenerator:
                 colors_cagr = [get_performance_color(c) for c in cagrs]
                 
                 ax5.barh(symbols_cagr, cagrs, color=colors_cagr, alpha=0.7)
-                ax5.set_xlabel('CAGR (%)', fontweight='bold')
-                ax5.set_title('Top 8 by CAGR', fontweight='bold', pad=15)
+                ax5.set_xlabel('WCAGR (%)', fontweight='bold')
+                ax5.set_title('Top 8 by WCAGR', fontweight='bold', pad=15)
                 ax5.grid(axis='x', alpha=0.3, linestyle='--')
                 ax5.axvline(x=0, color='black', linewidth=0.8)
                 
@@ -374,6 +375,8 @@ class HTMLReportGenerator:
             # Calculate metrics
             cagr = analysis['portfolio_cagr']
             xirr = analysis.get('portfolio_xirr', 0.0)
+            sp500_wcagr = analysis['sp500_cagr']
+            sp500_xirr_val = analysis.get('sp500_xirr', 0.0)
             total_gain = analysis['total_current_value'] - analysis['total_initial_value']
             gain_pct = safe_divide(total_gain, analysis['total_initial_value'], 0.0) * 100
             
@@ -474,7 +477,7 @@ class HTMLReportGenerator:
                 charts_html += f'<div class="chart-container"><div id="chart3"></div></div>'
                 chart3_json = fig3.to_json()
                 
-                # Chart 4: XIRR vs CAGR Scatter
+                # Chart 4: XIRR vs WCAGR Scatter
                 fig4 = go.Figure(data=[
                     go.Scatter(
                         x=[s[1]['avg_xirr'] for s in sorted_symbols],
@@ -489,7 +492,7 @@ class HTMLReportGenerator:
                             line=dict(width=1, color='white')
                         ),
                         text=[s[0] for s in sorted_symbols],
-                        hovertemplate='<b>%{text}</b><br>XIRR: %{x:.2f}%<br>CAGR: %{y:.2f}%<br>Gain: $%{marker.color:,.2f}<extra></extra>'
+                        hovertemplate='<b>%{text}</b><br>XIRR: %{x:.2f}%<br>WCAGR: %{y:.2f}%<br>Gain: $%{marker.color:,.2f}<extra></extra>'
                     )
                 ])
                 
@@ -509,9 +512,9 @@ class HTMLReportGenerator:
                 ))
                 
                 fig4.update_layout(
-                    title='XIRR vs CAGR Performance (Bubble Size = Position Value)',
+                    title='XIRR vs WCAGR Performance (Bubble Size = Position Value)',
                     xaxis_title='XIRR (%)',
-                    yaxis_title='CAGR (%)',
+                    yaxis_title='WCAGR (%)',
                     height=500,
                     template='plotly_white',
                     showlegend=False,
@@ -627,7 +630,7 @@ class HTMLReportGenerator:
                 <div class="metric-value {('positive' if gain_pct >= 0 else 'negative')}">{gain_pct:.1f}%</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">Portfolio CAGR</div>
+                <div class="metric-label">Portfolio WCAGR</div>
                 <div class="metric-value {('positive' if cagr >= 0 else 'negative')}">{cagr:.1f}%</div>
             </div>
             <div class="metric-card">
@@ -635,8 +638,12 @@ class HTMLReportGenerator:
                 <div class="metric-value {('positive' if xirr >= 0 else 'negative')}">{xirr:.1f}%</div>
             </div>
             <div class="metric-card">
+                <div class="metric-label">S&P 500 WCAGR</div>
+                <div class="metric-value">{sp500_wcagr:.1f}%</div>
+            </div>
+            <div class="metric-card">
                 <div class="metric-label">S&P 500 XIRR</div>
-                <div class="metric-value">{analysis.get('sp500_xirr', 0):.1f}%</div>
+                <div class="metric-value">{sp500_xirr_val:.1f}%</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Outperformance</div>
@@ -661,8 +668,10 @@ class HTMLReportGenerator:
                         <th>Current Value</th>
                         <th>Gain</th>
                         <th>Return %</th>
-                        <th>CAGR %</th>
+                        <th>WCAGR %</th>
                         <th>XIRR %</th>
+                        <th>S&P WCAGR %</th>
+                        <th>S&P XIRR %</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -688,6 +697,8 @@ class HTMLReportGenerator:
                         <td class="number {'positive' if stats['gain_percentage'] >= 0 else 'negative'}">{stats['gain_percentage']:.1f}%</td>
                         <td class="number {'positive' if stats['avg_cagr'] >= 0 else 'negative'}">{stats['avg_cagr']:.1f}%</td>
                         <td class="number {'positive' if stats['avg_xirr'] >= 0 else 'negative'}">{stats['avg_xirr']:.1f}%</td>
+                        <td class="number">{stats['avg_sp500_cagr']:.1f}%</td>
+                        <td class="number">{stats['avg_sp500_xirr']:.1f}%</td>
                     </tr>
 """
                 
@@ -695,7 +706,7 @@ class HTMLReportGenerator:
                 if symbol in trades_by_symbol and trades_count > 0:
                     html_content += f"""
                     <tr class="trades-row" id="trades-{symbol_id}">
-                        <td colspan="8" class="trades-detail">
+                        <td colspan="10" class="trades-detail">
                             <div style="padding: 15px; background: #f8f9fa;">
                                 <h4 style="margin: 0 0 10px 0; color: #0066cc;">Individual Trades for {symbol}</h4>
                                 <table class="trades-table">
@@ -708,8 +719,10 @@ class HTMLReportGenerator:
                                             <th>Initial Value</th>
                                             <th>Current Value</th>
                                             <th>Gain</th>
-                                            <th>CAGR %</th>
+                                            <th>WCAGR %</th>
                                             <th>XIRR %</th>
+                                            <th>S&P WCAGR %</th>
+                                            <th>S&P XIRR %</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -728,6 +741,8 @@ class HTMLReportGenerator:
                                             <td class="number {gain_class}">${trade_gain:,.2f}</td>
                                             <td class="number {('positive' if trade['stock_cagr'] >= 0 else 'negative')}">{trade['stock_cagr']:.2f}%</td>
                                             <td class="number {('positive' if trade['stock_xirr'] >= 0 else 'negative')}">{trade['stock_xirr']:.2f}%</td>
+                                            <td class="number">{trade['sp500_cagr']:.2f}%</td>
+                                            <td class="number">{trade['sp500_xirr']:.2f}%</td>
                                         </tr>
 """
                     

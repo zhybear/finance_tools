@@ -3,8 +3,12 @@
 /output_final.txt
 /output_new.txt
 
-# Personal portfolio output files (generated reports)
-zhuo_personal_trade/portfolio_report.*
+# Legacy files
+stock.py
+
+# Personal portfolio data (excluded from repo)
+zhuo_personal_trade/
+portfolio_report.*
 
 # Coverage and cache files
 .coverage

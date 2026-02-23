@@ -602,6 +602,33 @@ class HTMLReportGenerator:
         .section {{ background: white; padding: 25px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }}
         h2 {{ margin-top: 0; color: #333; border-bottom: 3px solid #0066cc; padding-bottom: 12px; font-size: 1.8rem; }}
         .number {{ font-family: 'SF Mono', Monaco, monospace; font-weight: 600; }}
+        .tooltip-term {{ position: relative; cursor: help; border-bottom: 1px dotted #0066cc; }}
+        .tooltip-term:hover::after {{ 
+            content: attr(data-tooltip); 
+            position: absolute; 
+            bottom: 125%; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background-color: #333; 
+            color: white; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            font-size: 0.85rem; 
+            white-space: nowrap; 
+            z-index: 1000; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
+        }}
+        .tooltip-term:hover::before {{ 
+            content: ''; 
+            position: absolute; 
+            bottom: 115%; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            border: 6px solid transparent; 
+            border-top-color: #333; 
+            z-index: 1000; 
+        }}
         @media (max-width: 768px) {{
             .metrics {{ grid-template-columns: 1fr; }}
             .metric-value {{ font-size: 1.8rem; }}
@@ -630,19 +657,19 @@ class HTMLReportGenerator:
                 <div class="metric-value {('positive' if gain_pct >= 0 else 'negative')}">{gain_pct:.1f}%</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">Portfolio WCAGR</div>
+                <div class="metric-label">Portfolio <span class="tooltip-term" data-tooltip="Weighted CAGR: Compound Annual Growth Rate weighted by investment amount and time held">WCAGR</span></div>
                 <div class="metric-value {('positive' if cagr >= 0 else 'negative')}">{cagr:.1f}%</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">Portfolio XIRR</div>
+                <div class="metric-label">Portfolio <span class="tooltip-term" data-tooltip="XIRR: Internal Rate of Return accounting for timing and size of each cash flow">XIRR</span></div>
                 <div class="metric-value {('positive' if xirr >= 0 else 'negative')}">{xirr:.1f}%</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">S&P 500 WCAGR</div>
+                <div class="metric-label">S&P 500 <span class="tooltip-term" data-tooltip="S&P 500 WCAGR: Weighted average annual return of S&P 500 for your investment periods">WCAGR</span></div>
                 <div class="metric-value">{sp500_wcagr:.1f}%</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">S&P 500 XIRR</div>
+                <div class="metric-label">S&P 500 <span class="tooltip-term" data-tooltip="S&P 500 XIRR: True return of S&P 500 given your exact investment dates and amounts">XIRR</span></div>
                 <div class="metric-value">{sp500_xirr_val:.1f}%</div>
             </div>
             <div class="metric-card">
@@ -668,10 +695,10 @@ class HTMLReportGenerator:
                         <th>Current Value</th>
                         <th>Gain</th>
                         <th>Return %</th>
-                        <th>WCAGR %</th>
-                        <th>XIRR %</th>
-                        <th>S&P WCAGR %</th>
-                        <th>S&P XIRR %</th>
+                        <th><span class="tooltip-term" data-tooltip="Weighted CAGR: Compound Annual Growth Rate weighted by amount and time">WCAGR %</span></th>
+                        <th><span class="tooltip-term" data-tooltip="XIRR: Internal Rate of Return for actual cash flows">XIRR %</span></th>
+                        <th><span class="tooltip-term" data-tooltip="S&P WCAGR: Bench. weighted avg return">S&P WCAGR %</span></th>
+                        <th><span class="tooltip-term" data-tooltip="S&P XIRR: Benchmark internal rate return">S&P XIRR %</span></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -40,7 +40,7 @@ class TestHelperFunctions(unittest.TestCase):
     def test_calculate_win_loss_stats(self):
         """Test win/loss/breakeven calculation"""
         symbol_stats = {
-            'AAPL': {'total_gain': 100},
+            'SBUX': {'total_gain': 100},
             'MSFT': {'total_gain': 50},
             'TSLA': {'total_gain': -20},
             'NVDA': {'total_gain': -10},
@@ -50,7 +50,7 @@ class TestHelperFunctions(unittest.TestCase):
         
         winning, losing, breakeven = calculate_win_loss_stats(symbol_stats)
         
-        self.assertEqual(winning, 3)  # AAPL, MSFT, GOOGL
+        self.assertEqual(winning, 3)  # SBUX, MSFT, GOOGL
         self.assertEqual(losing, 2)   # TSLA, NVDA
         self.assertEqual(breakeven, 1) # AMZN
     
@@ -83,7 +83,7 @@ class TestPDFDataPreparation(unittest.TestCase):
     def test_prepare_pdf_data_structure(self):
         """Test that _prepare_pdf_data returns correct structure"""
         symbol_stats = {
-            'AAPL': {'total_current_value': 1000, 'total_gain': 100, 'avg_cagr': 5, 'avg_xirr': 4.9},
+            'SBUX': {'total_current_value': 1000, 'total_gain': 100, 'avg_cagr': 5, 'avg_xirr': 4.9},
             'MSFT': {'total_current_value': 500, 'total_gain': -50, 'avg_cagr': -2, 'avg_xirr': -2.1},
             'TSLA': {'total_current_value': 200, 'total_gain': 0, 'avg_cagr': 0, 'avg_xirr': 0},
         }
@@ -149,7 +149,7 @@ class TestPDFReportGeneration(unittest.TestCase):
     def test_pdf_report_creates_file(self):
         """Test that PDF report file is created"""
         trades = [
-            {"symbol": "AAPL", "shares": 10, "purchase_date": "2015-01-02", "price": 100.0},
+            {"symbol": "SBUX", "shares": 10, "purchase_date": "2015-01-02", "price": 40.72},
             {"symbol": "MSFT", "shares": 5, "purchase_date": "2016-06-15", "price": 50.0},
         ]
         
@@ -190,7 +190,7 @@ class TestPDFReportGeneration(unittest.TestCase):
     def test_pdf_report_multiple_symbols(self):
         """Test PDF with multiple symbols creates multi-page report"""
         trades = []
-        symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'META', 'NFLX']
+        symbols = ['SBUX', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'META', 'NFLX']
         for i, symbol in enumerate(symbols):
             trades.append({
                 "symbol": symbol,
@@ -223,7 +223,7 @@ class TestHTMLReportWithCharts(unittest.TestCase):
     def test_html_report_contains_plotly(self):
         """Test that HTML report includes Plotly for interactive charts"""
         trades = [
-            {"symbol": "AAPL", "shares": 100, "purchase_date": "2015-01-02", "price": 10.0},
+            {"symbol": "SBUX", "shares": 100, "purchase_date": "2015-01-02", "price": 40.72},
             {"symbol": "MSFT", "shares": 50, "purchase_date": "2016-06-15", "price": 20.0},
         ]
         
@@ -255,7 +255,7 @@ class TestHTMLReportWithCharts(unittest.TestCase):
     def test_html_report_contains_all_metrics(self):
         """Test that HTML contains comprehensive metrics"""
         trades = [
-            {"symbol": "AAPL", "shares": 100, "purchase_date": "2015-01-02", "price": 10.0},
+            {"symbol": "SBUX", "shares": 100, "purchase_date": "2015-01-02", "price": 40.72},
         ]
         
         with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
@@ -286,7 +286,7 @@ class TestHTMLReportWithCharts(unittest.TestCase):
     def test_html_report_large_file_size(self):
         """Test that HTML with charts has substantial size"""
         trades = [
-            {"symbol": "AAPL", "shares": 100, "purchase_date": "2015-01-02", "price": 10.0},
+            {"symbol": "SBUX", "shares": 100, "purchase_date": "2015-01-02", "price": 40.72},
             {"symbol": "MSFT", "shares": 50, "purchase_date": "2016-06-15", "price": 20.0},
             {"symbol": "GOOGL", "shares": 25, "purchase_date": "2017-03-10", "price": 30.0},
         ]
@@ -309,8 +309,8 @@ class TestHTMLReportWithCharts(unittest.TestCase):
     def test_html_report_expandable_trades(self):
         """Test that HTML contains expandable trade details functionality"""
         trades = [
-            {"symbol": "AAPL", "shares": 100, "purchase_date": "2015-01-02", "price": 10.0},
-            {"symbol": "AAPL", "shares": 50, "purchase_date": "2016-06-15", "price": 15.0},
+            {"symbol": "SBUX", "shares": 100, "purchase_date": "2015-01-02", "price": 40.72},
+            {"symbol": "SBUX", "shares": 50, "purchase_date": "2016-06-15", "price": 55.35},
             {"symbol": "MSFT", "shares": 25, "purchase_date": "2017-03-10", "price": 20.0},
         ]
         
@@ -335,8 +335,8 @@ class TestHTMLReportWithCharts(unittest.TestCase):
             self.assertIn('Purchase Price', content)
             self.assertIn('Current Price', content)
             
-            # Check for multiple AAPL trades (2 trades for AAPL)
-            self.assertIn('AAPL', content)
+            # Check for multiple SBUX trades (2 trades for SBUX)
+            self.assertIn('SBUX', content)
             
         finally:
             if os.path.exists(temp_file):
@@ -377,8 +377,8 @@ class TestHTMLReportWithCharts(unittest.TestCase):
     def test_html_report_symbol_id_sanitization(self):
         """Test that symbols with dots/dashes are sanitized for HTML IDs"""
         trades = [
-            {"symbol": "AAPL", "shares": 10, "purchase_date": "2020-01-01", "price": 100.0},
-            {"symbol": "AAPL", "shares": 5, "purchase_date": "2021-01-01", "price": 120.0},
+            {"symbol": "SBUX", "shares": 10, "purchase_date": "2020-01-02", "price": 89.35},
+            {"symbol": "SBUX", "shares": 5, "purchase_date": "2021-01-04", "price": 103.10},
         ]
         
         with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
@@ -397,9 +397,9 @@ class TestHTMLReportWithCharts(unittest.TestCase):
             self.assertIn('onclick', content)
             
             # If we had "BRK.B", it would be sanitized to "BRK_B"
-            # For now, verify AAPL works correctly
-            self.assertIn('AAPL', content)
-            self.assertIn('Individual Trades for AAPL', content)
+            # For now, verify SBUX works correctly
+            self.assertIn('SBUX', content)
+            self.assertIn('Individual Trades for SBUX', content)
             
         finally:
             if os.path.exists(temp_file):
@@ -412,7 +412,7 @@ class TestReportGeneration(unittest.TestCase):
     def test_print_report_to_file(self):
         """Test that text report can be saved to file"""
         trades = [
-            {"symbol": "AAPL", "shares": 10, "purchase_date": "2015-01-02", "price": 10.0},
+            {"symbol": "SBUX", "shares": 10, "purchase_date": "2015-01-02", "price": 40.72},
         ]
         
         with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
@@ -427,7 +427,7 @@ class TestReportGeneration(unittest.TestCase):
             with open(temp_file, 'r') as f:
                 content = f.read()
             self.assertIn('PORTFOLIO SUMMARY', content)
-            self.assertIn('AAPL', content)
+            self.assertIn('SBUX', content)
         finally:
             if os.path.exists(temp_file):
                 os.unlink(temp_file)
@@ -442,10 +442,10 @@ class TestReportGeneration(unittest.TestCase):
         """Test that HTML report includes tooltip elements"""
         trades = [
             {
-                'symbol': 'AAPL',
+                'symbol': 'SBUX',
                 'shares': 100,
                 'purchase_date': '2020-01-02',
-                'price': 75.09
+                'price': 89.35
             }
         ]
         

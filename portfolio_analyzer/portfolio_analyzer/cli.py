@@ -27,7 +27,7 @@ def main():
             sys.exit(1)
     else:
         trades = [
-            {"symbol": "AAPL", "shares": 100, "purchase_date": "2020-01-02", "price": 75.5},
+            {"symbol": "SBUX", "shares": 100, "purchase_date": "2020-01-02", "price": 89.35},
             {"symbol": "MSFT", "shares": 50, "purchase_date": "2021-01-04", "price": 220.0},
         ]
 

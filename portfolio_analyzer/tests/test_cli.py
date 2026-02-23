@@ -29,7 +29,7 @@ class TestCLI(unittest.TestCase):
         # Create temp CSV file
         temp_csv = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv')
         temp_csv.write("symbol,shares,purchase_date,price\n")
-        temp_csv.write("AAPL,10,2020-01-02,75.50\n")
+        temp_csv.write("SBUX,10,2020-01-02,89.35\n")
         temp_csv.close()
         
         try:

@@ -79,7 +79,7 @@ class TestUtilsFunctions(unittest.TestCase):
         from portfolio_analyzer.utils import extract_history
         
         empty_df = pd.DataFrame()
-        result = extract_history(empty_df, 'AAPL')
+        result = extract_history(empty_df, 'SBUX')
         self.assertTrue(result.empty)
     
     def test_extract_history_multiindex_columns(self):
@@ -88,11 +88,11 @@ class TestUtilsFunctions(unittest.TestCase):
         
         # Create MultiIndex DataFrame like yf.download returns
         dates = pd.date_range('2020-01-01', periods=3)
-        columns = pd.MultiIndex.from_product([['Close', 'Open'], ['AAPL', 'MSFT']])
+        columns = pd.MultiIndex.from_product([['Close', 'Open'], ['SBUX', 'MSFT']])
         data = np.random.rand(3, 4)
         df = pd.DataFrame(data, index=dates, columns=columns)
         
-        result = extract_history(df, 'AAPL')
+        result = extract_history(df, 'SBUX')
         self.assertFalse(result.empty)
         self.assertIn('Close', result.columns)
     
@@ -101,7 +101,7 @@ class TestUtilsFunctions(unittest.TestCase):
         from portfolio_analyzer.utils import extract_history
         
         dates = pd.date_range('2020-01-01', periods=3)
-        columns = pd.MultiIndex.from_product([['Close'], ['AAPL']])
+        columns = pd.MultiIndex.from_product([['Close'], ['SBUX']])
         data = np.random.rand(3, 1)
         df = pd.DataFrame(data, index=dates, columns=columns)
         
@@ -114,7 +114,7 @@ class TestUtilsFunctions(unittest.TestCase):
         from unittest.mock import patch
         
         with patch('portfolio_analyzer.utils.yf.download', side_effect=Exception("Network error")):
-            result = download_history(['AAPL'], '2020-01-01')
+            result = download_history(['SBUX'], '2020-01-01')
             self.assertTrue(result.empty)
 
 

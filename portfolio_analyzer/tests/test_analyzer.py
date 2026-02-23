@@ -85,36 +85,36 @@ class TestTradeValidation(unittest.TestCase):
     def test_valid_trade(self):
         """Test that a valid trade passes validation"""
         trade = {
-            "symbol": "AAPL",
+            "symbol": "SBUX",
             "shares": 100,
             "purchase_date": "2020-01-02",
-            "price": 75.50
+            "price": 89.35
         }
         self.assertTrue(self.analyzer._validate_trade(trade))
     
     def test_invalid_trade_missing_keys(self):
         """Test that trade missing keys fails validation"""
         trade = {
-            "symbol": "AAPL",
+            "symbol": "SBUX",
             "shares": 100,
-            "price": 75.50
+            "price": 89.35
         }
         self.assertFalse(self.analyzer._validate_trade(trade))
     
     def test_invalid_trade_negative_shares(self):
         """Test that negative shares fail validation"""
         trade = {
-            "symbol": "AAPL",
+            "symbol": "SBUX",
             "shares": -100,
             "purchase_date": "2020-01-02",
-            "price": 75.50
+            "price": 89.35
         }
         self.assertFalse(self.analyzer._validate_trade(trade))
     
     def test_invalid_trade_zero_price(self):
         """Test that zero price fails validation"""
         trade = {
-            "symbol": "AAPL",
+            "symbol": "SBUX",
             "shares": 100,
             "purchase_date": "2020-01-02",
             "price": 0
@@ -124,10 +124,10 @@ class TestTradeValidation(unittest.TestCase):
     def test_invalid_trade_bad_date_format(self):
         """Test that invalid date format fails validation"""
         trade = {
-            "symbol": "AAPL",
+            "symbol": "SBUX",
             "shares": 100,
             "purchase_date": "01/02/2020",
-            "price": 75.50
+            "price": 89.35
         }
         self.assertFalse(self.analyzer._validate_trade(trade))
 
@@ -157,7 +157,7 @@ class TestPortfolioAnalysis(unittest.TestCase):
         # This is implicitly tested through the portfolio CAGR calculation
         # Just verify that results are returned
         trades = [
-            {"symbol": "AAPL", "shares": 10, "purchase_date": "2015-01-02", "price": 10.0},
+            {"symbol": "SBUX", "shares": 10, "purchase_date": "2015-01-02", "price": 40.72},
             {"symbol": "MSFT", "shares": 90, "purchase_date": "2023-01-02", "price": 10.0},
         ]
         
@@ -266,10 +266,10 @@ class TestSymbolAccumulation(unittest.TestCase):
     def test_symbol_accumulation_single_symbol(self):
         """Test accumulation for a single symbol"""
         trades = [
-            {'symbol': 'AAPL', 'shares': 100, 'initial_value': 1000, 'current_value': 1500, 
+            {'symbol': 'SBUX', 'shares': 100, 'initial_value': 1000, 'current_value': 1500, 
              'stock_cagr': 10.0, 'stock_xirr': 9.5, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
              'sp500_current_value': 1200, 'years_held': 5},
-            {'symbol': 'AAPL', 'shares': 50, 'initial_value': 500, 'current_value': 800, 
+            {'symbol': 'SBUX', 'shares': 50, 'initial_value': 500, 'current_value': 800, 
              'stock_cagr': 12.5, 'stock_xirr': 12.0, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
              'sp500_current_value': 600, 'years_held': 5}
         ]
@@ -277,24 +277,24 @@ class TestSymbolAccumulation(unittest.TestCase):
         analyzer = PortfolioAnalyzer([])
         stats = analyzer._calculate_symbol_accumulation(trades)
         
-        self.assertIn('AAPL', stats)
-        self.assertEqual(stats['AAPL']['trades_count'], 2)
-        self.assertEqual(stats['AAPL']['total_shares'], 150)
-        self.assertEqual(stats['AAPL']['total_initial_value'], 1500)
-        self.assertEqual(stats['AAPL']['total_current_value'], 2300)
-        self.assertEqual(stats['AAPL']['total_gain'], 800)
-        self.assertGreater(stats['AAPL']['gain_percentage'], 0)
+        self.assertIn('SBUX', stats)
+        self.assertEqual(stats['SBUX']['trades_count'], 2)
+        self.assertEqual(stats['SBUX']['total_shares'], 150)
+        self.assertEqual(stats['SBUX']['total_initial_value'], 1500)
+        self.assertEqual(stats['SBUX']['total_current_value'], 2300)
+        self.assertEqual(stats['SBUX']['total_gain'], 800)
+        self.assertGreater(stats['SBUX']['gain_percentage'], 0)
 
     def test_symbol_accumulation_multiple_symbols(self):
         """Test accumulation for multiple symbols"""
         trades = [
-            {'symbol': 'AAPL', 'shares': 100, 'initial_value': 1000, 'current_value': 1500,
+            {'symbol': 'SBUX', 'shares': 100, 'initial_value': 1000, 'current_value': 1500,
              'stock_cagr': 10.0, 'stock_xirr': 9.5, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
              'sp500_current_value': 1200, 'years_held': 5},
             {'symbol': 'MSFT', 'shares': 50, 'initial_value': 2000, 'current_value': 3000,
              'stock_cagr': 8.5, 'stock_xirr': 8.0, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
              'sp500_current_value': 2400, 'years_held': 5},
-            {'symbol': 'AAPL', 'shares': 50, 'initial_value': 500, 'current_value': 600,
+            {'symbol': 'SBUX', 'shares': 50, 'initial_value': 500, 'current_value': 600,
              'stock_cagr': 3.7, 'stock_xirr': 3.5, 'sp500_cagr': 8.0, 'sp500_xirr': 7.5,
              'sp500_current_value': 600, 'years_held': 5}
         ]
@@ -303,9 +303,9 @@ class TestSymbolAccumulation(unittest.TestCase):
         stats = analyzer._calculate_symbol_accumulation(trades)
         
         self.assertEqual(len(stats), 2)
-        self.assertIn('AAPL', stats)
+        self.assertIn('SBUX', stats)
         self.assertIn('MSFT', stats)
-        self.assertEqual(stats['AAPL']['trades_count'], 2)
+        self.assertEqual(stats['SBUX']['trades_count'], 2)
         self.assertEqual(stats['MSFT']['trades_count'], 1)
 
     def test_symbol_accumulation_zero_gain(self):
@@ -326,7 +326,7 @@ class TestSymbolAccumulation(unittest.TestCase):
         """Test that S&P 500 WCAGR is calculated correctly"""
         trades = [
             {
-                'symbol': 'AAPL',
+                'symbol': 'SBUX',
                 'shares': 100,
                 'initial_value': 1000,
                 'current_value': 1500,
@@ -336,7 +336,7 @@ class TestSymbolAccumulation(unittest.TestCase):
                 'sp500_xirr': 7.5,
                 'sp500_current_value': 1200,
                 'years_held': 5,
-                'purchase_date': '2020-01-01'
+                'purchase_date': '2020-01-02'
             }
         ]
         
@@ -344,8 +344,8 @@ class TestSymbolAccumulation(unittest.TestCase):
         stats = analyzer._calculate_symbol_accumulation(trades)
         
         # Verify S&P 500 WCAGR exists and is reasonable
-        self.assertIn('avg_sp500_cagr', stats['AAPL'])
-        self.assertAlmostEqual(stats['AAPL']['avg_sp500_cagr'], 8.0, places=1,
+        self.assertIn('avg_sp500_cagr', stats['SBUX'])
+        self.assertAlmostEqual(stats['SBUX']['avg_sp500_cagr'], 8.0, places=1,
                               msg="S&P 500 WCAGR should match sp500_cagr for single trade")
 
     def test_sp500_xirr_vs_wcagr_multi_trade(self):
@@ -491,10 +491,10 @@ class TestSymbolAccumulation(unittest.TestCase):
         # Use a purchase date from this year to ensure it's valid
         trades = [
             {
-                'symbol': 'AAPL',
+                'symbol': 'SBUX',
                 'shares': 100,
                 'purchase_date': '2025-01-02',
-                'price': 150.00,
+                'price': 92.17,
             }
         ]
         
@@ -506,10 +506,10 @@ class TestSymbolAccumulation(unittest.TestCase):
         """Test portfolio with multiple winning positions"""
         trades = [
             {
-                'symbol': 'AAPL',
+                'symbol': 'SBUX',
                 'shares': 100,
                 'purchase_date': '2020-01-02',
-                'price': 75.50,
+                'price': 89.35,
             },
             {
                 'symbol': 'MSFT',
@@ -530,10 +530,10 @@ class TestSymbolAccumulation(unittest.TestCase):
         """Test portfolio with both up and down positions"""
         trades = [
             {
-                'symbol': 'AAPL',
+                'symbol': 'SBUX',
                 'shares': 100,
                 'purchase_date': '2020-01-02',
-                'price': 75.50,
+                'price': 89.35,
             },
             {
                 'symbol': 'GOOG',

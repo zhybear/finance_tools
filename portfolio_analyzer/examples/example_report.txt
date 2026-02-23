@@ -1,34 +1,6 @@
 
 === INDIVIDUAL STOCK PERFORMANCE ===
 
-AAPL:
-  Shares: 100 @ $125.50
-  Current Price: $264.58
-  Initial Value: $12550.00
-  Current Value: $26458.00
-  Gain: $13908.00
-  Stock WCAGR: 7.11%
-  Stock XIRR: 7.11%
-  S&P 500 WCAGR: 11.57%
-  S&P 500 XIRR: 11.57%
-  Outperformance (WCAGR): -4.45%
-  Outperformance (XIRR): -4.45%
-
---- AAPL ACCUMULATED ---
-  Total Trades: 1
-  Total Shares: 100
-  Total Initial Investment: $12550.00
-  Total Current Value: $26458.00
-  Total Gain: $13908.00 (110.82%)
-  Expected S&P 500 Value: $41162.59
-  Outperformance vs S&P 500: $-14704.59 (-117.17%)
-  WCAGR: 7.11%
-  Weighted Avg XIRR: 7.11%
-  S&P 500 WCAGR: 11.57%
-  S&P 500 XIRR: 11.56%
-  XIRR Outperformance: -4.45%
-  Weighted Avg Years Held: 10.85 years
-
 AMD:
   Shares: 80 @ $13.95
   Current Price: $200.15
@@ -169,34 +141,6 @@ META:
   XIRR Outperformance: 8.52%
   Weighted Avg Years Held: 6.76 years
 
-MSFT:
-  Shares: 75 @ $57.20
-  Current Price: $397.23
-  Initial Value: $4290.00
-  Current Value: $29792.25
-  Gain: $25502.25
-  Stock WCAGR: 22.64%
-  Stock XIRR: 22.64%
-  S&P 500 WCAGR: 12.90%
-  S&P 500 XIRR: 12.90%
-  Outperformance (WCAGR): 9.74%
-  Outperformance (XIRR): 9.74%
-
---- MSFT ACCUMULATED ---
-  Total Trades: 1
-  Total Shares: 75
-  Total Initial Investment: $4290.00
-  Total Current Value: $29792.25
-  Total Gain: $25502.25 (594.46%)
-  Expected S&P 500 Value: $13580.71
-  Outperformance vs S&P 500: $16211.54 (377.89%)
-  WCAGR: 22.62%
-  Weighted Avg XIRR: 22.62%
-  S&P 500 WCAGR: 12.90%
-  S&P 500 XIRR: 12.89%
-  XIRR Outperformance: 9.73%
-  Weighted Avg Years Held: 9.50 years
-
 NFLX:
   Shares: 30 @ $436.00
   Current Price: $78.67
@@ -224,60 +168,6 @@ NFLX:
   S&P 500 XIRR: 11.66%
   XIRR Outperformance: -25.94%
   Weighted Avg Years Held: 11.11 years
-
-NVDA:
-  Shares: 150 @ $19.50
-  Current Price: $189.82
-  Initial Value: $2925.00
-  Current Value: $28473.00
-  Gain: $25548.00
-  Stock WCAGR: 22.76%
-  Stock XIRR: 22.76%
-  S&P 500 WCAGR: 11.85%
-  S&P 500 XIRR: 11.85%
-  Outperformance (WCAGR): 10.90%
-  Outperformance (XIRR): 10.90%
-
-NVDA:
-  Shares: 100 @ $145.00
-  Current Price: $189.82
-  Initial Value: $14500.00
-  Current Value: $18982.00
-  Gain: $4482.00
-  Stock WCAGR: 3.14%
-  Stock XIRR: 3.14%
-  S&P 500 WCAGR: 12.73%
-  S&P 500 XIRR: 12.73%
-  Outperformance (WCAGR): -9.59%
-  Outperformance (XIRR): -9.59%
-
-NVDA:
-  Shares: 50 @ $130.00
-  Current Price: $189.82
-  Initial Value: $6500.00
-  Current Value: $9491.00
-  Gain: $2991.00
-  Stock WCAGR: 5.45%
-  Stock XIRR: 5.45%
-  S&P 500 WCAGR: 15.24%
-  S&P 500 XIRR: 15.24%
-  Outperformance (WCAGR): -9.80%
-  Outperformance (XIRR): -9.80%
-
---- NVDA ACCUMULATED ---
-  Total Trades: 3
-  Total Shares: 300
-  Total Initial Investment: $23925.00
-  Total Current Value: $56946.00
-  Total Gain: $33021.00 (138.02%)
-  Expected S&P 500 Value: $69263.83
-  Outperformance vs S&P 500: $-12317.83 (-51.49%)
-  WCAGR: 6.76%
-  Weighted Avg XIRR: 10.53%
-  S&P 500 WCAGR: 13.30%
-  S&P 500 XIRR: 13.04%
-  XIRR Outperformance: -2.50%
-  Weighted Avg Years Held: 8.58 years
 
 SHOP:
   Shares: 20 @ $132.50
@@ -307,44 +197,16 @@ SHOP:
   XIRR Outperformance: -13.55%
   Weighted Avg Years Held: 8.45 years
 
-TSLA:
-  Shares: 25 @ $84.65
-  Current Price: $411.82
-  Initial Value: $2116.25
-  Current Value: $10295.50
-  Gain: $8179.25
-  Stock WCAGR: 28.95%
-  Stock XIRR: 28.95%
-  S&P 500 WCAGR: 13.66%
-  S&P 500 XIRR: 13.66%
-  Outperformance (WCAGR): 15.28%
-  Outperformance (XIRR): 15.28%
-
---- TSLA ACCUMULATED ---
-  Total Trades: 1
-  Total Shares: 25
-  Total Initial Investment: $2116.25
-  Total Current Value: $10295.50
-  Total Gain: $8179.25 (386.50%)
-  Expected S&P 500 Value: $4695.84
-  Outperformance vs S&P 500: $5599.66 (264.60%)
-  WCAGR: 28.92%
-  Weighted Avg XIRR: 28.92%
-  S&P 500 WCAGR: 13.66%
-  S&P 500 XIRR: 13.65%
-  XIRR Outperformance: 15.27%
-  Weighted Avg Years Held: 6.22 years
-
 === PORTFOLIO SUMMARY ===
-Initial Investment: $113474.75
-Current Value: $215017.80
-Total Gain: $101543.05
-Expected Value if Invested in S&P 500: $335900.43
+Initial Investment: $70593.50
+Current Value: $91526.05
+Total Gain: $20932.55
+Expected Value if Invested in S&P 500: $207197.45
 
-Portfolio WCAGR: 7.23%
-Portfolio XIRR: 7.17%
-S&P 500 WCAGR: 12.59%
-S&P 500 XIRR: 12.41%
+Portfolio WCAGR: 2.89%
+Portfolio XIRR: 2.88%
+S&P 500 WCAGR: 12.54%
+S&P 500 XIRR: 12.37%
 
-Portfolio Outperformance (WCAGR): -5.36%
-Portfolio Outperformance (XIRR): -5.24%
+Portfolio Outperformance (WCAGR): -9.65%
+Portfolio Outperformance (XIRR): -9.49%

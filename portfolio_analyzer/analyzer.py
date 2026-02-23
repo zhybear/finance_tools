@@ -1,6 +1,7 @@
 """Core portfolio analyzer class.
 
 Author: Zhuo Robert Li
+Version: 1.3.3
 """
 
 import yfinance as yf

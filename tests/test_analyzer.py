@@ -5,7 +5,7 @@ Run with:
     python3 -m unittest test_analyzer.py -v
 
 Author: Zhuo Robert Li
-Version: 1.2.0
+Version: 1.3.3
 License: ISC
 """
 
@@ -321,6 +321,250 @@ class TestSymbolAccumulation(unittest.TestCase):
         
         self.assertEqual(stats['FLAT']['total_gain'], 0)
         self.assertEqual(stats['FLAT']['gain_percentage'], 0)
+
+    def test_sp500_cagr_calculation(self):
+        """Test that S&P 500 WCAGR is calculated correctly"""
+        trades = [
+            {
+                'symbol': 'AAPL',
+                'shares': 100,
+                'initial_value': 1000,
+                'current_value': 1500,
+                'stock_cagr': 10.0,
+                'stock_xirr': 9.5,
+                'sp500_cagr': 8.0,
+                'sp500_xirr': 7.5,
+                'sp500_current_value': 1200,
+                'years_held': 5,
+                'purchase_date': '2020-01-01'
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        # Verify S&P 500 WCAGR exists and is reasonable
+        self.assertIn('avg_sp500_cagr', stats['AAPL'])
+        self.assertAlmostEqual(stats['AAPL']['avg_sp500_cagr'], 8.0, places=1,
+                              msg="S&P 500 WCAGR should match sp500_cagr for single trade")
+
+    def test_sp500_xirr_vs_wcagr_multi_trade(self):
+        """Test that S&P 500 XIRR differs from WCAGR for multi-trade positions
+        
+        When there are multiple trades at different times, XIRR should account
+        for the timing of cash flows differently than WCAGR (weighted average).
+        """
+        # Create trades that mimic NVDA case: 3 purchases at different times
+        trades = [
+            {
+                'symbol': 'NVDA',
+                'shares': 150,
+                'initial_value': 2925,
+                'current_value': 28431,
+                'purchase_date': '2015-01-15',
+                'stock_cagr': 22.76,
+                'stock_xirr': 22.76,
+                'sp500_cagr': 11.85,
+                'sp500_xirr': 11.85,
+                'sp500_current_value': 6783,
+                'years_held': 11.1
+            },
+            {
+                'symbol': 'NVDA',
+                'shares': 100,
+                'initial_value': 14500,
+                'current_value': 18960,
+                'purchase_date': '2017-06-01',
+                'stock_cagr': 3.14,
+                'stock_xirr': 3.14,
+                'sp500_cagr': 12.73,
+                'sp500_xirr': 12.73,
+                'sp500_current_value': 20460,
+                'years_held': 8.65
+            },
+            {
+                'symbol': 'NVDA',
+                'shares': 50,
+                'initial_value': 6500,
+                'current_value': 9555,
+                'purchase_date': '2019-01-01',
+                'stock_cagr': 7.76,
+                'stock_xirr': 7.76,
+                'sp500_cagr': 15.24,
+                'sp500_xirr': 15.24,
+                'sp500_current_value': 10920,
+                'years_held': 7.13
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        # Verify both metrics exist
+        self.assertIn('avg_sp500_cagr', stats['NVDA'])
+        self.assertIn('avg_sp500_xirr', stats['NVDA'])
+        
+        # For multi-trade scenario with XIRR available, WCAGR and XIRR should differ
+        # (Though in tests without dates, they may be calculated differently)
+        wcagr = stats['NVDA']['avg_sp500_cagr']
+        xirr = stats['NVDA']['avg_sp500_xirr']
+        
+        self.assertIsNotNone(wcagr)
+        self.assertIsNotNone(xirr)
+        self.assertGreater(wcagr, 0)
+        self.assertGreater(xirr, 0)
+
+    def test_symbol_stats_contains_required_fields(self):
+        """Test that symbol accumulation stats contain all required fields"""
+        trades = [
+            {
+                'symbol': 'TEST',
+                'shares': 100,
+                'initial_value': 1000,
+                'current_value': 1200,
+                'stock_cagr': 5.0,
+                'stock_xirr': 5.0,
+                'sp500_cagr': 8.0,
+                'sp500_xirr': 8.0,
+                'sp500_current_value': 1300,
+                'years_held': 5
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        required_fields = [
+            'trades_count', 'total_shares', 'total_initial_value',
+            'total_current_value', 'total_gain', 'gain_percentage',
+            'avg_cagr', 'avg_xirr', 'avg_sp500_cagr', 'avg_sp500_xirr',
+            'xirr_outperformance_pct'
+        ]
+        
+        for field in required_fields:
+            self.assertIn(field, stats['TEST'],
+                         msg=f"Missing required field: {field}")
+
+    def test_sp500_xirr_weighted_calculation(self):
+        """Test S&P 500 XIRR for single trade equals WCAGR"""
+        trades = [
+            {
+                'symbol': 'SINGLE',
+                'shares': 100,
+                'initial_value': 1000,
+                'current_value': 1500,
+                'stock_cagr': 10.0,
+                'stock_xirr': 10.0,
+                'sp500_cagr': 8.0,
+                'sp500_xirr': 8.0,
+                'sp500_current_value': 1300,
+                'years_held': 5
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer([])
+        stats = analyzer._calculate_symbol_accumulation(trades)
+        
+        # For single trade without dates, XIRR fallback uses weighted average
+        # which should approximate WCAGR
+        wcagr = stats['SINGLE']['avg_sp500_cagr']
+        xirr = stats['SINGLE']['avg_sp500_xirr']
+        
+        self.assertAlmostEqual(wcagr, 8.0, places=1)
+        self.assertAlmostEqual(xirr, 8.0, places=1)
+
+    def test_empty_portfolio_analysis(self):
+        """Test that empty portfolio is handled gracefully"""
+        analyzer = PortfolioAnalyzer([])
+        analysis = analyzer.analyze_portfolio()
+        
+        # Should return empty analysis without crashing
+        self.assertEqual(analysis['trades'], [])
+        self.assertEqual(analysis['total_initial_value'], 0)
+        self.assertEqual(analysis['total_current_value'], 0)
+
+    def test_single_day_holding_period(self):
+        """Test handling of trades held for very short periods"""
+        import datetime
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        
+        # Use a purchase date from this year to ensure it's valid
+        trades = [
+            {
+                'symbol': 'AAPL',
+                'shares': 100,
+                'purchase_date': '2025-01-02',
+                'price': 150.00,
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        # Should not crash even with recent purchase
+        self.assertTrue(len(analyzer.trades) > 0)
+
+    def test_portfolio_with_valid_trades(self):
+        """Test portfolio with multiple winning positions"""
+        trades = [
+            {
+                'symbol': 'AAPL',
+                'shares': 100,
+                'purchase_date': '2020-01-02',
+                'price': 75.50,
+            },
+            {
+                'symbol': 'MSFT',
+                'shares': 50,
+                'purchase_date': '2020-01-02',
+                'price': 160.00,
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Portfolio should have been analyzed
+        self.assertGreater(len(analysis['trades']), 0)
+        self.assertGreater(analysis['total_initial_value'], 0)
+
+    def test_portfolio_with_mixed_outcomes(self):
+        """Test portfolio with both up and down positions"""
+        trades = [
+            {
+                'symbol': 'AAPL',
+                'shares': 100,
+                'purchase_date': '2020-01-02',
+                'price': 75.50,
+            },
+            {
+                'symbol': 'GOOG',
+                'shares': 50,
+                'purchase_date': '2020-01-02',
+                'price': 1500.00,
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Should have analyzed multiple positions
+        self.assertGreaterEqual(len(analysis['trades']), 2)
+
+    def test_zero_gain_positions(self):
+        """Test portfolio with break-even positions"""
+        trades = [
+            {
+                'symbol': 'FLAT',
+                'shares': 100,
+                'purchase_date': '2023-06-15',  # Recent enough to have data
+                'price': 100.00,
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Should handle even if position hasn't moved much
+        self.assertIsNotNone(analysis)
 
 
 

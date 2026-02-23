@@ -4,6 +4,7 @@ Provides CAGR (Compound Annual Growth Rate) and XIRR (Extended Internal Rate of 
 calculation functions.
 
 Author: Zhuo Robert Li
+Version: 1.3.3
 """
 
 import numpy as np

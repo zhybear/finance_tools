@@ -5,7 +5,7 @@ Run with:
     python3 -m unittest test_metrics.py -v
 
 Author: Zhuo Robert Li
-Version: 1.2.0
+Version: 1.3.3
 License: ISC
 """
 
@@ -230,6 +230,42 @@ class TestXIRRCalculation(unittest.TestCase):
             # XIRR and CAGR should be very close for 2-CF case (within 1% tolerance)
             self.assertLessEqual(xirr, cagr + 1.0,
                                 msg=f"XIRR ({xirr:.2f}%) significantly exceeds CAGR ({cagr:.2f}%) in {description}")
+
+    def test_xirr_with_invalid_dates(self):
+        """Test XIRR with malformed dates"""
+        from portfolio_analyzer import calculate_xirr
+        
+        # Invalid date format
+        result = calculate_xirr(['2020-01-01', 'invalid-date'], [-1000, 1200])
+        # Should return 0.0 or handle gracefully
+        self.assertIsInstance(result, (int, float))
+
+    def test_xirr_with_only_positive_cash_flows(self):
+        """Test XIRR with all positive cash flows (should fail gracefully)"""
+        from portfolio_analyzer import calculate_xirr
+        
+        # All positive flows (invalid for IRR)
+        result = calculate_xirr(['2020-01-01', '2021-01-01'], [1000, 1200])
+        # Should return 0.0 (no valid IRR)
+        self.assertEqual(result, 0.0)
+
+    def test_xirr_with_only_negative_cash_flows(self):
+        """Test XIRR with all negative cash flows (should fail gracefully)"""
+        from portfolio_analyzer import calculate_xirr
+        
+        # All negative flows (invalid for IRR)
+        result = calculate_xirr(['2020-01-01', '2021-01-01'], [-1000, -1200])
+        # Should return 0.0 (no valid IRR)
+        self.assertEqual(result, 0.0)
+
+    def test_xirr_with_mismatched_lengths(self):
+        """Test XIRR with mismatched date and cash flow counts"""
+        from portfolio_analyzer import calculate_xirr
+        
+        # Mismatched lengths
+        result = calculate_xirr(['2020-01-01', '2021-01-01'], [-1000, 1200, 300])
+        # Should return 0.0 (invalid input)
+        self.assertEqual(result, 0.0)
 
 
 

@@ -7,7 +7,7 @@ For new code, import directly from portfolio_analyzer:
     from portfolio_analyzer import PortfolioAnalyzer, load_trades_from_csv
 
 Author: Zhuo Robert Li
-Version: 1.2.0
+Version: 1.3.3
 License: ISC
 """
 

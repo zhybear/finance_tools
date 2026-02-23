@@ -391,14 +391,21 @@ class PortfolioAnalyzer:
                     
                     xirr_result = calculate_xirr(dates, cash_flows)
                     stats['avg_xirr'] = xirr_result
+                    
+                    # Calculate S&P 500 XIRR using same cash flow dates but S&P 500 values
+                    sp500_cash_flows = list(cash_flows[:-1])  # Same purchases
+                    sp500_cash_flows.append(sp500_val)  # End with S&P 500 value
+                    sp500_xirr_result = calculate_xirr(dates, sp500_cash_flows)
+                    stats['avg_sp500_xirr'] = sp500_xirr_result
                 else:
                     total_xirr_weighted = sum(t['stock_xirr'] * t['initial_value'] 
                                              for t in trades_for_symbol)
                     stats['avg_xirr'] = safe_divide(total_xirr_weighted, initial_val, 0.0)
+                    stats['avg_sp500_xirr'] = safe_divide(stats['total_sp500_xirr_weighted'], initial_val, 0.0)
             else:
                 stats['avg_xirr'] = 0.0
+                stats['avg_sp500_xirr'] = safe_divide(stats['total_sp500_xirr_weighted'], initial_val, 0.0)
             
-            stats['avg_sp500_xirr'] = safe_divide(stats['total_sp500_xirr_weighted'], initial_val, 0.0)
             stats['avg_sp500_cagr'] = safe_divide(stats['total_sp500_cagr_weighted'], initial_val, 0.0)
             stats['xirr_outperformance_pct'] = stats['avg_xirr'] - stats['avg_sp500_xirr']
             

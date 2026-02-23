@@ -25,8 +25,8 @@ AAPL:
   WCAGR: 7.11%
   Weighted Avg XIRR: 7.11%
   S&P 500 WCAGR: 11.57%
-  S&P 500 XIRR: 11.57%
-  XIRR Outperformance: -4.46%
+  S&P 500 XIRR: 11.56%
+  XIRR Outperformance: -4.45%
   Weighted Avg Years Held: 10.85 years
 
 AMD:
@@ -53,7 +53,7 @@ AMD:
   WCAGR: 34.93%
   Weighted Avg XIRR: 34.93%
   S&P 500 WCAGR: 12.86%
-  S&P 500 XIRR: 12.86%
+  S&P 500 XIRR: 12.85%
   XIRR Outperformance: 22.08%
   Weighted Avg Years Held: 8.88 years
 
@@ -81,8 +81,8 @@ AMZN:
   WCAGR: -3.45%
   Weighted Avg XIRR: -3.45%
   S&P 500 WCAGR: 11.39%
-  S&P 500 XIRR: 11.39%
-  XIRR Outperformance: -14.84%
+  S&P 500 XIRR: 11.38%
+  XIRR Outperformance: -14.83%
   Weighted Avg Years Held: 11.25 years
 
 GOOGL:
@@ -109,8 +109,8 @@ GOOGL:
   WCAGR: -10.45%
   Weighted Avg XIRR: -10.45%
   S&P 500 WCAGR: 12.65%
-  S&P 500 XIRR: 12.65%
-  XIRR Outperformance: -23.10%
+  S&P 500 XIRR: 12.64%
+  XIRR Outperformance: -23.09%
   Weighted Avg Years Held: 8.96 years
 
 JPM:
@@ -137,7 +137,7 @@ JPM:
   WCAGR: 14.52%
   Weighted Avg XIRR: 14.52%
   S&P 500 WCAGR: 12.44%
-  S&P 500 XIRR: 12.44%
+  S&P 500 XIRR: 12.43%
   XIRR Outperformance: 2.08%
   Weighted Avg Years Held: 8.02 years
 
@@ -165,8 +165,8 @@ META:
   WCAGR: 22.56%
   Weighted Avg XIRR: 22.56%
   S&P 500 WCAGR: 14.05%
-  S&P 500 XIRR: 14.05%
-  XIRR Outperformance: 8.51%
+  S&P 500 XIRR: 14.04%
+  XIRR Outperformance: 8.52%
   Weighted Avg Years Held: 6.76 years
 
 MSFT:
@@ -193,8 +193,8 @@ MSFT:
   WCAGR: 22.62%
   Weighted Avg XIRR: 22.62%
   S&P 500 WCAGR: 12.90%
-  S&P 500 XIRR: 12.90%
-  XIRR Outperformance: 9.72%
+  S&P 500 XIRR: 12.89%
+  XIRR Outperformance: 9.73%
   Weighted Avg Years Held: 9.50 years
 
 NFLX:
@@ -221,8 +221,8 @@ NFLX:
   WCAGR: -14.28%
   Weighted Avg XIRR: -14.28%
   S&P 500 WCAGR: 11.67%
-  S&P 500 XIRR: 11.67%
-  XIRR Outperformance: -25.95%
+  S&P 500 XIRR: 11.66%
+  XIRR Outperformance: -25.94%
   Weighted Avg Years Held: 11.11 years
 
 NVDA:
@@ -275,8 +275,8 @@ NVDA:
   WCAGR: 6.76%
   Weighted Avg XIRR: 10.53%
   S&P 500 WCAGR: 13.30%
-  S&P 500 XIRR: 13.30%
-  XIRR Outperformance: -2.77%
+  S&P 500 XIRR: 13.04%
+  XIRR Outperformance: -2.50%
   Weighted Avg Years Held: 8.58 years
 
 SHOP:
@@ -303,8 +303,8 @@ SHOP:
   WCAGR: -0.57%
   Weighted Avg XIRR: -0.57%
   S&P 500 WCAGR: 12.99%
-  S&P 500 XIRR: 12.99%
-  XIRR Outperformance: -13.56%
+  S&P 500 XIRR: 12.98%
+  XIRR Outperformance: -13.55%
   Weighted Avg Years Held: 8.45 years
 
 TSLA:
@@ -331,8 +331,8 @@ TSLA:
   WCAGR: 28.92%
   Weighted Avg XIRR: 28.92%
   S&P 500 WCAGR: 13.66%
-  S&P 500 XIRR: 13.66%
-  XIRR Outperformance: 15.25%
+  S&P 500 XIRR: 13.65%
+  XIRR Outperformance: 15.27%
   Weighted Avg Years Held: 6.22 years
 
 === PORTFOLIO SUMMARY ===

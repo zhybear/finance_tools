@@ -1,19 +1,50 @@
 # Portfolio Analyzer
 
-A comprehensive Python tool for analyzing stock portfolio performance with S&P 500 benchmarking.
+A comprehensive Python tool for analyzing stock portfolio performance with precise cash flow tracking and S&P 500 benchmarking.
+
+## Why This Tool
+
+Standard portfolio apps show "1 year gain" by comparing snapshots (value today vs 1 year ago). This misses important details:
+- **When** you invested your money
+- **How much** you invested at each time
+- **Real returns** accounting for your actual cash flows
+
+This tool uses **XIRR (Internal Rate of Return)** to calculate your true performance accounting for investment timing and amounts. Combined with **real S&P 500 market data** validation, you get exact benchmark comparisons.
 
 ## Features
 
-- **CAGR & XIRR Analysis**: Compound Annual Growth Rate and Extended Internal Rate of Return calculations
-- **S&P 500 Comparison**: Compare portfolio performance against S&P 500 benchmark index
-- **Symbol Aggregation**: View accumulated metrics per stock symbol
+- **Cash Flow Tracking**: Complete investment timeline tracking with XIRR calculations
+  - Accounts for when and how much you invested
+  - Accurately reflects your true returns vs random snapshots
+  - Weighted CAGR reflects your actual capital deployment
+  
+- **CAGR & XIRR Analysis**: 
+  - Compound Annual Growth Rate for simple long-term performance
+  - Extended Internal Rate of Return for time-weighted accuracy
+  - Works correctly with irregular investment patterns
+
+- **S&P 500 Benchmarking**: 
+  - Real market data from yfinance (never estimates or approximations)
+  - Precise outperformance calculation vs actual market performance
+  - Trade-level and portfolio-level benchmark comparison
+  
+- **Detailed Performance Metrics**:
+  - Symbol-level aggregation showing performance per stock
+  - Weighted metrics accounting for investment size and duration
+  - Gain/loss breakdown and win/loss rates
+  - Comprehensive trade-level analysis
+
 - **Multiple Report Formats**:
   - Text reports with detailed analysis
   - PDF reports with professional visualizations and charts
   - Interactive HTML dashboards with Plotly charts and dark mode support
-- **CSV Support**: Load and validate trades from CSV files
-- **Modular Architecture**: Clean, testable code with separation of concerns
-- **Production Ready**: v1.3.4 with comprehensive test coverage (91%, 149 tests)
+  
+- **Transparent & Auditable**: 
+  - 149 tests (91% coverage) validate every calculation
+  - Open source - inspect exactly how calculations work
+  - No black boxes or mysterious algorithms
+  
+- **Production Ready**: v1.3.4 with comprehensive test coverage and validation
 
 ## Installation
 

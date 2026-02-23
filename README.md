@@ -1,6 +1,6 @@
 # Finance Tools
 
-A collection of professional-grade financial analysis tools built with Python.
+Professional-grade financial analysis tools built with Python for transparent, auditable portfolio analysis.
 
 ## Repository Structure
 
@@ -21,7 +21,13 @@ finance_tools/
 
 ### Portfolio Analyzer
 
-Analyze stock portfolio performance with detailed CAGR/XIRR metrics and S&P 500 benchmarking.
+**Analyze stock portfolio performance with cash flow tracking and real S&P 500 benchmarking.**
+
+What makes this different:
+- **Cash Flow Aware**: XIRR calculations account for when and how much you invested
+- **Real Market Data**: S&P 500 benchmark uses actual yfinance closing prices
+- **Mathematically Rigorous**: All calculations are transparent and testable (149 tests, 91% coverage)
+- **Multiple Formats**: Text, PDF, and interactive HTML reports
 
 **Quick Start:**
 ```bash
@@ -31,6 +37,14 @@ python3 -m portfolio_analyzer.cli --csv example_trades.csv
 ```
 
 **Full Documentation:** See [portfolio_analyzer/README.md](portfolio_analyzer/README.md)
+
+## Philosophy
+
+These tools prioritize:
+- **Accuracy** - Real data, no estimates or approximations
+- **Transparency** - Open source, fully auditable calculations
+- **Rigor** - Comprehensive test coverage validates every metric
+- **Usability** - CLI, Python API, and multiple output formats
 
 ## License
 

@@ -305,6 +305,7 @@ class PortfolioAnalyzer:
         """Calculate accumulated earnings and metrics for each stock symbol."""
         symbol_stats = {}
         symbol_trades = {}
+        today = pd.Timestamp.now()  # Cache once for all calculations
         
         for trade in trades:
             symbol = trade['symbol']
@@ -354,7 +355,6 @@ class PortfolioAnalyzer:
                     
                     for trade in trades_with_dates:
                         purchase_date = pd.to_datetime(trade['purchase_date'])
-                        today = pd.Timestamp.now()
                         years_held = (today - purchase_date).days / 365.25
                         
                         individual_cagr = calculate_cagr(
@@ -387,7 +387,7 @@ class PortfolioAnalyzer:
                     dates = [d for d, cf in date_cf_pairs]
                     cash_flows = [cf for d, cf in date_cf_pairs]
                     
-                    dates.append(str(pd.Timestamp.now().date()))
+                    dates.append(str(today.date()))
                     cash_flows.append(current_val)
                     
                     xirr_result = calculate_xirr(dates, cash_flows)

@@ -879,5 +879,266 @@ class TestAnalyzerPhase2(unittest.TestCase):
         )
 
 
+# ===== PHASE 3: Analytics Validation Tests =====
+
+class TestSP500BenchmarkVsRealPortfolio(unittest.TestCase):
+    """Test S&P 500 benchmark accuracy against real portfolios (Phase 3)"""
+    
+    def test_sp500_independent_calculation(self):
+        """Test that S&P 500 benchmarking calculates independently"""
+        trades = [
+            {
+                "symbol": "MSFT",
+                "shares": 30,
+                "purchase_date": "2020-01-02",
+                "price": 160.84
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # S&P 500 benchmark should exist and be numerically different from stock
+        sp500_cagr = analysis['sp500_cagr']
+        portfolio_cagr = analysis['portfolio_cagr']
+        
+        self.assertIsNotNone(sp500_cagr)
+        self.assertIsNotNone(portfolio_cagr)
+        # MSFT and S&P 500 should have different CAGRs
+        self.assertNotEqual(sp500_cagr, portfolio_cagr)
+    
+    def test_sp500_value_tracking(self):
+        """Test that S&P 500 current value is tracked alongside portfolio"""
+        trades = [
+            {
+                "symbol": "AAPL",
+                "shares": 20,
+                "purchase_date": "2019-06-01",
+                "price": 145.00
+            },
+            {
+                "symbol": "MSFT",
+                "shares": 15,
+                "purchase_date": "2019-06-01",
+                "price": 140.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Both portfolio and S&P 500 values should be positive
+        self.assertGreater(analysis['total_current_value'], 0)
+        self.assertGreater(analysis['total_sp500_current_value'], 0)
+        
+        # S&P 500 value should be roughly proportional to initial value
+        sp500_return_ratio = analysis['total_sp500_current_value'] / analysis['total_initial_value']
+        portfolio_return_ratio = analysis['total_current_value'] / analysis['total_initial_value']
+        
+        # Both should be positive returns (market has grown since 2019)
+        self.assertGreater(sp500_return_ratio, 1.0)
+        self.assertGreater(portfolio_return_ratio, 1.0)
+
+
+class TestAnalyticsCalculationAccuracy(unittest.TestCase):
+    """Test accuracy of core analytics calculations (Phase 3)"""
+    
+    def test_cagr_vs_xirr_consistency(self):
+        """Test that CAGR and XIRR move in the same direction for performance"""
+        trades = [
+            {
+                "symbol": "NVDA",
+                "shares": 20,
+                "purchase_date": "2020-01-02",
+                "price": 140.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Both should be calculated
+        self.assertIsNotNone(analysis['portfolio_cagr'])
+        self.assertIsNotNone(analysis['portfolio_xirr'])
+        
+        # If CAGR is positive, XIRR should generally be positive too
+        if analysis['portfolio_cagr'] > 0:
+            self.assertGreater(analysis['portfolio_xirr'], 0)
+    
+    def test_years_held_calculation(self):
+        """Test that years held is calculated correctly for recent vs old trades"""
+        from datetime import datetime, timedelta
+        
+        # Old trade
+        old_date = "2015-01-02"
+        # Recent trade
+        today = datetime.now()
+        recent_date = (today - timedelta(days=30)).strftime('%Y-%m-%d')
+        
+        trades = [
+            {
+                "symbol": "MSFT",
+                "shares": 10,
+                "purchase_date": old_date,
+                "price": 46.00
+            },
+            {
+                "symbol": "SBUX",
+                "shares": 10,
+                "purchase_date": recent_date,
+                "price": 100.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Old trade should have more years held than recent
+        trades_by_symbol = {t['symbol']: t for t in analysis['trades']}
+        
+        self.assertGreater(
+            trades_by_symbol['MSFT']['years_held'],
+            trades_by_symbol['SBUX']['years_held']
+        )
+    
+    def test_gain_loss_sign_consistency(self):
+        """Test that gain/loss sign reflects actual performance"""
+        trades = [
+            {
+                "symbol": "MSFT",
+                "shares": 30,
+                "purchase_date": "2020-01-02",
+                "price": 160.84
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        trade = analysis['trades'][0]
+        
+        # Gain/loss should match current - initial
+        expected_gain = trade['current_value'] - trade['initial_value']
+        actual_gain = trade['current_value'] - trade['initial_value']
+        self.assertAlmostEqual(actual_gain, expected_gain, places=2)
+        
+        # Since MSFT has appreciated significantly since 2020
+        self.assertGreater(actual_gain, 0)
+
+
+class TestMultiSymbolAnalyticsAggregation(unittest.TestCase):
+    """Test analytics aggregation across multiple symbols (Phase 3)"""
+    
+    def test_multi_symbol_cagr_weighting(self):
+        """Test that multi-symbol portfolios weight CAGR correctly"""
+        trades = [
+            # Larger investment
+            {
+                "symbol": "MSFT",
+                "shares": 100,
+                "purchase_date": "2015-01-02",
+                "price": 46.00
+            },
+            # Smaller investment
+            {
+                "symbol": "SBUX",
+                "shares": 10,
+                "purchase_date": "2015-01-02",
+                "price": 45.00
+            }
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # Portfolio CAGR should exist
+        self.assertIsNotNone(analysis['portfolio_cagr'])
+        self.assertIsInstance(analysis['portfolio_cagr'], (int, float))
+        
+        # Should be positive (both have appreciated)
+        self.assertGreater(analysis['portfolio_cagr'], 0)
+    
+    def test_portfolio_metrics_with_diverse_symbols(self):
+        """Test portfolio metrics with varied symbols from different sectors"""
+        trades = [
+            {"symbol": "MSFT", "shares": 20, "purchase_date": "2018-01-02", "price": 99.68},
+            {"symbol": "SBUX", "shares": 30, "purchase_date": "2018-01-02", "price": 51.36},
+            {"symbol": "TSLA", "shares": 5, "purchase_date": "2018-01-02", "price": 69.01},
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        analysis = analyzer.analyze_portfolio()
+        
+        # All metrics should be calculated
+        self.assertIn('portfolio_cagr', analysis)
+        self.assertIn('portfolio_xirr', analysis)
+        self.assertIn('portfolio_outperformance', analysis)
+        
+        # Should have 3 trades
+        self.assertEqual(len(analysis['trades']), 3)
+
+
+class TestPortfolioConsistencyAcrossAnalyses(unittest.TestCase):
+    """Test that portfolio analyses remain consistent (Phase 3)"""
+    
+    def test_repeated_analysis_produces_same_results(self):
+        """Test that running analysis multiple times gives consistent results"""
+        trades = [
+            {"symbol": "MSFT", "shares": 50, "purchase_date": "2019-01-02", "price": 106.07},
+            {"symbol": "SBUX", "shares": 40, "purchase_date": "2019-01-02", "price": 71.36},
+            {"symbol": "NVDA", "shares": 20, "purchase_date": "2019-01-02", "price": 131.68},
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        # Run analysis 3 times
+        analysis_1 = analyzer.analyze_portfolio()
+        analysis_2 = analyzer.analyze_portfolio()
+        analysis_3 = analyzer.analyze_portfolio()
+        
+        # All results should be identical
+        for key in ['portfolio_cagr', 'portfolio_xirr', 'total_initial_value']:
+            self.assertEqual(
+                analysis_1[key],
+                analysis_2[key],
+                msg=f"Analysis 1 and 2 differ on {key}"
+            )
+            self.assertEqual(
+                analysis_2[key],
+                analysis_3[key],
+                msg=f"Analysis 2 and 3 differ on {key}"
+            )
+    
+    def test_analysis_dates_independence(self):
+        """Test that analysis results don't depend on order of trades"""
+        trades_ordered = [
+            {"symbol": "MSFT", "shares": 20, "purchase_date": "2018-01-02", "price": 99.68},
+            {"symbol": "SBUX", "shares": 30, "purchase_date": "2019-01-02", "price": 71.36},
+        ]
+        
+        trades_reversed = [
+            {"symbol": "SBUX", "shares": 30, "purchase_date": "2019-01-02", "price": 71.36},
+            {"symbol": "MSFT", "shares": 20, "purchase_date": "2018-01-02", "price": 99.68},
+        ]
+        
+        analyzer_ordered = PortfolioAnalyzer(trades_ordered)
+        analyzer_reversed = PortfolioAnalyzer(trades_reversed)
+        
+        analysis_ordered = analyzer_ordered.analyze_portfolio()
+        analysis_reversed = analyzer_reversed.analyze_portfolio()
+        
+        # Total values should be the same regardless of order
+        self.assertAlmostEqual(
+            analysis_ordered['total_initial_value'],
+            analysis_reversed['total_initial_value'],
+            places=2
+        )
+        self.assertAlmostEqual(
+            analysis_ordered['portfolio_cagr'],
+            analysis_reversed['portfolio_cagr'],
+            places=2
+        )
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

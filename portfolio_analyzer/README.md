@@ -88,11 +88,11 @@ print(f"Portfolio XIRR: {analysis['portfolio_xirr']:.2f}%")
 ```csv
 symbol,shares,purchase_date,price
 SBUX,100,2015-04-15,48.14
-MSFT,75,2016-08-22,57.20
-NVDA,50,2018-06-10,55.25
+MSFT,75,2016-08-22,57.67
+NVDA,50,2018-06-10,6.56
 ```
 
-Prices shown are historical close values for the listed dates.
+Prices shown are historical close values (adjusted for splits/dividends) for the trading dates listed.
 
 ## Testing
 

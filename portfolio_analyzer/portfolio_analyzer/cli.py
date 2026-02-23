@@ -28,7 +28,7 @@ def main():
     else:
         trades = [
             {"symbol": "SBUX", "shares": 100, "purchase_date": "2020-01-02", "price": 89.35},
-            {"symbol": "MSFT", "shares": 50, "purchase_date": "2021-01-04", "price": 220.0},
+            {"symbol": "MSFT", "shares": 50, "purchase_date": "2021-01-04", "price": 217.69},
         ]
 
     analyzer = PortfolioAnalyzer(trades)

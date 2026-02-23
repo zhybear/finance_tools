@@ -31,6 +31,13 @@ What makes this different:
 - **Mathematically Rigorous**: All calculations are transparent and testable (149 tests, 91% coverage)
 - **Multiple Formats**: Text, PDF, and interactive HTML reports
 
+**Example Dashboard:**
+Check [portfolio_analyzer/examples/example_report.html](portfolio_analyzer/examples/example_report.html) for a live interactive dashboard showing:
+- Real-time performance metrics (portfolio value, gains, returns)
+- Interactive Plotly charts visualizing performance
+- Expandable trade-by-trade breakdown
+- Responsive design (desktop/mobile)
+
 **Quick Start:**
 ```bash
 cd portfolio_analyzer
@@ -38,7 +45,7 @@ pip install -r requirements.txt
 python3 -m portfolio_analyzer.cli --csv example_trades.csv
 ```
 
-**Full Documentation:** See [portfolio_analyzer/README.md](portfolio_analyzer/README.md)
+**Full Documentation & Screenshots:** See [portfolio_analyzer/README.md](portfolio_analyzer/README.md)
 
 ## Philosophy
 

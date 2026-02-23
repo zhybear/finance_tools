@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "portfolio-analyzer"
+version = "1.3.4"
+description = "A comprehensive Python tool for analyzing stock portfolio performance with precise cash flow tracking and S&P 500 benchmarking."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "ISC"}
+authors = [
+    {name = "Zhuo Robert Li", email = "zhuo.robert.li@example.com"}
+]
+keywords = [
+    "portfolio-analysis",
+    "stock-portfolio",
+    "investing",
+    "xirr",
+    "cagr",
+    "s&p-500",
+    "benchmarking",
+    "financial-analysis"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: ISC License (ISCL)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+dependencies = [
+    "yfinance>=0.2.0",
+    "pandas>=1.3.0",
+    "numpy>=1.20.0",
+    "scipy>=1.7.0",
+    "matplotlib>=3.3.0",
+    "seaborn>=0.11.0",
+    "plotly>=5.0.0",
+    "reportlab>=3.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "build>=0.10.0",
+    "twine>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/zhuoli/stock"
+Documentation = "https://github.com/zhuoli/stock/blob/main/portfolio_analyzer/README.md"
+Repository = "https://github.com/zhuoli/stock.git"
+Issues = "https://github.com/zhuoli/stock/issues"
+
+[project.scripts]
+portfolio-analyzer = "portfolio_analyzer.cli:main"
+
+[tool.setuptools]
+packages = ["portfolio_analyzer"]
+
+[tool.setuptools.package-data]
+portfolio_analyzer = ["py.typed"]

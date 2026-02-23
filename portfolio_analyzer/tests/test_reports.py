@@ -766,10 +766,10 @@ class TestReportsPhase2(unittest.TestCase):
         """Test report generation with diverse symbols and performance"""
         trades = [
             {
-                "symbol": "AAPL",
+                "symbol": "GOOGL",
                 "shares": 10,
                 "purchase_date": "2010-01-01",
-                "price": 30.00  # Way up
+                "price": 100.00  # Way up
             },
             {
                 "symbol": "FB",
@@ -798,7 +798,7 @@ class TestReportsPhase2(unittest.TestCase):
                 content = f.read()
             
             # All symbols should be in the report
-            self.assertIn('AAPL', content)
+            self.assertIn('GOOGL', content)
             self.assertIn('FB', content)
             self.assertIn('TSLA', content)
         finally:

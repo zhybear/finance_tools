@@ -719,7 +719,7 @@ class TestAnalyzerPhase2(unittest.TestCase):
         """Test analyzer performance and correctness with 100 trades"""
         # Create 100 diverse trades
         trades = []
-        symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'META', 'NFLX', 'SHOP', 'SBUX']
+        symbols = ['GOOGL', 'MSFT', 'AMZN', 'TSLA', 'NVDA', 'META', 'NFLX', 'SHOP', 'SBUX', 'INTC']
         
         for i in range(100):
             symbol = symbols[i % len(symbols)]
@@ -920,10 +920,10 @@ class TestSP500BenchmarkVsRealPortfolio(unittest.TestCase):
         """Test that S&P 500 current value is tracked alongside portfolio"""
         trades = [
             {
-                "symbol": "AAPL",
+                "symbol": "GOOGL",
                 "shares": 20,
                 "purchase_date": "2019-06-01",
-                "price": 145.00
+                "price": 1200.00
             },
             {
                 "symbol": "MSFT",
@@ -1184,10 +1184,10 @@ class TestSP500BenchmarkVsRealPortfolio(unittest.TestCase):
         """Test that S&P 500 current value is tracked alongside portfolio"""
         trades = [
             {
-                "symbol": "AAPL",
+                "symbol": "GOOGL",
                 "shares": 20,
                 "purchase_date": "2019-06-01",
-                "price": 145.00
+                "price": 1200.00
             },
             {
                 "symbol": "MSFT",

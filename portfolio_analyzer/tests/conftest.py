@@ -20,7 +20,7 @@ class TradeBuilder:
     SYMBOL_DATA = {
         'MSFT': {'name': 'Microsoft', 'date_2020': 160.84, 'date_2021': 222.16, 'date_2022': 310.23},
         'SBUX': {'name': 'Starbucks', 'date_2020': 89.35, 'date_2021': 108.62, 'date_2022': 85.42},
-        'AAPL': {'name': 'Apple', 'date_2020': 75.09, 'date_2021': 145.00, 'date_2022': 150.42},
+        'GOOGL': {'name': 'Google', 'date_2020': 1473.51, 'date_2021': 2884.62, 'date_2022': 2723.79},
         'NVDA': {'name': 'NVIDIA', 'date_2020': 100.00, 'date_2021': 145.00, 'date_2022': 130.00},
         'TSLA': {'name': 'Tesla', 'date_2020': 130.00, 'date_2021': 380.00, 'date_2022': 370.00},
     }
@@ -142,7 +142,7 @@ class TradeBuilder:
         Returns:
             List of trades across different symbols
         """
-        symbols = ['MSFT', 'SBUX', 'NVDA', 'AAPL', 'TSLA']
+        symbols = ['MSFT', 'SBUX', 'NVDA', 'GOOGL', 'TSLA']
         trades = []
         for symbol in symbols:
             price = TradeBuilder._get_price_for_year(symbol, int(purchase_date.split('-')[0]))
@@ -252,6 +252,6 @@ class TestDataConstants:
     SBUX_2021 = 108.62
     SBUX_2022 = 85.42
     
-    AAPL_2020 = 75.09
-    AAPL_2021 = 145.00
-    AAPL_2022 = 150.42
+    GOOGL_2020 = 1473.51
+    GOOGL_2021 = 2884.62
+    GOOGL_2022 = 2723.79

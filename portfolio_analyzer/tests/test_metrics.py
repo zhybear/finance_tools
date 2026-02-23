@@ -502,8 +502,8 @@ class TestWinLossRateCalculation(unittest.TestCase):
     def test_all_winning_trades(self):
         """Test portfolio with all profitable trades"""
         trades = [
-            # Apple - strong performer
-            {"symbol": "AAPL", "shares": 30, "purchase_date": "2020-01-02", "price": 75.09},
+            # Google - strong performer
+            {"symbol": "GOOGL", "shares": 30, "purchase_date": "2020-01-02", "price": 1473.51},
             # Microsoft - strong performer
             {"symbol": "MSFT", "shares": 20, "purchase_date": "2020-01-02", "price": 160.84},
         ]

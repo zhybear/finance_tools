@@ -218,31 +218,57 @@ NFLX:
   Weighted Avg Years Held: 11.11 years
 
 NVDA:
-  Shares: 50 @ $55.25
+  Shares: 150 @ $19.50
   Current Price: $189.82
-  Initial Value: $2762.50
+  Initial Value: $2925.00
+  Current Value: $28473.00
+  Gain: $25548.00
+  Stock CAGR: 22.76%
+  Stock XIRR: 22.76%
+  S&P 500 CAGR: 11.85%
+  S&P 500 XIRR: 11.85%
+  Outperformance (CAGR): 10.90%
+  Outperformance (XIRR): 10.90%
+
+NVDA:
+  Shares: 100 @ $145.00
+  Current Price: $189.82
+  Initial Value: $14500.00
+  Current Value: $18982.00
+  Gain: $4482.00
+  Stock CAGR: 3.14%
+  Stock XIRR: 3.14%
+  S&P 500 CAGR: 12.73%
+  S&P 500 XIRR: 12.73%
+  Outperformance (CAGR): -9.59%
+  Outperformance (XIRR): -9.59%
+
+NVDA:
+  Shares: 50 @ $130.00
+  Current Price: $189.82
+  Initial Value: $6500.00
   Current Value: $9491.00
-  Gain: $6728.50
-  Stock CAGR: 17.39%
-  Stock XIRR: 17.39%
-  S&P 500 CAGR: 12.54%
-  S&P 500 XIRR: 12.54%
-  Outperformance (CAGR): 4.84%
-  Outperformance (XIRR): 4.84%
+  Gain: $2991.00
+  Stock CAGR: 5.45%
+  Stock XIRR: 5.45%
+  S&P 500 CAGR: 15.24%
+  S&P 500 XIRR: 15.24%
+  Outperformance (CAGR): -9.80%
+  Outperformance (XIRR): -9.80%
 
 --- NVDA ACCUMULATED ---
-  Total Trades: 1
-  Total Shares: 50
-  Total Initial Investment: $2762.50
-  Total Current Value: $9491.00
-  Total Gain: $6728.50 (243.57%)
-  Expected S&P 500 Value: $6861.08
-  Outperformance vs S&P 500: $2629.92 (95.20%)
-  Weighted Avg CAGR: 17.37%
-  Weighted Avg XIRR: 17.37%
-  Avg S&P 500 XIRR: 12.54%
-  XIRR Outperformance: 4.83%
-  Weighted Avg Years Held: 7.70 years
+  Total Trades: 3
+  Total Shares: 300
+  Total Initial Investment: $23925.00
+  Total Current Value: $56946.00
+  Total Gain: $33021.00 (138.02%)
+  Expected S&P 500 Value: $69263.83
+  Outperformance vs S&P 500: $-12317.83 (-51.49%)
+  Weighted Avg CAGR: 6.76%
+  Weighted Avg XIRR: 10.53%
+  Avg S&P 500 XIRR: 13.30%
+  XIRR Outperformance: -2.77%
+  Weighted Avg Years Held: 8.58 years
 
 SHOP:
   Shares: 20 @ $132.50
@@ -299,15 +325,15 @@ TSLA:
   Weighted Avg Years Held: 6.22 years
 
 === PORTFOLIO SUMMARY ===
-Initial Investment: $92312.25
-Current Value: $167562.80
-Total Gain: $75250.55
-Expected Value if Invested in S&P 500: $273497.67
+Initial Investment: $113474.75
+Current Value: $215017.80
+Total Gain: $101543.05
+Expected Value if Invested in S&P 500: $335900.43
 
-Portfolio CAGR: 6.65%
-Portfolio XIRR: 6.60%
-S&P 500 CAGR: 12.45%
-S&P 500 XIRR: 12.27%
+Portfolio CAGR: 7.23%
+Portfolio XIRR: 7.17%
+S&P 500 CAGR: 12.59%
+S&P 500 XIRR: 12.41%
 
-Portfolio Outperformance (CAGR): -5.80%
-Portfolio Outperformance (XIRR): -5.67%
+Portfolio Outperformance (CAGR): -5.36%
+Portfolio Outperformance (XIRR): -5.24%

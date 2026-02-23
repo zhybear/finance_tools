@@ -599,7 +599,6 @@ class HTMLReportGenerator:
         .trades-table th {{ background: #e8f4f8; padding: 10px; font-size: 0.85rem; border-bottom: 1px solid #d0d0d0; }}
         .trades-table td {{ padding: 10px; font-size: 0.9rem; border-bottom: 1px solid #f0f0f0; }}
         .trade-count {{ color: #0066cc; font-weight: 600; text-decoration: underline; text-decoration-style: dotted; }}
-        .section {{ background: white; padding: 25px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }}
         h2 {{ margin-top: 0; color: #333; border-bottom: 3px solid #0066cc; padding-bottom: 12px; font-size: 1.8rem; }}
         .number {{ font-family: 'SF Mono', Monaco, monospace; font-weight: 600; }}
         .tooltip-term {{ position: relative; cursor: help; border-bottom: 1px dotted #0066cc; }}
@@ -615,9 +614,10 @@ class HTMLReportGenerator:
             border-radius: 6px; 
             font-size: 0.85rem; 
             white-space: nowrap; 
-            z-index: 1000; 
+            z-index: 10000; 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-weight: 400;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }}
         .tooltip-term:hover::before {{ 
             content: ''; 
@@ -627,7 +627,11 @@ class HTMLReportGenerator:
             transform: translateX(-50%); 
             border: 6px solid transparent; 
             border-top-color: #333; 
-            z-index: 1000; 
+            z-index: 10000;
+        }}
+        .section {{ background: white; padding: 25px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: visible; }}
+        table {{ overflow: visible; }}
+        th, td {{ overflow: visible; }} 
         }}
         @media (max-width: 768px) {{
             .metrics {{ grid-template-columns: 1fr; }}

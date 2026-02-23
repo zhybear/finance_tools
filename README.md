@@ -8,7 +8,7 @@ This monorepo contains modular financial analysis tools:
 
 ```
 finance_tools/
-├── portfolio_analyzer/    # Portfolio performance analysis (v1.3.3)
+├── portfolio_analyzer/    # Portfolio performance analysis (v1.3.4)
 │   ├── README.md         # Full documentation
 │   ├── requirements.txt   # Dependencies
 │   └── example_trades.csv # Sample data

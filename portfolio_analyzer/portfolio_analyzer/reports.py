@@ -1,7 +1,7 @@
 """Report generation module for portfolio analyzer.
 
 Author: Zhuo Robert Li
-Version: 1.3.3
+Version: 1.3.4
 """
 
 from typing import Optional, Dict, Any, List, Tuple

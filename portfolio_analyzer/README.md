@@ -13,7 +13,7 @@ A comprehensive Python tool for analyzing stock portfolio performance with S&P 5
   - Interactive HTML dashboards with Plotly charts and dark mode support
 - **CSV Support**: Load and validate trades from CSV files
 - **Modular Architecture**: Clean, testable code with separation of concerns
-- **Production Ready**: v1.3.3 with comprehensive test coverage (91%, 124 tests)
+- **Production Ready**: v1.3.4 with comprehensive test coverage (91%, 149 tests)
 
 ## Installation
 
@@ -109,7 +109,7 @@ python -m unittest tests.test_loaders -v
 python -m unittest discover -s tests -p "test_*.py" -q
 ```
 
-**Test Coverage**: 91% (124 tests, 41 new edge case & production hardening tests)
+**Test Coverage**: 91% (149 tests across Phases 1-3: 66 new edge case, production hardening, and analytics validation tests)
 
 ## Architecture
 
@@ -122,6 +122,6 @@ python -m unittest discover -s tests -p "test_*.py" -q
 
 ## Version
 
-Current version: **1.3.3** (Production Ready)
+Current version: **1.3.4** (Production Ready)
 
 See RELEASE_NOTES.md for detailed changelog.

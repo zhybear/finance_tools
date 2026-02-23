@@ -1,7 +1,7 @@
 """Core portfolio analyzer class.
 
 Author: Zhuo Robert Li
-Version: 1.3.3
+Version: 1.3.4
 """
 
 import yfinance as yf
@@ -66,6 +66,8 @@ class PortfolioAnalyzer:
         self._stock_history_cache = {}
         self._sp500_full_history = None
         self._analysis_cache = None
+        # Cache today's timestamp at analyzer creation for consistent calculations
+        self._analysis_timestamp = pd.Timestamp.now()
 
     def _prepare_histories(self, trades: List[Dict]) -> None:
         """Bulk download and cache all stock and S&P 500 price histories."""
@@ -221,7 +223,15 @@ class PortfolioAnalyzer:
             return None
 
     def analyze_portfolio(self) -> Dict:
-        """Analyze entire portfolio performance with weighted CAGR and XIRR."""
+        """Analyze entire portfolio performance with weighted CAGR and XIRR.
+        
+        Results are cached - repeated calls return the same analysis without
+        recomputation, ensuring consistency across multiple calls.
+        """
+        # Return cached results if available
+        if self._analysis_cache is not None:
+            return self._analysis_cache
+            
         results = []
         total_initial_value = 0
         total_current_value = 0
@@ -254,7 +264,7 @@ class PortfolioAnalyzer:
                 cash_flows_sp500.append(-perf['initial_value'])
 
         if results:
-            today = datetime.now().strftime('%Y-%m-%d')
+            today = self._analysis_timestamp.strftime('%Y-%m-%d')
             
             if cash_flows_stocks:
                 cash_flow_dates.append(today)
@@ -288,7 +298,8 @@ class PortfolioAnalyzer:
             portfolio_cagr = 0
             sp500_cagr = 0
 
-        return {
+        # Cache the results for consistency across repeated calls
+        self._analysis_cache = {
             'trades': results,
             'total_initial_value': total_initial_value,
             'total_current_value': total_current_value,
@@ -300,6 +311,8 @@ class PortfolioAnalyzer:
             'portfolio_outperformance': portfolio_cagr - sp500_cagr,
             'portfolio_xirr_outperformance': portfolio_xirr - sp500_xirr
         }
+        
+        return self._analysis_cache
 
     def _calculate_symbol_accumulation(self, trades: List[Dict]) -> Dict:
         """Calculate accumulated earnings and metrics for each stock symbol."""
@@ -332,6 +345,10 @@ class PortfolioAnalyzer:
             stats['total_sp500_cagr_weighted'] += trade['sp500_cagr'] * trade['initial_value']
             stats['total_years_weighted'] += trade['years_held'] * trade['initial_value']
             symbol_trades[symbol].append(trade)
+        
+        # Use cached timestamp from analyzer initialization for consistency
+        today = self._analysis_timestamp
+        today_str = str(today.date())
         
         for symbol, stats in symbol_stats.items():
             initial_val = stats['total_initial_value']
@@ -387,7 +404,7 @@ class PortfolioAnalyzer:
                     dates = [d for d, cf in date_cf_pairs]
                     cash_flows = [cf for d, cf in date_cf_pairs]
                     
-                    dates.append(str(today.date()))
+                    dates.append(today_str)
                     cash_flows.append(current_val)
                     
                     xirr_result = calculate_xirr(dates, cash_flows)

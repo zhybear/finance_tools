@@ -5,7 +5,7 @@ Run with:
     python3 -m unittest test_cli.py -v
 
 Author: Zhuo Robert Li
-Version: 1.2.0
+Version: 1.3.4
 License: ISC
 """
 

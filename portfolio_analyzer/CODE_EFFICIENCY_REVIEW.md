@@ -107,6 +107,21 @@ With 149 tests running:
   - Database caching for frequently accessed symbols
   - Distributed processing for very large portfolios
 
+## Code Quality & Consistency Improvements
+
+### S&P 500 Self-Consistency Fix ✅
+**Issue**: When trading S&P 500 directly, outperformance should be exactly 0%, but was showing minor deviations (0.02-0.15%)
+**Root Cause**: Using different yfinance closing prices for stock vs benchmark (downloading at slightly different times)
+**Solution**: When symbol == '^GSPC', use the same provided purchase price for both calculations
+- **Impact**: Ensures perfect accuracy for S&P 500 trades
+- **Test Changes**: Tightened from 0.7% tolerance to perfect equality (places=10)
+- **Result**: All S&P 500 self-tests now pass with 0.0% exactoutperformance
+
+### Analysis Timestamp Caching ✅
+**Implementation**: `_analysis_timestamp` cached at PortfolioAnalyzer initialization
+- **Ensures**: Consistent CAGR calculations across multiple analysis calls
+- **Benefit**: Two analyzers created in quick succession now produce identical results
+
 ## Conclusion
 
 The codebase is **efficient and well-organized**. The addition of 25 Phase 3 tests maintains quality without adding significant maintenance overhead thanks to:

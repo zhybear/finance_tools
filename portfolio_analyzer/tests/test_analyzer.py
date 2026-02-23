@@ -37,18 +37,17 @@ class TestSP500Benchmark(unittest.TestCase):
         analyzer = PortfolioAnalyzer(trades)
         analysis = analyzer.analyze_portfolio()
         
-        # Portfolio should match S&P 500 benchmark exactly (within small rounding error)
+        # Portfolio should match S&P 500 benchmark exactly (within floating-point precision)
         self.assertIsNotNone(analysis['trades'])
         self.assertGreater(len(analysis['trades']), 0, "Expected at least one trade result")
         
-        # Check outperformance is very close to 0%
-        # Note: Due to daily price fluctuations and exact timestamp differences,
-        # allow up to 0.2% tolerance for S&P 500 self-consistency
+        # Check outperformance is essentially 0 (using same price data)
+        # Allow only floating-point precision tolerance
         outperformance = analysis['portfolio_outperformance']
         self.assertLess(
             abs(outperformance),
-            0.3,
-            msg=f"S&P 500 vs S&P 500 should show ~0% outperformance, got {outperformance:.2f}%"
+            1e-10,
+            msg=f"S&P 500 vs S&P 500 should show 0% outperformance, got {outperformance:.15f}%"
         )
     
     def test_sp500_vs_itself_multiple_trades(self):
@@ -63,17 +62,18 @@ class TestSP500Benchmark(unittest.TestCase):
         analyzer = PortfolioAnalyzer(trades)
         analysis = analyzer.analyze_portfolio()
         
-        # All trades should have near-zero outperformance
+        # All trades should have zero outperformance (S&P 500 vs itself)
+        # Using provided purchase price and same closing price, so difference is 0
         for trade in analysis['trades']:
             self.assertAlmostEqual(
                 trade['outperformance'],
                 0.0,
-                delta=0.5,  # Allow up to 0.5% difference due to timing/rounding
-                msg=f"S&P 500 trade from {trade['purchase_date']} should have ~0% outperformance, got {trade['outperformance']:.2f}%"
+                places=10,  # Perfect equality (floating-point precision)
+                msg=f"S&P 500 trade from {trade['purchase_date']} should have 0% outperformance, got {trade['outperformance']:.15f}%"
             )
         
-        # Portfolio level should also be near-zero
-        self.assertAlmostEqual(analysis['portfolio_outperformance'], 0.0, delta=0.5)
+        # Portfolio level should also be exactly zero
+        self.assertAlmostEqual(analysis['portfolio_outperformance'], 0.0, places=10)
 
 
 
@@ -212,14 +212,14 @@ class TestSP500BenchmarkCSV(unittest.TestCase):
                 "All 6 trades should be analyzed"
             )
             
-            # Check each individual trade has near-zero outperformance
-            # Tolerance increased to 0.7% to account for daily price fluctuations
+            # Check each individual trade has zero outperformance
+            # When trading S&P 500 directly, outperformance is exactly 0
             for i, trade in enumerate(analysis['trades']):
                 self.assertAlmostEqual(
                     trade['outperformance'],
                     0.0,
-                    delta=0.7,  # Allow up to 0.7% difference due to daily price changes
-                    msg=f"Trade {i+1} ({trade['purchase_date']}): S&P 500 should match itself, got {trade['outperformance']:.2f}% diff"
+                    places=10,  # Perfect equality
+                    msg=f"Trade {i+1} ({trade['purchase_date']}): S&P 500 should match itself exactly, got {trade['outperformance']:.15f}% diff"
                 )
             
             # Check portfolio-level metrics
@@ -227,8 +227,8 @@ class TestSP500BenchmarkCSV(unittest.TestCase):
             self.assertAlmostEqual(
                 portfolio_outperformance,
                 0.0,
-                delta=0.7,  # Within 0.7 percentage points to account for daily fluctuations
-                msg=f"Portfolio outperformance should be ~0%, got {portfolio_outperformance:.2f}%"
+                places=10,  # Perfect equality
+                msg=f"Portfolio outperformance should be 0%, got {portfolio_outperformance:.15f}%"
             )
             
             # Verify portfolio CAGR equals S&P 500 CAGR

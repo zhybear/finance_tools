@@ -178,19 +178,27 @@ class PortfolioAnalyzer:
                     [-initial_value, current_value]
                 )
 
-            if self._sp500_full_history is not None and not self._sp500_full_history.empty:
-                sp500_hist = self._sp500_full_history.loc[self._sp500_full_history.index >= purchase_dt]
+            # If trading S&P 500 directly, use the same price data for benchmark
+            if symbol == SP500_SYMBOL:
+                # Use provided purchase price and the latest closing price
+                sp500_purchase_price = purchase_price
+                sp500_current_price = hist['Close'].iloc[-1]
             else:
-                sp500 = yf.Ticker(SP500_SYMBOL)
-                sp500_hist = sp500.history(start=purchase_date)
-                sp500_hist = normalize_history_index(sp500_hist)
-                sp500_hist = sp500_hist.loc[sp500_hist.index >= purchase_dt]
+                # Download S&P 500 benchmark data separately for comparison
+                if self._sp500_full_history is not None and not self._sp500_full_history.empty:
+                    sp500_hist = self._sp500_full_history.loc[self._sp500_full_history.index >= purchase_dt]
+                else:
+                    sp500 = yf.Ticker(SP500_SYMBOL)
+                    sp500_hist = sp500.history(start=purchase_date)
+                    sp500_hist = normalize_history_index(sp500_hist)
+                    sp500_hist = sp500_hist.loc[sp500_hist.index >= purchase_dt]
+                
+                if sp500_hist.empty:
+                    return None
+                
+                sp500_purchase_price = sp500_hist['Close'].iloc[0]
+                sp500_current_price = sp500_hist['Close'].iloc[-1]
             
-            if sp500_hist.empty:
-                return None
-            
-            sp500_purchase_price = sp500_hist['Close'].iloc[0]
-            sp500_current_price = sp500_hist['Close'].iloc[-1]
             sp500_current_value = (sp500_current_price / sp500_purchase_price) * initial_value
             sp500_cagr = calculate_cagr(initial_value, sp500_current_value, years_held)
 

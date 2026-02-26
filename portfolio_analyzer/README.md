@@ -60,13 +60,18 @@ This tool uses **XIRR (Internal Rate of Return)** to calculate your true perform
   - Text reports with detailed analysis
   - PDF reports with professional visualizations and charts
   - Interactive HTML dashboards with Plotly charts and dark mode support
+
+- **Investor Comparison (New in v1.3.5)**:
+  - Compare your portfolio XIRR against legendary investors (Buffett, Lynch, Greenblatt)
+  - Benchmark against S&P 500, NASDAQ, and Global Stocks
+  - Ranked table and interactive bar chart with your portfolio highlighted
   
 - **Transparent & Auditable**: 
   - 149 tests (91% coverage) validate every calculation
   - Open source - inspect exactly how calculations work
   - No black boxes or mysterious algorithms
   
-- **Production Ready**: v1.3.4 with comprehensive test coverage and validation
+- **Production Ready**: v1.3.5 with comprehensive test coverage and validation
 
 ## Example Output
 
@@ -102,7 +107,8 @@ The HTML report provides an interactive dashboard with:
 - **Responsive design** works on desktop, tablet, and mobile
 - **Dark mode support** for comfortable viewing
 
-See `examples/example_report.html` for a live interactive version.
+See the live example:
+https://rawcdn.githack.com/zhybear/finance_tools/main/portfolio_analyzer/examples/example_report.html
 
 ## Installation
 
@@ -186,7 +192,7 @@ Prices shown are historical close values (adjusted for splits/dividends) for the
 ## Testing
 
 ```bash
-# Run all tests (124 total)
+# Run all tests (149 total)
 python -m unittest discover -s tests -p "test_*.py" -v
 
 # Run specific test module
@@ -211,6 +217,6 @@ python -m unittest discover -s tests -p "test_*.py" -q
 
 ## Version
 
-Current version: **1.3.4** (Production Ready)
+Current version: **1.3.5** (Production Ready)
 
 See RELEASE_NOTES.md for detailed changelog.

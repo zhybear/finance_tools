@@ -186,6 +186,28 @@ class TestPDFReportGeneration(unittest.TestCase):
         finally:
             if os.path.exists(temp_file):
                 os.unlink(temp_file)
+
+    def test_pdf_report_without_visualizations(self):
+        """Test PDF generation when visualization libs are unavailable"""
+        from unittest.mock import patch
+        from portfolio_analyzer import reports
+
+        trades = [
+            {"symbol": "SBUX", "shares": 10, "purchase_date": "2015-01-02", "price": 40.72},
+        ]
+
+        with tempfile.NamedTemporaryFile(mode='wb', suffix='.pdf', delete=False) as f:
+            temp_file = f.name
+
+        try:
+            analyzer = PortfolioAnalyzer(trades)
+            with patch.object(reports, 'VISUALIZATIONS_AVAILABLE', False):
+                PDFReportGenerator.generate(analyzer, temp_file)
+
+            self.assertEqual(os.path.getsize(temp_file), 0)
+        finally:
+            if os.path.exists(temp_file):
+                os.unlink(temp_file)
     
     def test_pdf_report_multiple_symbols(self):
         """Test PDF with multiple symbols creates multi-page report"""
@@ -370,6 +392,38 @@ class TestHTMLReportWithCharts(unittest.TestCase):
             self.assertIn('<th>WCAGR %</th>', content)
             self.assertIn('<th>XIRR %</th>', content)
             
+        finally:
+            if os.path.exists(temp_file):
+                os.unlink(temp_file)
+
+    def test_html_report_without_plotly(self):
+        """Test HTML report generation when Plotly is unavailable"""
+        from unittest.mock import patch
+        import builtins
+
+        trades = [
+            {"symbol": "SBUX", "shares": 10, "purchase_date": "2018-01-15", "price": 50.0},
+        ]
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+            temp_file = f.name
+
+        real_import = builtins.__import__
+
+        def guarded_import(name, globals=None, locals=None, fromlist=(), level=0):
+            if name.startswith('plotly'):
+                raise ImportError("Plotly not available")
+            return real_import(name, globals, locals, fromlist, level)
+
+        try:
+            analyzer = PortfolioAnalyzer(trades)
+            with patch('builtins.__import__', side_effect=guarded_import):
+                HTMLReportGenerator.generate(analyzer, temp_file)
+
+            with open(temp_file, 'r') as f:
+                content = f.read()
+
+            self.assertIn('Install plotly', content)
         finally:
             if os.path.exists(temp_file):
                 os.unlink(temp_file)

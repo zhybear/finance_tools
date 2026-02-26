@@ -503,9 +503,9 @@ class TestWinLossRateCalculation(unittest.TestCase):
         """Test portfolio with all profitable trades"""
         trades = [
             # Google - strong performer
-            {"symbol": "GOOGL", "shares": 30, "purchase_date": "2020-01-02", "price": 1473.51},
+            {"symbol": "GOOGL", "shares": 30, "purchase_date": "2020-01-02", "price": 100.00},
             # Microsoft - strong performer
-            {"symbol": "MSFT", "shares": 20, "purchase_date": "2020-01-02", "price": 160.84},
+            {"symbol": "MSFT", "shares": 20, "purchase_date": "2020-01-02", "price": 50.00},
         ]
         
         analyzer = PortfolioAnalyzer(trades)

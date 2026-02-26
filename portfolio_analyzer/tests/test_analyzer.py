@@ -923,13 +923,13 @@ class TestSP500BenchmarkVsRealPortfolio(unittest.TestCase):
                 "symbol": "GOOGL",
                 "shares": 20,
                 "purchase_date": "2019-06-01",
-                "price": 1200.00
+                "price": 100.00
             },
             {
                 "symbol": "MSFT",
                 "shares": 15,
                 "purchase_date": "2019-06-01",
-                "price": 140.00
+                "price": 50.00
             }
         ]
         
@@ -1187,13 +1187,13 @@ class TestSP500BenchmarkVsRealPortfolio(unittest.TestCase):
                 "symbol": "GOOGL",
                 "shares": 20,
                 "purchase_date": "2019-06-01",
-                "price": 1200.00
+                "price": 100.00
             },
             {
                 "symbol": "MSFT",
                 "shares": 15,
                 "purchase_date": "2019-06-01",
-                "price": 140.00
+                "price": 50.00
             }
         ]
         

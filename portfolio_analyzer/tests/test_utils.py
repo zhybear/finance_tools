@@ -107,6 +107,16 @@ class TestUtilsFunctions(unittest.TestCase):
         
         result = extract_history(df, 'NONEXISTENT')
         self.assertTrue(result.empty)
+
+    def test_extract_history_single_symbol(self):
+        """Test extract_history returns data for single-symbol DataFrame"""
+        from portfolio_analyzer.utils import extract_history
+
+        dates = pd.date_range('2020-01-01', periods=3)
+        df = pd.DataFrame({'Close': [100, 101, 102]}, index=dates)
+
+        result = extract_history(df, 'SBUX')
+        self.assertTrue(result.equals(df))
     
     def test_download_history_exception_handling(self):
         """Test download_history handles exceptions gracefully"""
@@ -116,6 +126,18 @@ class TestUtilsFunctions(unittest.TestCase):
         with patch('portfolio_analyzer.utils.yf.download', side_effect=Exception("Network error")):
             result = download_history(['SBUX'], '2020-01-01')
             self.assertTrue(result.empty)
+
+    def test_download_history_success(self):
+        """Test download_history returns data from yfinance"""
+        from portfolio_analyzer.utils import download_history
+        from unittest.mock import patch
+
+        dates = pd.date_range('2020-01-01', periods=2)
+        df = pd.DataFrame({'Close': [100, 101]}, index=dates)
+
+        with patch('portfolio_analyzer.utils.yf.download', return_value=df):
+            result = download_history(['SBUX'], '2020-01-01')
+            self.assertTrue(result.equals(df))
 
 
 

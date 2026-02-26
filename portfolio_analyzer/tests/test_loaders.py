@@ -83,6 +83,29 @@ class TestCSVLoading(unittest.TestCase):
             self.assertNotIn('NVDA', symbols)
         finally:
             os.unlink(temp_file)
+
+    def test_load_csv_invalid_extension(self):
+        """Test that non-CSV paths raise ValueError"""
+        with self.assertRaises(ValueError) as context:
+            load_trades_from_csv("trades.txt")
+        self.assertIn("Expected CSV file", str(context.exception))
+
+    def test_load_csv_no_valid_rows(self):
+        """Test that CSV with no valid rows raises ValueError"""
+        csv_content = """symbol,shares,purchase_date,price
+    SBUX,invalid,not-a-date,invalid
+    MSFT,invalid,not-a-date,invalid"""
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write(csv_content)
+            temp_file = f.name
+
+        try:
+            with self.assertRaises(ValueError) as context:
+                load_trades_from_csv(temp_file)
+            self.assertIn("No valid trades", str(context.exception))
+        finally:
+            os.unlink(temp_file)
     
     def test_load_empty_csv_file(self):
         """Test that empty CSV file (no data rows) raises ValueError"""

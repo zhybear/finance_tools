@@ -1,7 +1,7 @@
 """Report generation module for portfolio analyzer.
 
 Author: Zhuo Robert Li
-Version: 1.3.4
+Version: 1.3.5
 """
 
 from typing import Optional, Dict, Any, List, Tuple
@@ -9,6 +9,7 @@ import logging
 from datetime import datetime
 from .analyzer import PortfolioAnalyzer
 from .utils import safe_divide
+from .investor_comparison import InvestorBenchmark
 
 logger = logging.getLogger(__name__)
 
@@ -381,6 +382,74 @@ class HTMLReportGenerator:
             total_gain = analysis['total_current_value'] - analysis['total_initial_value']
             gain_pct = safe_divide(total_gain, analysis['total_initial_value'], 0.0) * 100
             
+            # Calculate investor comparison
+            from datetime import datetime
+            earliest_date = min([t['purchase_date'] for t in analysis['trades']])
+            today = datetime.now().strftime('%Y-%m-%d')
+            earliest_dt = datetime.strptime(earliest_date, '%Y-%m-%d')
+            today_dt = datetime.strptime(today, '%Y-%m-%d')
+            years_held = (today_dt - earliest_dt).days / 365.25
+            
+            investor_comparison = InvestorBenchmark.get_comparison(xirr, years_held)
+            investor_commentary = investor_comparison['commentary']
+
+            # Build ranking table HTML directly
+            ranking_table_rows = ""
+            for comp in investor_comparison['comparisons']:
+                color = '#10b981' if comp["xirr"] >= 10.6 else '#ef4444'
+                is_user = comp.get('is_user')
+                bg_color = '#fff9e6' if is_user else 'white'
+                border_color = '#FFD700' if is_user else 'transparent'
+                ranking_table_rows += f'<tr style="background-color: {bg_color}; border-left: 4px solid {border_color};"><td style="padding: 12px; border-bottom: 1px solid #eee;">{comp["rank"]}</td><td style="padding: 12px; border-bottom: 1px solid #eee;"><strong>{comp["name"]}</strong></td><td style="padding: 12px; text-align: right; border-bottom: 1px solid #eee; color: {color};"><strong>{comp["xirr"]:.1f}%</strong></td><td style="padding: 12px; border-bottom: 1px solid #eee;">{comp["period"]}</td><td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; color: #666;">{comp["notes"]}</td></tr>'
+
+            # Prepare investor comparison HTML
+            comparison_html = f"""
+        <div class="section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f7ff 100%); border-left: 4px solid #0066cc;">
+            <h2 style="color: #0066cc;">🏆 How You Compare to Investment Legends</h2>
+            <p style="color: #333; font-size: 1.1rem; margin: 10px 0 20px 0;"><strong>{investor_commentary}</strong></p>
+            <div class="metrics" style="margin-bottom: 30px;">
+                <div class="metric-card" style="border-top: 3px solid #17becf;">
+                    <div class="metric-label">Your Rank</div>
+                    <div class="metric-value" style="color: #0066cc;">#{investor_comparison['user_rank']} of {investor_comparison['total_investors']}</div>
+                </div>
+                <div class="metric-card" style="border-top: 3px solid #17becf;">
+                    <div class="metric-label">Your XIRR</div>
+                    <div class="metric-value positive">{xirr:.1f}%</div>
+                </div>
+                <div class="metric-card" style="border-top: 3px solid #17becf;">
+                    <div class="metric-label">Percentile</div>
+                    <div class="metric-value" style="color: #0066cc;">{investor_comparison['user_percentile']:.0f}th %ile</div>
+                </div>
+                <div class="metric-card" style="border-top: 3px solid #17becf;">
+                    <div class="metric-label">vs S&P 500</div>
+                    <div class="metric-value {'positive' if investor_comparison['outperformance_vs_sp500'] >= 0 else 'negative'}">
+                        {investor_comparison['outperformance_vs_sp500']:+.1f}%
+                    </div>
+                </div>
+            </div>
+            <div style="width: 100%; margin-top: 20px; margin-bottom: 20px;">
+                <div id="investor-comparison-chart" style="width: 100%; height: 400px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 10px; box-sizing: border-box;"></div>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <thead>
+                    <tr style="background: #f8f9fa; border-bottom: 2px solid #0066cc;">
+                        <th style="padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #0066cc;">Rank</th>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #0066cc;">Investor</th>
+                        <th style="padding: 12px; text-align: right; font-weight: 600; border-bottom: 2px solid #0066cc;">XIRR</th>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #0066cc;">Period</th>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #0066cc;">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {ranking_table_rows}
+                </tbody>
+            </table>
+            <div style="margin-top: 20px; padding: 12px; background-color: #f5f5f5; border-left: 3px solid #999; border-radius: 4px; font-size: 0.9rem; color: #666;">
+                <strong>📋 Disclaimer:</strong> Historical performance data based on publicly available records. Past performance does not guarantee future results. This comparison is for educational purposes only.
+            </div>
+        </div>
+"""
+            
             # Generate Plotly charts
             charts_html = ""
             
@@ -550,7 +619,40 @@ class HTMLReportGenerator:
                 charts_html += f'<div class="chart-container"><div id="chart5"></div></div>'
                 chart5_json = fig5.to_json()
                 
-                # Generate chart rendering JavaScript
+                # Chart 6: Investor Comparison - Your XIRR vs Famous Investors
+                comp_data = InvestorBenchmark.get_chart_data(investor_comparison['comparisons'])
+                
+                fig6 = go.Figure(data=[
+                    go.Bar(
+                        y=comp_data['names'],
+                        x=comp_data['xirrs'],
+                        orientation='h',
+                        marker=dict(
+                            color=comp_data['colors'],
+                            line=dict(
+                                color=['#FFD700' if name == 'Your Portfolio' else 'white' for name in comp_data['names']],
+                                width=3
+                            )
+                        ),
+                        text=[f"{xirr:.1f}%" for xirr in comp_data['xirrs']],
+                        textposition='outside',
+                        textfont=dict(size=11, weight='bold'),
+                        hovertemplate='<b>%{y}</b><br>XIRR: %{x:.2f}%<extra></extra>'
+                    )
+                ])
+                fig6.update_layout(
+                    title='Your XIRR vs Investment Legends',
+                    xaxis_title='XIRR (%)',
+                    yaxis_title='Investor',
+                    height=500,
+                    template='plotly_white',
+                    showlegend=False,
+                    margin=dict(l=150, r=100, t=60, b=60),
+                    xaxis=dict(range=[0, max(comp_data['xirrs']) * 1.15])
+                )
+                chart6_json = fig6.to_json()
+                
+                # Generate investor ranking table HTML with proper styling
                 charts_script = f"""
 <script>
     Plotly.newPlot('chart1', {chart1_json});
@@ -558,6 +660,7 @@ class HTMLReportGenerator:
     Plotly.newPlot('chart3', {chart3_json});
     Plotly.newPlot('chart4', {chart4_json});
     Plotly.newPlot('chart5', {chart5_json});
+    Plotly.newPlot('investor-comparison-chart', {chart6_json});
 </script>
 """
             except ImportError:
@@ -686,6 +789,8 @@ class HTMLReportGenerator:
                 <div class="metric-value">{len(symbol_stats)}</div>
             </div>
         </div>
+        
+        {comparison_html}
         
         {charts_html}
         

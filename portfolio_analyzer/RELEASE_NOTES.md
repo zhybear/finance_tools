@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.3.5 (2026-02-25) - Investor Comparison Dashboard
+
+### New Features
+- **Investor comparison dashboard**: Rank your portfolio XIRR against legendary investors and market benchmarks
+- **Interactive investor bar chart**: Visual comparison across all 10 investors with your portfolio highlighted
+- **Ranked comparison table**: Clear ordering with performance notes and time periods
+- **Educational disclaimer**: Historical performance data guidance included in the report
+
+### Live Example
+View the interactive report with investor comparison:
+https://rawcdn.githack.com/zhybear/finance_tools/main/portfolio_analyzer/examples/example_report.html
+
+### Tests and Coverage
+- Added 38 unit tests for investor comparison module
+- Maintained overall coverage at 91%
+
 ## 1.3.4 (2026-02-23) - Precision & Consistency Focus
 
 ### What Makes This Release Special

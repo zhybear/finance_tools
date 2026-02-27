@@ -13,7 +13,7 @@ import logging
 from .metrics import calculate_cagr, calculate_xirr, DAYS_PER_YEAR
 from .utils import (
     safe_divide, normalize_history_index, normalize_datetime,
-    extract_history, download_history, SP500_SYMBOL
+    extract_history, download_history, SP500_SYMBOL, normalize_ticker
 )
 
 logger = logging.getLogger(__name__)
@@ -116,6 +116,9 @@ class PortfolioAnalyzer:
         if not isinstance(trade["symbol"], str) or not trade["symbol"].strip():
             logger.warning("Invalid trade: symbol must be a non-empty string")
             return False
+        
+        # Normalize ticker symbol to handle variations (e.g., BRKB -> BRK.B)
+        trade["symbol"] = normalize_ticker(trade["symbol"])
         
         if not isinstance(trade["shares"], (int, float)) or trade["shares"] <= 0:
             logger.warning("Invalid trade: shares must be a positive number")

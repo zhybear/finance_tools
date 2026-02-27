@@ -12,6 +12,38 @@ logger = logging.getLogger(__name__)
 DAYS_PER_YEAR = 365.25
 SP500_SYMBOL = '^GSPC'
 
+# Ticker symbol normalization mapping
+# Maps common variations to Yahoo Finance format
+TICKER_NORMALIZATION = {
+    'BRKB': 'BRK.B',     # Berkshire Hathaway Class B
+    'BRK-B': 'BRK.B',    # Alternative format
+    'BRKA': 'BRK.A',     # Berkshire Hathaway Class A
+    'BRK-A': 'BRK.A',    # Alternative format
+}
+
+
+def normalize_ticker(symbol: str) -> str:
+    """
+    Normalize ticker symbol to standard Yahoo Finance format.
+    
+    Args:
+        symbol: Stock ticker symbol
+        
+    Returns:
+        Normalized ticker symbol
+        
+    Examples:
+        >>> normalize_ticker('BRKB')
+        'BRK.B'
+        >>> normalize_ticker('AAPL')
+        'AAPL'
+    """
+    if not symbol:
+        return symbol
+    
+    symbol = symbol.strip().upper()
+    return TICKER_NORMALIZATION.get(symbol, symbol)
+
 
 def safe_divide(numerator: float, denominator: float, default: float = 0.0) -> float:
     """

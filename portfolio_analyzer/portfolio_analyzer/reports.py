@@ -398,8 +398,19 @@ class HTMLReportGenerator:
             for comp in investor_comparison['comparisons']:
                 color = '#10b981' if comp["xirr"] >= 10.6 else '#ef4444'
                 is_user = comp.get('is_user')
-                bg_color = '#fff9e6' if is_user else 'white'
-                border_color = '#FFD700' if is_user else 'transparent'
+                is_rank_one = comp["rank"] == 1
+                
+                # Highlight user with gold, rank #1 with silver
+                if is_user:
+                    bg_color = '#fff9e6'
+                    border_color = '#FFD700'
+                elif is_rank_one:
+                    bg_color = '#f0f9ff'
+                    border_color = '#0066cc'
+                else:
+                    bg_color = 'white'
+                    border_color = 'transparent'
+                    
                 ranking_table_rows += f'<tr style="background-color: {bg_color}; border-left: 4px solid {border_color};"><td style="padding: 12px; border-bottom: 1px solid #eee;">{comp["rank"]}</td><td style="padding: 12px; border-bottom: 1px solid #eee;"><strong>{comp["name"]}</strong></td><td style="padding: 12px; text-align: right; border-bottom: 1px solid #eee; color: {color};"><strong>{comp["xirr"]:.1f}%</strong></td><td style="padding: 12px; border-bottom: 1px solid #eee;">{comp["period"]}</td><td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; color: #666;">{comp["notes"]}</td></tr>'
 
             # Prepare investor comparison HTML
@@ -427,10 +438,10 @@ class HTMLReportGenerator:
                     </div>
                 </div>
             </div>
-            <div style="width: 100%; margin-top: 20px; margin-bottom: 20px;">
-                <div id="investor-comparison-chart" style="width: 100%; height: 400px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 10px; box-sizing: border-box;"></div>
+            <div style="width: 100%; margin-top: 20px; margin-bottom: 60px;">
+                <div id="investor-comparison-chart" style="width: 100%; height: 450px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 10px; box-sizing: border-box;"></div>
             </div>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 40px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                 <thead>
                     <tr style="background: #f8f9fa; border-bottom: 2px solid #0066cc;">
                         <th style="padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #0066cc;">Rank</th>
@@ -647,7 +658,7 @@ class HTMLReportGenerator:
                     height=500,
                     template='plotly_white',
                     showlegend=False,
-                    margin=dict(l=150, r=100, t=60, b=60),
+                    margin=dict(l=150, r=100, t=60, b=80),
                     xaxis=dict(range=[0, max(comp_data['xirrs']) * 1.15])
                 )
                 chart6_json = fig6.to_json()

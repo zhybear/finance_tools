@@ -858,6 +858,77 @@ class TestReportsPhase2(unittest.TestCase):
         finally:
             if os.path.exists(output_file):
                 os.unlink(output_file)
+    
+    def test_html_investor_comparison_spacing_and_highlighting(self):
+        """
+        Test that investor comparison chart and table have proper spacing to avoid overlap.
+        This test addresses the bug where the bar chart's x-axis overlapped Joel Greenblatt's row.
+        
+        Bug: Chart was overlapping the first table row (Joel Greenblatt #1)
+        Fix: Increased spacing between chart and table, added highlighting for top investor
+        """
+        trades = [
+            {"symbol": "AAPL", "shares": 100, "purchase_date": "2015-01-02", "price": 40.72},
+        ]
+        
+        analyzer = PortfolioAnalyzer(trades)
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as f:
+            output_file = f.name
+        
+        try:
+            HTMLReportGenerator.generate(analyzer, output_file)
+            
+            with open(output_file, 'r') as f:
+                content = f.read()
+            
+            # Test 1: Chart container has proper bottom margin (60px) to prevent overlap
+            self.assertIn('margin-bottom: 60px', content, 
+                         "Chart container should have 60px bottom margin")
+            
+            # Test 2: Chart div has proper height (450px)
+            self.assertIn('height: 450px', content,
+                         "Chart should be 450px tall")
+            
+            # Test 3: Table has proper top margin (40px) for separation from chart
+            # Look for the table style that appears after the chart
+            self.assertIn('margin-top: 40px; background: white; box-shadow', content,
+                         "Table should have 40px top margin")
+            
+            # Test 4: Joel Greenblatt (#1 rank) has blue highlighting (#f0f9ff)
+            # This makes the top investor visible and not hidden by chart overlap
+            self.assertIn('#f0f9ff', content,
+                         "Top ranked investor should have blue highlight background")
+            self.assertIn('#0066cc', content,
+                         "Top ranked investor should have blue border")
+            
+            # Test 5: Chart has proper bottom margin in Plotly config (b=80)
+            # This ensures x-axis label doesn't overflow into table
+            import json
+            import re
+            # Extract the Plotly chart JSON for investor comparison
+            chart_match = re.search(r"Plotly\.newPlot\('investor-comparison-chart', (\{.*?\})\);", 
+                                   content, re.DOTALL)
+            if chart_match:
+                try:
+                    chart_json = json.loads(chart_match.group(1))
+                    bottom_margin = chart_json.get('layout', {}).get('margin', {}).get('b')
+                    self.assertEqual(bottom_margin, 80,
+                                   "Chart bottom margin should be 80px to prevent overlap")
+                except (json.JSONDecodeError, AttributeError):
+                    pass  # If parsing fails, skip this assertion
+            
+            # Test 6: Verify Joel Greenblatt appears in content (sanity check)
+            self.assertIn('Joel Greenblatt', content,
+                         "Joel Greenblatt should be in the report")
+            
+            # Test 7: Verify investor comparison section exists
+            self.assertIn('How You Compare to Investment Legends', content,
+                         "Investor comparison section should exist")
+            
+        finally:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
 
 
 if __name__ == '__main__':

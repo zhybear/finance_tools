@@ -59,7 +59,10 @@ build/
 parse_fidelity.py
 generate_report.py
 zhuo_personal_trade/
-skills/fidelity_portfolio_agent.py
+
+# Local development tools (maintainer only)
+skills/release_agent.py
 .github/copilot-instructions.md
+skills/fidelity_portfolio_agent.py
 MOTLEY_FOOL_OUTREACH_EMAIL.md
 portfolio_analyzer/portfolio_analyzer.egg-info/PKG-INFO

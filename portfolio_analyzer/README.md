@@ -1,7 +1,7 @@
 # Portfolio Analyzer
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Tests](https://img.shields.io/badge/tests-195%2F195-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-205%2F205-brightgreen.svg)
 ![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-ISC-blue.svg)
 
@@ -67,7 +67,7 @@ This tool uses **XIRR (Internal Rate of Return)** to calculate your true perform
   - Ranked table and interactive bar chart with your portfolio highlighted
   
 - **Transparent & Auditable**: 
-  - 195 tests (94% coverage) validate every calculation
+  - 205 tests (94% coverage) validate every calculation
   - Open source - inspect exactly how calculations work
   - No black boxes or mysterious algorithms
   
@@ -204,7 +204,7 @@ Prices shown are historical close values (adjusted for splits/dividends) for the
 ## Testing
 
 ```bash
-# Run all tests (195 total)
+# Run all tests (205 total)
 python -m unittest discover -s tests -p "test_*.py" -v
 
 # Run specific test module
@@ -217,7 +217,7 @@ python -m unittest tests.test_investor_comparison -v
 python -m unittest discover -s tests -p "test_*.py" -q
 ```
 
-**Test Coverage**: 94% (195 tests covering all modules: analyzer, reports, loaders, metrics, utils, investor_comparison, and CLI)
+**Test Coverage**: 94% (205 tests covering all modules: analyzer, reports, loaders, metrics, utils, investor_comparison, and CLI)
 
 ## Architecture
 

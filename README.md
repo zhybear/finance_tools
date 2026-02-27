@@ -8,7 +8,7 @@ This monorepo contains modular financial analysis tools:
 
 ```
 finance_tools/
-├── portfolio_analyzer/    # Portfolio performance analysis (v1.3.4)
+├── portfolio_analyzer/    # Portfolio performance analysis (v1.3.5)
 │   ├── README.md         # Full documentation
 │   ├── requirements.txt   # Dependencies
 │   └── example_trades.csv # Sample data
@@ -22,8 +22,8 @@ finance_tools/
 ### Portfolio Analyzer
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Tests](https://img.shields.io/badge/tests-149%2F149-brightgreen.svg)
-![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-205%2F205-brightgreen.svg)
+![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-ISC-blue.svg)
 
 **Analyze stock portfolio performance with cash flow tracking and real S&P 500 benchmarking.**
@@ -33,7 +33,7 @@ What makes this different:
 - **Multi-Period Analysis**: Analyze any time period, not locked to 1/3/5/10 year presets
 - **S&P 500 Comparison**: Helps you decide if active stock picking beats a simple index fund investment
 - **Real Market Data**: S&P 500 benchmark uses actual yfinance closing prices
-- **Mathematically Rigorous**: All calculations are transparent and testable (149 tests, 91% coverage)
+- **Mathematically Rigorous**: All calculations are transparent and testable (205 tests, 94% coverage)
 - **Multiple Formats**: Text, PDF, and interactive HTML reports
 
 **Example Dashboard:**

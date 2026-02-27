@@ -1,8 +1,8 @@
 # Portfolio Analyzer
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Tests](https://img.shields.io/badge/tests-149%2F149-brightgreen.svg)
-![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-195%2F195-brightgreen.svg)
+![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-ISC-blue.svg)
 
 A comprehensive Python tool for analyzing stock portfolio performance with precise cash flow tracking and S&P 500 benchmarking.
@@ -67,7 +67,7 @@ This tool uses **XIRR (Internal Rate of Return)** to calculate your true perform
   - Ranked table and interactive bar chart with your portfolio highlighted
   
 - **Transparent & Auditable**: 
-  - 149 tests (91% coverage) validate every calculation
+  - 195 tests (94% coverage) validate every calculation
   - Open source - inspect exactly how calculations work
   - No black boxes or mysterious algorithms
   
@@ -101,14 +101,26 @@ Here's what the analysis produces. Running on a sample portfolio with multiple t
 
 ### Interactive Dashboard
 The HTML report provides an interactive dashboard with:
-- **Real-time metrics cards** showing portfolio value, gains, and returns
-- **Plotly charts** visualizing performance over time
+- **Real-time metrics cards** showing portfolio value, gains, returns, and percentile
+- **Plotly charts** visualizing top holdings, allocation, sector breakdown, and performance
+- **Investor Comparison** (NEW v1.3.5): 
+  - Compare your XIRR against legendary investors (Warren Buffett, Peter Lynch, Joel Greenblatt, etc.)
+  - See your rank and percentile vs. 10 professional investors and market indices
+  - Interactive bar chart highlighting your portfolio
+  - Ranked table with detailed investor performance data
 - **Expandable trade details** showing every buy and current performance
 - **Responsive design** works on desktop, tablet, and mobile
 - **Dark mode support** for comfortable viewing
 
-See the live example:
+### Example Dashboard
+See a live interactive example with investor comparison:
 https://rawcdn.githack.com/zhybear/finance_tools/main/portfolio_analyzer/examples/example_report.html
+
+The example shows your portfolio ranked against professional investors and includes:
+- Your rank: #3 of 11 investors/benchmarks
+- Your XIRR: 20.87% (beating Warren Buffett at 20.1%!)
+- Percentile: 82nd percentile
+- Outperformance vs S&P 500: +10.27%
 
 ## Installation
 
@@ -192,19 +204,20 @@ Prices shown are historical close values (adjusted for splits/dividends) for the
 ## Testing
 
 ```bash
-# Run all tests (149 total)
+# Run all tests (195 total)
 python -m unittest discover -s tests -p "test_*.py" -v
 
 # Run specific test module
 python -m unittest tests.test_analyzer -v
 python -m unittest tests.test_reports -v
 python -m unittest tests.test_loaders -v
+python -m unittest tests.test_investor_comparison -v
 
 # Quick run (quiet mode)
 python -m unittest discover -s tests -p "test_*.py" -q
 ```
 
-**Test Coverage**: 91% (149 tests across Phases 1-3: 66 new edge case, production hardening, and analytics validation tests)
+**Test Coverage**: 94% (195 tests covering all modules: analyzer, reports, loaders, metrics, utils, investor_comparison, and CLI)
 
 ## Architecture
 

@@ -125,7 +125,7 @@ All test functionality is preserved with no changes to test logic.
 ## Author
 
 Zhuo Robert Li  
-Version: 1.3.5  
+Version: 1.3.6  
 License: ISC
 
 ## Current Test Count

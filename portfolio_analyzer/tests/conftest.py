@@ -9,7 +9,7 @@ execution by ~70-80% without losing any test coverage. Caching works by
 intercepting all HTTP requests during test runs.
 
 Author: Zhuo Robert Li
-Version: 1.3.3
+Version: 1.3.6
 License: ISC
 """
 

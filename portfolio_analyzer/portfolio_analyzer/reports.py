@@ -707,6 +707,10 @@ class HTMLReportGenerator:
         .symbol-cell {{ display: flex; align-items: center; gap: 8px; }}
         .expand-icon {{ display: inline-block; width: 16px; height: 16px; transition: transform 0.3s; font-size: 12px; color: #0066cc; }}
         .expand-icon.expanded {{ transform: rotate(90deg); }}
+        th.sortable {{ cursor: pointer; user-select: none; position: relative; }}
+        th.sortable:hover {{ background: #e8f4f8; }}
+        th.sortable.sorted {{ background: #d0e8f0; }}
+        .sort-arrow {{ margin-left: 5px; font-size: 0.8em; color: #0066cc; }}
         .trades-row {{ display: none; background: #f8f9fa; }}
         .trades-row.show {{ display: table-row; }}
         .trades-detail {{ padding: 0 !important; }}
@@ -807,22 +811,22 @@ class HTMLReportGenerator:
         
         <div class="section">
             <h2>Detailed Holdings</h2>
-            <table>
+            <table id="holdings-table">
                 <thead>
                     <tr>
-                        <th>Symbol</th>
-                        <th>Trades</th>
-                        <th>Invested</th>
-                        <th>Current Value</th>
-                        <th>Gain</th>
-                        <th>Return %</th>
-                        <th><span class="tooltip-term" data-tooltip="Weighted CAGR: Compound Annual Growth Rate weighted by amount and time">WCAGR %</span></th>
-                        <th><span class="tooltip-term" data-tooltip="XIRR: Internal Rate of Return for actual cash flows">XIRR %</span></th>
-                        <th><span class="tooltip-term" data-tooltip="S&P WCAGR: Bench. weighted avg return">S&P WCAGR %</span></th>
-                        <th><span class="tooltip-term" data-tooltip="S&P XIRR: Benchmark internal rate return">S&P XIRR %</span></th>
+                        <th class="sortable" data-sort="symbol" onclick="sortTable('symbol')">Symbol <span class="sort-arrow" id="arrow-symbol"></span></th>
+                        <th class="sortable" data-sort="trades" onclick="sortTable('trades')">Trades <span class="sort-arrow" id="arrow-trades"></span></th>
+                        <th class="sortable" data-sort="invested" onclick="sortTable('invested')">Invested <span class="sort-arrow" id="arrow-invested"></span></th>
+                        <th class="sortable" data-sort="current_value" onclick="sortTable('current_value')">Current Value <span class="sort-arrow" id="arrow-current_value"></span></th>
+                        <th class="sortable" data-sort="gain" onclick="sortTable('gain')">Gain <span class="sort-arrow" id="arrow-gain"></span></th>
+                        <th class="sortable" data-sort="return_pct" onclick="sortTable('return_pct')">Return % <span class="sort-arrow" id="arrow-return_pct"></span></th>
+                        <th class="sortable" data-sort="wcagr" onclick="sortTable('wcagr')"><span class="tooltip-term" data-tooltip="Weighted CAGR: Compound Annual Growth Rate weighted by amount and time">WCAGR %</span> <span class="sort-arrow" id="arrow-wcagr"></span></th>
+                        <th class="sortable" data-sort="xirr" onclick="sortTable('xirr')"><span class="tooltip-term" data-tooltip="XIRR: Internal Rate of Return for actual cash flows">XIRR %</span> <span class="sort-arrow" id="arrow-xirr"></span></th>
+                        <th class="sortable" data-sort="sp500_wcagr" onclick="sortTable('sp500_wcagr')"><span class="tooltip-term" data-tooltip="S&P WCAGR: Bench. weighted avg return">S&P WCAGR %</span> <span class="sort-arrow" id="arrow-sp500_wcagr"></span></th>
+                        <th class="sortable" data-sort="sp500_xirr" onclick="sortTable('sp500_xirr')"><span class="tooltip-term" data-tooltip="S&P XIRR: Benchmark internal rate return">S&P XIRR %</span> <span class="sort-arrow" id="arrow-sp500_xirr"></span></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="holdings-tbody">
 """
             
             for symbol, stats in sorted_symbols:
@@ -831,7 +835,18 @@ class HTMLReportGenerator:
                 
                 # Main symbol row (clickable)
                 html_content += f"""
-                    <tr class="symbol-row" onclick="toggleTrades('{symbol_id}')">
+                    <tr class="symbol-row" 
+                        data-symbol="{symbol}" 
+                        data-trades="{trades_count}" 
+                        data-invested="{stats['total_initial_value']}" 
+                        data-current-value="{stats['total_current_value']}" 
+                        data-gain="{stats['total_gain']}" 
+                        data-return-pct="{stats['gain_percentage']}" 
+                        data-wcagr="{stats['avg_cagr']}" 
+                        data-xirr="{stats['avg_xirr']}" 
+                        data-sp500-wcagr="{stats['avg_sp500_cagr']}" 
+                        data-sp500-xirr="{stats['avg_sp500_xirr']}" 
+                        onclick="toggleTrades('{symbol_id}')">
                         <td>
                             <div class="symbol-cell">
                                 <span class="expand-icon" id="icon-{symbol_id}">▶</span>
@@ -909,6 +924,8 @@ class HTMLReportGenerator:
     </div>
     {charts_script}
     <script>
+        let currentSort = {{ column: 'return_pct', direction: 'desc' }};
+        
         function toggleTrades(symbolId) {{
             const tradesRow = document.getElementById('trades-' + symbolId);
             const icon = document.getElementById('icon-' + symbolId);
@@ -921,6 +938,85 @@ class HTMLReportGenerator:
                 icon.classList.add('expanded');
             }}
         }}
+        
+        function sortTable(column) {{
+            const tbody = document.getElementById('holdings-tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr.symbol-row'));
+            
+            // Toggle direction if clicking same column
+            if (currentSort.column === column) {{
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            }} else {{
+                currentSort.column = column;
+                currentSort.direction = 'desc'; // Default to descending for new column
+            }}
+            
+            // Sort rows
+            rows.sort((a, b) => {{
+                let aVal = a.getAttribute('data-' + column.replace('_', '-'));
+                let bVal = b.getAttribute('data-' + column.replace('_', '-'));
+                
+                // Handle text vs numeric columns
+                if (column === 'symbol') {{
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }} else {{
+                    aVal = parseFloat(aVal);
+                    bVal = parseFloat(bVal);
+                    
+                    // Handle NaN values (always sort to bottom)
+                    if (isNaN(aVal) && isNaN(bVal)) return 0;
+                    if (isNaN(aVal)) return 1;
+                    if (isNaN(bVal)) return -1;
+                }}
+                
+                let comparison = 0;
+                if (aVal < bVal) comparison = -1;
+                if (aVal > bVal) comparison = 1;
+                
+                // Apply direction
+                if (currentSort.direction === 'desc') comparison *= -1;
+                
+                // Tie-breaker: always sort by symbol A→Z as secondary sort
+                if (comparison === 0 && column !== 'symbol') {{
+                    const aSymbol = a.getAttribute('data-symbol').toLowerCase();
+                    const bSymbol = b.getAttribute('data-symbol').toLowerCase();
+                    return aSymbol < bSymbol ? -1 : 1;
+                }}
+                
+                return comparison;
+            }});
+            
+            // Reorder DOM
+            rows.forEach(row => {{
+                const symbolRow = row;
+                const tradesRowId = row.querySelector('.expand-icon').id.replace('icon-', 'trades-');
+                const tradesRow = document.getElementById(tradesRowId);
+                
+                tbody.appendChild(symbolRow);
+                if (tradesRow) {{
+                    tbody.appendChild(tradesRow);
+                }}
+            }});
+            
+            // Update sort arrows
+            document.querySelectorAll('.sort-arrow').forEach(arrow => arrow.textContent = '');
+            document.querySelectorAll('th.sortable').forEach(th => th.classList.remove('sorted'));
+            
+            const currentArrow = document.getElementById('arrow-' + column);
+            const currentHeader = document.querySelector(`th[data-sort="${{column}}"]`);
+            if (currentArrow) {{
+                currentArrow.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+            }}
+            if (currentHeader) {{
+                currentHeader.classList.add('sorted');
+            }}
+        }}
+        
+        // Default sort on page load: Return % descending, then Current Value descending
+        document.addEventListener('DOMContentLoaded', function() {{
+            sortTable('return_pct');
+        }});
     </script>
 </body>
 </html>

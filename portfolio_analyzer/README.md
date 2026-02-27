@@ -71,7 +71,7 @@ This tool uses **XIRR (Internal Rate of Return)** to calculate your true perform
   - Open source - inspect exactly how calculations work
   - No black boxes or mysterious algorithms
   
-- **Production Ready**: v1.3.5 with comprehensive test coverage and validation
+- **Production Ready**: v1.3.6 with comprehensive test coverage and sortable holdings
 
 ## Example Output
 
@@ -230,6 +230,6 @@ python -m unittest discover -s tests -p "test_*.py" -q
 
 ## Version
 
-Current version: **1.3.5** (Production Ready)
+Current version: **1.3.6** (Production Ready + Interactive Sorting)
 
 See RELEASE_NOTES.md for detailed changelog.

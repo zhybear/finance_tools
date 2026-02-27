@@ -1,5 +1,27 @@
 # Release Notes
 
+## 1.3.6 (2026-02-27) - Sortable Holdings Table
+
+### New Features
+- **Interactive sortable holdings table**: Click any column header to sort Detailed Holdings
+- **Smart sorting logic**: Numeric columns sort high→low or low→high, text sorts A→Z
+- **Visual sort indicators**: Up/down arrows (▲/▼) show current sort direction
+- **Intelligent tie-breakers**: When values match, uses symbol alphabetically as secondary sort
+- **Nested trades preservation**: Expanding symbol trades keeps them attached during sorting
+- **Default sort**: Returns % descending on page load (show best performers first)
+
+### User Experience
+- Click column header to sort ascending, click again for descending
+- Column header highlights when sorted
+- NaN/empty values always sort to bottom for cleaner data visibility
+- Works with 10 sortable columns: Symbol, Trades, Invested, Current Value, Gain, Return %, WCAGR %, XIRR %, S&P WCAGR %, S&P XIRR %
+
+### Tests and Coverage
+- Added 11 comprehensive sorting tests (test_html_sorting.py)
+- BeautifulSoup integration tests for HTML structure validation
+- Edge case coverage: single symbol, multiple trades, sorting behavior
+- Total test count: 216 (94% coverage)
+
 ## 1.3.5 (2026-02-25) - Investor Comparison Dashboard
 
 ### New Features

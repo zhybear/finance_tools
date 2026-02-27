@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: portfolio-analyzer
-Version: 1.3.4
+Version: 1.3.5
 Summary: A comprehensive Python tool for analyzing stock portfolio performance with precise cash flow tracking and S&P 500 benchmarking.
 Author-email: Zhuo Robert Li <zhuo.robert.li@example.com>
 License: ISC
@@ -39,6 +39,11 @@ Requires-Dist: build>=0.10.0; extra == "dev"
 Requires-Dist: twine>=4.0.0; extra == "dev"
 
 # Portfolio Analyzer
+
+![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Tests](https://img.shields.io/badge/tests-149%2F149-brightgreen.svg)
+![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
+![License](https://img.shields.io/badge/license-ISC-blue.svg)
 
 A comprehensive Python tool for analyzing stock portfolio performance with precise cash flow tracking and S&P 500 benchmarking.
 
@@ -95,13 +100,55 @@ This tool uses **XIRR (Internal Rate of Return)** to calculate your true perform
   - Text reports with detailed analysis
   - PDF reports with professional visualizations and charts
   - Interactive HTML dashboards with Plotly charts and dark mode support
+
+- **Investor Comparison (New in v1.3.5)**:
+  - Compare your portfolio XIRR against legendary investors (Buffett, Lynch, Greenblatt)
+  - Benchmark against S&P 500, NASDAQ, and Global Stocks
+  - Ranked table and interactive bar chart with your portfolio highlighted
   
 - **Transparent & Auditable**: 
   - 149 tests (91% coverage) validate every calculation
   - Open source - inspect exactly how calculations work
   - No black boxes or mysterious algorithms
   
-- **Production Ready**: v1.3.4 with comprehensive test coverage and validation
+- **Production Ready**: v1.3.5 with comprehensive test coverage and validation
+
+## Example Output
+
+### Performance Summary
+Here's what the analysis produces. Running on a sample portfolio with multiple trades across different time periods:
+
+```
+╔════════════════════════════════════════════════════════════════════╗
+║              Portfolio Performance Analysis                        ║
+╠════════════════════════════════════════════════════════════════════╣
+║                                                                    ║
+║  Portfolio Value:        $198,309                                 ║
+║  Total Gain:             $167,434  (↑ 542.3%)                    ║
+║  Portfolio WCAGR:        25.1%     (vs S&P 500: 18.3%)           ║
+║  Outperformance:         +6.8%     (beating index!)              ║
+║                                                                    ║
+╠════════════════════════════════════════════════════════════════════╣
+║  By Symbol                                                         ║
+╠══════════════╤═══════════╤════════════╤═══════════╤════════════════╣
+║  Symbol      │   Shares  │  Cost Basis│   Value   │    Return %    ║
+╠══════════════╪═══════════╪════════════╪═══════════╪════════════════╣
+║  MSFT        │   150.00  │  $20,000   │  $82,500  │    +312.5%     ║
+║  TSLA        │    25.00  │  $5,000    │  $52,300  │    +946.0%     ║
+║  ^GSPC       │   100.00  │  $50,000   │  $63,509  │     +27.0%     ║
+╚══════════════╧═══════════╧════════════╧═══════════╧════════════════╝
+```
+
+### Interactive Dashboard
+The HTML report provides an interactive dashboard with:
+- **Real-time metrics cards** showing portfolio value, gains, and returns
+- **Plotly charts** visualizing performance over time
+- **Expandable trade details** showing every buy and current performance
+- **Responsive design** works on desktop, tablet, and mobile
+- **Dark mode support** for comfortable viewing
+
+See the live example:
+https://rawcdn.githack.com/zhybear/finance_tools/main/portfolio_analyzer/examples/example_report.html
 
 ## Installation
 
@@ -185,7 +232,7 @@ Prices shown are historical close values (adjusted for splits/dividends) for the
 ## Testing
 
 ```bash
-# Run all tests (124 total)
+# Run all tests (149 total)
 python -m unittest discover -s tests -p "test_*.py" -v
 
 # Run specific test module
@@ -210,6 +257,6 @@ python -m unittest discover -s tests -p "test_*.py" -q
 
 ## Version
 
-Current version: **1.3.4** (Production Ready)
+Current version: **1.3.5** (Production Ready)
 
 See RELEASE_NOTES.md for detailed changelog.

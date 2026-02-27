@@ -59,3 +59,7 @@ build/
 parse_fidelity.py
 generate_report.py
 zhuo_personal_trade/
+skills/fidelity_portfolio_agent.py
+.github/copilot-instructions.md
+MOTLEY_FOOL_OUTREACH_EMAIL.md
+portfolio_analyzer/portfolio_analyzer.egg-info/PKG-INFO

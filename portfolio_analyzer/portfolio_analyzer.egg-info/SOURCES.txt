@@ -10,6 +10,7 @@ examples/example_trades.csv
 portfolio_analyzer/__init__.py
 portfolio_analyzer/analyzer.py
 portfolio_analyzer/cli.py
+portfolio_analyzer/investor_comparison.py
 portfolio_analyzer/loaders.py
 portfolio_analyzer/metrics.py
 portfolio_analyzer/reports.py
@@ -25,7 +26,15 @@ tests/__init__.py
 tests/conftest.py
 tests/test_analyzer.py
 tests/test_cli.py
+tests/test_investor_comparison.py
 tests/test_loaders.py
 tests/test_metrics.py
 tests/test_reports.py
 tests/test_utils.py
+tests/__pycache__/test_analyzer.cpython-314.pyc
+tests/__pycache__/test_cli.cpython-314.pyc
+tests/__pycache__/test_investor_comparison.cpython-314.pyc
+tests/__pycache__/test_loaders.cpython-314.pyc
+tests/__pycache__/test_metrics.cpython-314.pyc
+tests/__pycache__/test_reports.cpython-314.pyc
+tests/__pycache__/test_utils.cpython-314.pyc

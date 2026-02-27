@@ -67,7 +67,7 @@ This tool uses **XIRR (Internal Rate of Return)** to calculate your true perform
   - Ranked table and interactive bar chart with your portfolio highlighted
   
 - **Transparent & Auditable**: 
-  - 205 tests (94% coverage) validate every calculation
+  - 216 tests (94% coverage) validate every calculation
   - Open source - inspect exactly how calculations work
   - No black boxes or mysterious algorithms
   
@@ -217,7 +217,7 @@ python -m unittest tests.test_investor_comparison -v
 python -m unittest discover -s tests -p "test_*.py" -q
 ```
 
-**Test Coverage**: 94% (205 tests covering all modules: analyzer, reports, loaders, metrics, utils, investor_comparison, and CLI)
+**Test Coverage**: 94% (216 tests covering all modules: analyzer, reports, loaders, metrics, utils, investor_comparison, HTML sorting, and CLI)
 
 ## Architecture
 

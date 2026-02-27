@@ -96,7 +96,7 @@ python3 -m coverage run -m unittest discover tests
 python3 -m coverage report --include="portfolio_analyzer/*"
 ```
 
-**Current Coverage**: 94% (205 tests)
+**Current Coverage**: 94% (216 tests)
 
 ## Benefits of Modular Structure
 

@@ -33,7 +33,7 @@ What makes this different:
 - **Multi-Period Analysis**: Analyze any time period, not locked to 1/3/5/10 year presets
 - **S&P 500 Comparison**: Helps you decide if active stock picking beats a simple index fund investment
 - **Real Market Data**: S&P 500 benchmark uses actual yfinance closing prices
-- **Mathematically Rigorous**: All calculations are transparent and testable (205 tests, 94% coverage)
+- **Mathematically Rigorous**: All calculations are transparent and testable (216 tests, 94% coverage)
 - **Multiple Formats**: Text, PDF, and interactive HTML reports
 
 **Example Dashboard:**

@@ -4,6 +4,87 @@ This directory contains GitHub Copilot agents and automation skills for the Stoc
 
 ## Available Skills
 
+### 🤖 Release Agent
+
+Automates the complete release workflow ensuring no inconsistencies.
+
+**Agent Name**: `@release-version`
+
+**Script**: `release_agent.py`
+
+**What it does**:
+1. ✓ Validates version format (semver)
+2. 🧪 Counts actual tests and verifies consistency
+3. 📝 Updates version strings everywhere:
+   - `__init__.py` and `pyproject.toml`
+   - All README files (root, portfolio_analyzer, tests, skills)
+   - Test module version comments
+   - Badge shields.io URLs
+4. 📊 Updates test count references in all docs
+5. 📈 Regenerates all example reports:
+   - `examples/example_report.txt`
+   - `examples/example_report.pdf`
+   - `examples/example_report.html` (with sortable table)
+6. 📋 Creates release notes section template
+7. 📌 Git operations: commit, tag, push
+8. 🔗 Outputs GitHub release template
+
+**Usage**:
+
+```bash
+# Dry-run (validate without changes)
+python3 skills/release_agent.py --version v1.3.7 --dry-run
+
+# Actual release (commit, tag, push)
+python3 skills/release_agent.py --version v1.3.7
+
+# Release without pushing to GitHub
+python3 skills/release_agent.py --version v1.3.7 --no-push
+```
+
+**Or use via GitHub Copilot**:
+```
+@release-version prepare v1.3.7
+```
+
+**What gets updated automatically**:
+
+| File | Change |
+|------|--------|
+| `portfolio_analyzer/__init__.py` | `__version__ = "X.Y.Z"` |
+| `portfolio_analyzer/pyproject.toml` | `version = "X.Y.Z"` |
+| `README.md` (root) | Badge `tests-XXX/XXX` + test count text |
+| `portfolio_analyzer/README.md` | Badge + test count text + version |
+| `portfolio_analyzer/tests/README.md` | Test count references |
+| `portfolio_analyzer/RELEASE_NOTES.md` | Release template (guide only) |
+| `portfolio_analyzer/examples/*.txt` | Regenerated |
+| `portfolio_analyzer/examples/*.pdf` | Regenerated |
+| `portfolio_analyzer/examples/*.html` | Regenerated with sortable table |
+| All test module docstrings | `Version: X.Y.Z` |
+
+**Safety features**:
+- ✅ Validates semver format
+- ✅ Counts actual test suite size
+- ✅ Checks for uncommitted changes before git operations
+- ✅ Dry-run mode to validate before committing
+- ✅ Shows all changes before executing
+- ✅ Detailed error reporting
+
+**Example workflow**:
+
+```bash
+# Step 1: Dry-run to validate
+python3 skills/release_agent.py --version v1.3.7 --dry-run
+
+# Step 2: Review output and check git status
+git status
+
+# Step 3: Actually release
+python3 skills/release_agent.py --version v1.3.7
+
+# Step 4: Publish on GitHub using the provided template
+```
+
 ### 🤖 Fidelity Portfolio Agent (Local Only)
 
 Automates the complete workflow from Fidelity raw data to interactive HTML report.
@@ -103,7 +184,10 @@ if __name__ == '__main__':
 - Python 3.8+ (tested with 3.9.6 and 3.14.3)
 - Portfolio Analyzer package installed
 - All project dependencies installed
+- Git configured (for release agent only)
 
 ## Documentation
 
-Local documentation (excluded from git): `.github/copilot-instructions.md`.
+Local documentation (excluded from git):
+- `.github/copilot-instructions.md` - Complete agent documentation
+- See agent docstrings for implementation details

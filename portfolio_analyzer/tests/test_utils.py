@@ -140,6 +140,100 @@ class TestUtilsFunctions(unittest.TestCase):
             self.assertTrue(result.equals(df))
 
 
+class TestTickerNormalization(unittest.TestCase):
+    """Test ticker symbol normalization functionality"""
+    
+    def test_normalize_ticker_brkb(self):
+        """Test BRKB normalizes to BRK.B"""
+        from portfolio_analyzer.utils import normalize_ticker
+        
+        result = normalize_ticker('BRKB')
+        self.assertEqual(result, 'BRK.B')
+    
+    def test_normalize_ticker_brk_dash_b(self):
+        """Test BRK-B normalizes to BRK.B"""
+        from portfolio_analyzer.utils import normalize_ticker
+        
+        result = normalize_ticker('BRK-B')
+        self.assertEqual(result, 'BRK.B')
+    
+    def test_normalize_ticker_brka(self):
+        """Test BRKA normalizes to BRK.A"""
+        from portfolio_analyzer.utils import normalize_ticker
+        
+        result = normalize_ticker('BRKA')
+        self.assertEqual(result, 'BRK.A')
+    
+    def test_normalize_ticker_lowercase(self):
+        """Test lowercase tickers are converted to uppercase"""
+        from portfolio_analyzer.utils import normalize_ticker
+        
+        result = normalize_ticker('brkb')
+        self.assertEqual(result, 'BRK.B')
+    
+    def test_normalize_ticker_with_whitespace(self):
+        """Test whitespace is stripped"""
+        from portfolio_analyzer.utils import normalize_ticker
+        
+        result = normalize_ticker('  BRKB  ')
+        self.assertEqual(result, 'BRK.B')
+    
+    def test_normalize_ticker_unchanged(self):
+        """Test normal tickers pass through unchanged"""
+        from portfolio_analyzer.utils import normalize_ticker
+        
+        result = normalize_ticker('AAPL')
+        self.assertEqual(result, 'AAPL')
+    
+    def test_normalize_ticker_empty_string(self):
+        """Test empty string returns empty string"""
+        from portfolio_analyzer.utils import normalize_ticker
+        
+        result = normalize_ticker('')
+        self.assertEqual(result, '')
+    
+    def test_normalize_ticker_already_normalized(self):
+        """Test already normalized ticker stays the same"""
+        from portfolio_analyzer.utils import normalize_ticker
+        
+        result = normalize_ticker('BRK.B')
+        self.assertEqual(result, 'BRK.B')
+
+
+class TestAnalyzerTickerNormalization(unittest.TestCase):
+    """Test that analyzer applies ticker normalization during validation"""
+    
+    def test_analyzer_normalizes_brkb_trade(self):
+        """Test analyzer normalizes BRKB to BRK.B in trade validation"""
+        trade = {
+            'symbol': 'BRKB',
+            'shares': 10,
+            'price': 100.0,
+            'purchase_date': '2020-01-02'
+        }
+        
+        analyzer = PortfolioAnalyzer([trade])
+        
+        # After validation, the symbol should be normalized
+        valid_trades = [t for t in analyzer.trades if analyzer._validate_trade(t)]
+        self.assertEqual(len(valid_trades), 1)
+        self.assertEqual(valid_trades[0]['symbol'], 'BRK.B')
+    
+    def test_analyzer_normalizes_lowercase_ticker(self):
+        """Test analyzer normalizes lowercase tickers"""
+        trade = {
+            'symbol': 'aapl',
+            'shares': 10,
+            'price': 100.0,
+            'purchase_date': '2020-01-02'
+        }
+        
+        analyzer = PortfolioAnalyzer([trade])
+        valid_trades = [t for t in analyzer.trades if analyzer._validate_trade(t)]
+        self.assertEqual(len(valid_trades), 1)
+        self.assertEqual(valid_trades[0]['symbol'], 'AAPL')
+
+
 
 
 if __name__ == '__main__':

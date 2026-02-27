@@ -14,3 +14,4 @@ reportlab>=3.6.0      # PDF generation
 
 # Development dependencies (for testing)
 # unittest is built-in, no additional test framework needed
+requests-cache>=1.0.0  # HTTP caching for faster test execution

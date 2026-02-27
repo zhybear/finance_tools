@@ -130,7 +130,7 @@ License: ISC
 
 ## Current Test Count
 
-**Total Tests**: 205 (as of 2026-02-26)
+**Total Tests**: 216 (as of 2026-02-27)
 
 ### Coverage Highlights
 

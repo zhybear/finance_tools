@@ -37,7 +37,7 @@ https://rawcdn.githack.com/zhybear/finance_tools/main/portfolio_analyzer/example
 ### Tests and Coverage
 - Added 38 unit tests for investor comparison module
 - Maintained overall coverage at 94%
-- Total test count: 205
+- Total test count: 216
 
 ## 1.3.4 (2026-02-23) - Precision & Consistency Focus
 

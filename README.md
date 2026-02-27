@@ -22,7 +22,7 @@ finance_tools/
 ### Portfolio Analyzer
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Tests](https://img.shields.io/badge/tests-205%2F205-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-216%2F216-brightgreen.svg)
 ![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-ISC-blue.svg)
 

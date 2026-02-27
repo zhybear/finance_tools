@@ -53,5 +53,9 @@ build/
 # Temporary files
 /tmp_*.csv
 /test_output.*
-**/test_output.*parse_fidelity.py
+**/test_output.*
+
+# Personal trading files (Fidelity parser and data)
+parse_fidelity.py
+generate_report.py
 zhuo_personal_trade/
